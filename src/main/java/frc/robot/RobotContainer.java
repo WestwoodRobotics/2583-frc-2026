@@ -22,7 +22,6 @@ import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.AimShooter;
 import frc.robot.commands.AutoAlign;
 import frc.robot.generated.TunerConstants;
-import frc.robot.commands.LockToPosition;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
