@@ -1,7 +1,5 @@
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -15,15 +13,15 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
-public class LockToPosition extends Command {
+public class AimShooter extends Command {
     private final CommandSwerveDrivetrain drivetrain;
-    private final DoubleSupplier translationX;
-    private final DoubleSupplier translationY;
+    private final double translationX;
+    private final double translationY;
 
     private final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle()
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    public LockToPosition(CommandSwerveDrivetrain drivetrain, DoubleSupplier translationX, DoubleSupplier translationY) {
+    public AimShooter(CommandSwerveDrivetrain drivetrain, double translationX, double translationY) {
         this.drivetrain = drivetrain;
         this.translationX = translationX;
         this.translationY = translationY;
@@ -70,8 +68,8 @@ public class LockToPosition extends Command {
             .minus(SwerveConstants.shooterToRobot.getRotation());
 
         drivetrain.setControl(driveRequest
-            .withVelocityX(translationX.getAsDouble())
-            .withVelocityY(translationY.getAsDouble())
+            .withVelocityX(translationX)
+            .withVelocityY(translationY)
             .withTargetDirection(targetHeading));
     }
 }
