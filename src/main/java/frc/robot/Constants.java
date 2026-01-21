@@ -7,6 +7,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class Constants {
 
+    public static final class LEDConstants {
+        public static final int candleId = 30;
+        public static final String canBus = "CANivore";
+        public static final int endIndex = 26;
+    }
+
     public static final class SwerveConstants {
 
         public static final double fieldWidth = 16.540988;
