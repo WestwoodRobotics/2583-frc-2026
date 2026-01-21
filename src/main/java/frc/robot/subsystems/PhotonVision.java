@@ -19,10 +19,12 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LimelightConstants;
 
@@ -65,9 +67,11 @@ public class PhotonVision extends SubsystemBase{
         new Rotation3d(0, 0, 0)
     );
 
+    private CommandSwerveDrivetrain drivetrain;
 
 
-    public PhotonVision(/* LED candle */){
+
+    public PhotonVision(/* LED candle */ CommandSwerveDrivetrain drivetrain){
 /*         this.candle = candle;
  */
         this.cameraOne = new PhotonCamera("cameraone");
@@ -82,6 +86,7 @@ public class PhotonVision extends SubsystemBase{
         this.PVresultFour = null;
         this.PVresultFive = null;
 
+        this.drivetrain = drivetrain;
         try{
             this.layout = new AprilTagFieldLayout("/home/lvuser/deploy/2025-reefscape-welded.json");
         } catch(java.io.IOException e){
@@ -117,6 +122,41 @@ public class PhotonVision extends SubsystemBase{
  */
         }
        
+    }
+
+    public Pose2d getObjDetection(PhotonPipelineResult PVresult, Transform3d cameraToRobot){
+        if (PVresult == null || !PVresult.hasTargets()) {
+            return new Pose2d();
+        }
+
+        PhotonTrackedTarget bestTarget = PVresult.getBestTarget();
+        int tagId = bestTarget.getFiducialId();
+       
+
+        Transform3d cameraToTarget = bestTarget.getBestCameraToTarget();
+
+        Transform3d targettorobot = cameraToRobot.plus(cameraToTarget);
+
+        Pose2d robotPose = drivetrain.getState().Pose;
+
+        Pose3d robotrelative = new Pose3d(
+            targettorobot.getX(),
+            targettorobot.getY(),
+            targettorobot.getZ(),
+            targettorobot.getRotation()
+        );
+
+
+        Pose2d fieldPose = robotPose.plus(new Transform2d(
+            robotrelative.getX(),
+            robotrelative.getY(),
+            robotrelative.getRotation().toRotation2d()
+        ));
+
+        return fieldPose;
+
+    
+
     }
 
     public PhotonPipelineResult getCamOneResult(){
