@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -23,13 +24,8 @@ public final class Constants {
             configs.Slot0.kS = 0.0;
             configs.Slot0.kV = 0.0;
             configs.Slot0.kA = 0.0;
-
-            configs.Slot1.kP = configs.Slot0.kP * 0.1;
-            configs.Slot1.kI = 0.0;
-            configs.Slot1.kD = 0.0;
-            configs.Slot1.kS = 0.0;
-            configs.Slot1.kV = 0.0;
-            configs.Slot1.kA = 0.0;
+            configs.Slot0.kG = 0.0;
+            configs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
             
             configs.MotionMagic.MotionMagicExpo_kV = 0.0;
             configs.MotionMagic.MotionMagicExpo_kA = 0.0;
