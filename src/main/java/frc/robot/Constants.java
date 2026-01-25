@@ -50,8 +50,10 @@ public class Constants {
         public static final int kVelocityMotorId = 2;
         public static final CANBus kCANBus = new CANBus("rio");
 
-        public static final double collisionErrorThreshold = 0.5;
-        public static final double recoveryErrorThreshold = 0.1;
+        public static final double inPos = 0.0;
+        public static final double outPos = 0.1;
+
+        public static final double rollerVel = 0.0;
 
         public static TalonFXConfiguration getPositionMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
