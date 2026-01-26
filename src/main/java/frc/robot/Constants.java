@@ -31,6 +31,7 @@ public class Constants {
         public static final Translation2d redHub = new Translation2d(fieldWidth - allianceZoneWidth, fieldLength / 2);
 
         public static final Pose2d leftTower = new Pose2d(2.0, 5.0, new Rotation2d());
+<<<<<<< HEAD
         public static final double alignMaxVel = 1.0;
         public static final double alignMaxAccel = 1.0;
         public static final double alignMaxOmega = 0.75;
@@ -39,5 +40,11 @@ public class Constants {
         public static final double aimKp = 4.0;
         public static final double aimKi = 0.0;
         public static final double aimKd = 0.1;
+=======
+        public static final double alignMaxVel = 3.0;
+        public static final double alignMaxAccel = 2.0;
+        public static final double alignMaxOmega = 1.5 * Math.PI;
+        public static final double alignMaxAlpha = 1.0 * Math.PI;
+>>>>>>> 7d5d3e3 (rebase swerve to main)
     }
 }
