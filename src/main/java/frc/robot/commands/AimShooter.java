@@ -6,6 +6,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import frc.robot.Constants.SwerveConstants;
@@ -13,15 +15,13 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class AimShooter extends Command {
     private final CommandSwerveDrivetrain drivetrain;
-    private final double joystickX;
-    private final double joystickY;
+    private final CommandXboxController controller;
 
     private final SwerveRequest.FieldCentricFacingAngle driveRequest;
 
-    public AimShooter(CommandSwerveDrivetrain drivetrain, SwerveRequest.FieldCentricFacingAngle request, double joystickX, double joystickY) {
+    public AimShooter(CommandSwerveDrivetrain drivetrain, SwerveRequest.FieldCentricFacingAngle request, CommandXboxController controller) {
         this.drivetrain = drivetrain;
-        this.joystickX = joystickX;
-        this.joystickY = joystickY;
+        this.controller = controller;
         this.driveRequest = request;
         addRequirements(drivetrain);
     }
@@ -64,10 +64,12 @@ public class AimShooter extends Command {
         Rotation2d targetHeading = targetLocation.minus(shooterPose.getTranslation())
             .getAngle()
             .minus(SwerveConstants.shooterToRobot.getRotation());
+        
+        double[] drives = CommandSwerveDrivetrain.joyStickPolar(controller, 2);
 
         drivetrain.setControl(driveRequest
-            .withVelocityX(joystickX)
-            .withVelocityY(joystickY)
+            .withVelocityX(drives[0])
+            .withVelocityY(drives[1])
             .withTargetDirection(targetHeading));
     }
 }
