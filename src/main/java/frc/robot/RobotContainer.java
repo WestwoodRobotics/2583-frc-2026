@@ -82,6 +82,13 @@ public class RobotContainer {
             point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
         ));
         driver.x().whileTrue(new AutoAlign(drivetrain));
+        driver.y().whileTrue(drivetrain.applyRequest(() -> {
+            double[] drives = CommandSwerveDrivetrain.joyStickPolar(driver, 2);
+
+            return faceAngle.withVelocityX(drives[0])
+                .withVelocityY(drives[1])
+                .withTargetDirection(new Rotation2d());
+        }));
 
         driver.povUp().whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
