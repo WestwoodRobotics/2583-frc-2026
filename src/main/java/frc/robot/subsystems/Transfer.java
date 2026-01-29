@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+<<<<<<< HEAD
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.CANBus;
@@ -81,4 +82,10 @@ public class Transfer extends SubsystemBase {
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_routineToApply.dynamic(direction);
     }
+=======
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class Transfer extends SubsystemBase{
+    
+>>>>>>> 14ae7a6 (rebased constants)
 }
