@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+<<<<<<< HEAD
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -38,4 +39,10 @@ public class Transfer extends SubsystemBase {
         // Right Trigger: Both motors spin at their respective shooting velocities
         return run(() -> runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel));
     }
+=======
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class Transfer extends SubsystemBase{
+    
+>>>>>>> 5e5a5e9 (rebase constants)
 }
