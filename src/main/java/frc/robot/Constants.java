@@ -36,7 +36,6 @@ public class Constants {
             configs.CurrentLimits.StatorCurrentLimit = 0.0;
             configs.CurrentLimits.SupplyCurrentLimit = 0.0;
 
-            configs.MotionMagic.MotionMagicCruiseVelocity = 0.0;
             configs.MotionMagic.MotionMagicAcceleration = 0.0;
             configs.MotionMagic.MotionMagicJerk = 0.0;
 
