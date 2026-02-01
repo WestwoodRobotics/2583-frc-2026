@@ -26,5 +26,9 @@ public class Constants {
         public static final double alignMaxAccel = 1.0;
         public static final double alignMaxOmega = 0.75;
         public static final double alignMaxAlpha = 0.75;
+
+        public static final double aimKp = 4.0;
+        public static final double aimKi = 0.0;
+        public static final double aimKd = 0.1;
     }
 }

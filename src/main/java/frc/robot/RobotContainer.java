@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.AimShooter;
 import frc.robot.commands.AutoAlign;
 import frc.robot.generated.TunerConstants;
@@ -52,6 +53,8 @@ public class RobotContainer {
 
         configureBindings();
 
+        faceAngle.HeadingController.setPID(SwerveConstants.aimKp, SwerveConstants.aimKi, SwerveConstants.aimKd);
+        faceAngle.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
         // Warmup PathPlanner to avoid Java pauses
         CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
     }
