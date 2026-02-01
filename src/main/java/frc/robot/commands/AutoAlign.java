@@ -50,8 +50,9 @@ public class AutoAlign extends Command {
 
     @Override
     public void execute() {
-        deltaTime = timer.get() - currentTime;
-        currentTime = timer.get();
+        double newTime = timer.get();
+        deltaTime = newTime - currentTime;
+        currentTime = newTime;
 
         current = path.calculate(deltaTime, current, target);
         m_drivetrain.setControl(
