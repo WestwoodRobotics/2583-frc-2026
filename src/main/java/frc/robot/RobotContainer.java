@@ -10,7 +10,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,10 +28,6 @@ public class RobotContainer {
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(0).withRotationalDeadband(0) // Deadband handled manually for better feel
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-    private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     private final SwerveRequest.FieldCentricFacingAngle faceAngle = new SwerveRequest.FieldCentricFacingAngle()
         .withDeadband(0).withRotationalDeadband(0)
@@ -80,25 +75,8 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        driver.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
-        ));
+        driver.a().whileTrue(new AimShooter(drivetrain, faceAngle, driver));
         driver.x().whileTrue(new AutoAlign(drivetrain));
-        driver.y().whileTrue(drivetrain.applyRequest(() -> {
-            double[] drives = CommandSwerveDrivetrain.joyStickPolar(driver, 2);
-
-            return faceAngle.withVelocityX(drives[0])
-                .withVelocityY(drives[1])
-                .withTargetDirection(new Rotation2d());
-        }));
-
-        driver.povUp().whileTrue(drivetrain.applyRequest(() ->
-            forwardStraight.withVelocityX(0.5).withVelocityY(0))
-        );
-        driver.povDown().whileTrue(drivetrain.applyRequest(() ->
-            forwardStraight.withVelocityX(-0.5).withVelocityY(0))
-        );
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -106,11 +84,6 @@ public class RobotContainer {
         driver.back().and(driver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-
-        // Reset the field-centric heading on left bumper press.
-        driver.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-
-        driver.leftTrigger().whileTrue(new AimShooter(drivetrain, faceAngle, driver));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
