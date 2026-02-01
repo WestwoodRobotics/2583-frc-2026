@@ -6,13 +6,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-<<<<<<< HEAD
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
-=======
-
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
->>>>>>> b9d1764 (rebased swerve with main)
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import frc.robot.Constants.SwerveConstants;
@@ -20,7 +15,6 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class AimShooter extends Command {
     private final CommandSwerveDrivetrain drivetrain;
-<<<<<<< HEAD
     private final CommandXboxController controller;
 
     private final SwerveRequest.FieldCentricFacingAngle driveRequest;
@@ -29,18 +23,6 @@ public class AimShooter extends Command {
         this.drivetrain = drivetrain;
         this.controller = controller;
         this.driveRequest = request;
-=======
-    private final double translationX;
-    private final double translationY;
-
-    private final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle()
-        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-
-    public AimShooter(CommandSwerveDrivetrain drivetrain, double translationX, double translationY) {
-        this.drivetrain = drivetrain;
-        this.translationX = translationX;
-        this.translationY = translationY;
->>>>>>> b9d1764 (rebased swerve with main)
         addRequirements(drivetrain);
     }
 
@@ -82,19 +64,12 @@ public class AimShooter extends Command {
         Rotation2d targetHeading = targetLocation.minus(shooterPose.getTranslation())
             .getAngle()
             .minus(SwerveConstants.shooterToRobot.getRotation());
-<<<<<<< HEAD
         
         double[] drives = CommandSwerveDrivetrain.joyStickPolar(controller, 2);
 
         drivetrain.setControl(driveRequest
             .withVelocityX(drives[0])
             .withVelocityY(drives[1])
-=======
-
-        drivetrain.setControl(driveRequest
-            .withVelocityX(translationX)
-            .withVelocityY(translationY)
->>>>>>> b9d1764 (rebased swerve with main)
             .withTargetDirection(targetHeading));
     }
 }

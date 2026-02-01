@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-<<<<<<< HEAD
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
@@ -65,8 +64,4 @@ public class AutoAlign extends Command {
     public boolean isFinished() {
         return path.isFinished(currentTime);
     }
-=======
-public class AutoAlign {
-    
->>>>>>> 7d5d3e3 (rebase swerve to main)
 }
