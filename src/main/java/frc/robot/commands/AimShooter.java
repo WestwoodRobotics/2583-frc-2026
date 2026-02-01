@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -29,6 +30,7 @@ public class AimShooter extends Command {
     @Override
     public void execute() {
         var allianceOpt = DriverStation.getAlliance();
+        SmartDashboard.putString("ALLIANCE", DriverStation.getAlliance().toString());
         if (allianceOpt.isEmpty()) {
             return;
         }
@@ -60,6 +62,8 @@ public class AimShooter extends Command {
             
             targetLocation = new Translation2d(targetX, targetY);
         }
+        SmartDashboard.putBoolean("inZone", inZone);
+
 
         Rotation2d targetHeading = targetLocation.minus(shooterPose.getTranslation())
             .getAngle()
