@@ -53,7 +53,7 @@ public class PhotonDefaultCommand extends Command{
         this.cameraToRobotThree = camera.getCamToRobotThree();
         this.cameraToRobotFour = camera.getCamToRobotFour();
         this.cameraToRobotFive = camera.getCamToRobotFive();
-        addRequirements(camera);
+ 
 
         var log = DataLogManager.getLog();
         visionTargetsLog = StructArrayLogEntry.create(log, "/vision/targetPoses", Pose3d.struct);

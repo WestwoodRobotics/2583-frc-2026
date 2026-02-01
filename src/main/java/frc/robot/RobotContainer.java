@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.PhotonVision;
+import frc.robot.commands.vision.PhotonDefaultCommand;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -41,6 +43,8 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    private final PhotonVision camera = new PhotonVision();
+    private final PhotonDefaultCommand visionCmd = new PhotonDefaultCommand(camera, drivetrain);
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -48,6 +52,11 @@ public class RobotContainer {
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
+
+        //const schedules, wont be interrupted
+        if (!visionCmd.isScheduled()) {
+            visionCmd.schedule();
+        }
 
         configureBindings();
 
