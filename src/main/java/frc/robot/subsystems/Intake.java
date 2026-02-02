@@ -18,7 +18,7 @@ import frc.robot.Constants.IntakeConstants;
 public class Intake extends SubsystemBase {
 
     private final TalonFX m_pivotMotor;
-    private final TalonFX m_velocityMotor;
+    private final TalonFX m_rollerMotor;
 
     private final MotionMagicExpoTorqueCurrentFOC m_expoRequest = new MotionMagicExpoTorqueCurrentFOC(0.0);
     private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
@@ -26,14 +26,17 @@ public class Intake extends SubsystemBase {
     private final VoltageOut m_voltReq = new VoltageOut(0.0);
 
     private final SysIdRoutine m_pivotSysIdRoutine;
+    private final SysIdRoutine m_rollerSysIdRoutine;
+
+    private SysIdRoutine m_sysIdRoutineToApply;
 
     public Intake() {
         m_pivotMotor = new TalonFX(IntakeConstants.kPositionMotorId, IntakeConstants.kCANBus);
-        m_velocityMotor = new TalonFX(IntakeConstants.kVelocityMotorId, IntakeConstants.kCANBus);
+        m_rollerMotor = new TalonFX(IntakeConstants.kVelocityMotorId, IntakeConstants.kCANBus);
 
         // Apply configurations directly from constants to keep constructor clean of variables
         m_pivotMotor.getConfigurator().apply(IntakeConstants.getPositionMotorConfigs());
-        m_velocityMotor.getConfigurator().apply(IntakeConstants.getVelocityMotorConfigs());
+        m_rollerMotor.getConfigurator().apply(IntakeConstants.getVelocityMotorConfigs());
 
         m_pivotSysIdRoutine = 
             new SysIdRoutine(
@@ -48,6 +51,22 @@ public class Intake extends SubsystemBase {
                     null,
                     this)
             );
+        
+        m_rollerSysIdRoutine  = 
+            new SysIdRoutine(
+                    new SysIdRoutine.Config(
+                        Volts.of(0.25).per(Second),
+                        Volts.of(1),
+                        null,
+                        state -> SignalLogger.writeString("SysIdRoller_state", state.toString())
+                    ),
+                    new SysIdRoutine.Mechanism(
+                        (volts) -> m_pivotMotor.setControl(m_voltReq.withOutput(volts.in(Volts))),
+                        null,
+                        this)
+                );
+
+        m_sysIdRoutineToApply = m_pivotSysIdRoutine;
     }
 
     /**
@@ -63,7 +82,7 @@ public class Intake extends SubsystemBase {
      * @param velocity Target velocity in rotations per second.
      */
     public void setRollerVelocity(double velocity) {
-        m_velocityMotor.setControl(m_velocityRequest.withVelocity(velocity));
+        m_rollerMotor.setControl(m_velocityRequest.withVelocity(velocity));
     }
 
     public Command intakeDefault() {
@@ -86,10 +105,10 @@ public class Intake extends SubsystemBase {
     }
 
     public Command pivotSysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return m_pivotSysIdRoutine.quasistatic(direction);
+        return m_sysIdRoutineToApply.quasistatic(direction);
     }
 
     public Command pivotSysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_pivotSysIdRoutine.dynamic(direction);
+        return m_sysIdRoutineToApply.dynamic(direction);
     }
 }
