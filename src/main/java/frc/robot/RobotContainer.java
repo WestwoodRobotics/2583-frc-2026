@@ -10,21 +10,32 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj.Notifier;
+
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.SwerveConstants;
  import frc.robot.commands.AimShooter;
  import frc.robot.commands.AutoAlign;
+import frc.robot.commands.LaunchFuelSim;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Intake;
+import frc.robot.util.FuelSim;
 
 public class RobotContainer {
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -46,14 +57,43 @@ public class RobotContainer {
     // Notifier to publish joystick + requested drivetrain signals for AdvantageScope
     private final Notifier advScopeLogger;
 
+    public final Intake intake = new Intake();
+
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
+    private final Supplier<Pose2d> poseSupplier = () -> {
+        var state = drivetrain.getState();
+        // state.Pose is the robot Pose2d from the drivetrain state
+        return state.Pose;
+    };
+
+    private final Supplier<ChassisSpeeds> fieldSpeedsSupplier = () -> {
+        var state = drivetrain.getState();
+        var s = state.Speeds;
+        return new ChassisSpeeds(s.vxMetersPerSecond, s.vyMetersPerSecond, s.omegaRadiansPerSecond);
+    };
+    
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
+        //fuel
+        FuelSim.getInstance().spawnStartingFuel();
+
+        FuelSim.getInstance().registerRobot(
+        0.900, // from left to right
+        0.900, // from front to back
+        0.3, // from floor to top of bumpers
+        poseSupplier, // Supplier<Pose2d> of robot pose
+        fieldSpeedsSupplier); // Supplier<ChassisSpeeds> of field-centric chassis speeds
+
+        FuelSim.getInstance().registerIntake(
+        0.2722, 0.8, -0.45, 0.45, // robot-centric coordinates for bounding box
+        driver.leftBumper()); // (optional) BooleanSupplier for whether the intake should be active at a given moment
+
+        FuelSim.getInstance().start();
 
     // Start AdvantageScope logging at 50 Hz so the CTRE sim tools can use
     // joystick inputs and commanded velocities to run a simulation.
@@ -82,6 +122,9 @@ public class RobotContainer {
                 })
         );
 
+        intake.setDefaultCommand(intake.intakeDefault());
+
+
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
@@ -95,7 +138,14 @@ public class RobotContainer {
         ));
         driver.x().whileTrue(new AutoAlign(drivetrain));
         driver.y().whileTrue(new AimShooter(drivetrain, faceAngle, driver));
+
+        //intake
+        driver.rightTrigger().onTrue(intake.retractIntake());
+        driver.leftBumper().whileTrue(intake.runIntake());
         
+
+        //shooter
+        driver.rightBumper().whileTrue(new LaunchFuelSim(drivetrain, 0.762));
 
         driver.povUp().whileTrue(drivetrain.applyRequest(() ->
             forwardStraight.withVelocityX(0.5).withVelocityY(0))
@@ -105,15 +155,15 @@ public class RobotContainer {
         ); 
 
         // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
+        // Note that each routine should be run exactly once in a singl     e log.
         driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
         driver.back().and(driver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // Reset the field-centric heading on left bumper press.
-         driver.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
- 
+/*          driver.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+ */ 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
@@ -134,6 +184,8 @@ public class RobotContainer {
         SignalLogger.writeDouble("Driver/RightX", driver.getHID().getRawAxis(2));
         SmartDashboard.putNumber("RIGHT X", driver.getHID().getRawAxis(2));
         SmartDashboard.putNumber("Right Y",  driver.getHID().getRawAxis(3));
+
+        SmartDashboard.putBoolean("left bump", driver.leftBumper().getAsBoolean());
         SignalLogger.writeDouble("Driver/LeftTrigger", driver.getLeftTriggerAxis());
         SignalLogger.writeDouble("Driver/RightTrigger", driver.getRightTriggerAxis());
         SmartDashboard.putBoolean("aim", driver.y().getAsBoolean());  
