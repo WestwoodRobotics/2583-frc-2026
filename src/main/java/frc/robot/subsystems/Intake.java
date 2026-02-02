@@ -1,29 +1,53 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Volts;
+
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
 
-    private final TalonFX m_positionMotor;
+    private final TalonFX m_pivotMotor;
     private final TalonFX m_velocityMotor;
 
     private final MotionMagicExpoTorqueCurrentFOC m_expoRequest = new MotionMagicExpoTorqueCurrentFOC(0.0);
     private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
 
+    private final VoltageOut m_voltReq = new VoltageOut(0.0);
+
+    private final SysIdRoutine m_pivotSysIdRoutine;
+
     public Intake() {
-        m_positionMotor = new TalonFX(IntakeConstants.kPositionMotorId, IntakeConstants.kCANBus);
+        m_pivotMotor = new TalonFX(IntakeConstants.kPositionMotorId, IntakeConstants.kCANBus);
         m_velocityMotor = new TalonFX(IntakeConstants.kVelocityMotorId, IntakeConstants.kCANBus);
 
         // Apply configurations directly from constants to keep constructor clean of variables
-        m_positionMotor.getConfigurator().apply(IntakeConstants.getPositionMotorConfigs());
+        m_pivotMotor.getConfigurator().apply(IntakeConstants.getPositionMotorConfigs());
         m_velocityMotor.getConfigurator().apply(IntakeConstants.getVelocityMotorConfigs());
+
+        m_pivotSysIdRoutine = 
+            new SysIdRoutine(
+                new SysIdRoutine.Config(
+                    Volts.of(0.25).per(Second),
+                    Volts.of(1),
+                    null,
+                    state -> SignalLogger.writeString("SysIdPivot_state", state.toString())
+                ),
+                new SysIdRoutine.Mechanism(
+                    (volts) -> m_pivotMotor.setControl(m_voltReq.withOutput(volts.in(Volts))),
+                    null,
+                    this)
+            );
     }
 
     /**
@@ -31,7 +55,7 @@ public class Intake extends SubsystemBase {
      * @param position Target position in rotations.
      */
     public void setPivotPosition(double position) {
-        m_positionMotor.setControl(m_expoRequest.withPosition(position));
+        m_pivotMotor.setControl(m_expoRequest.withPosition(position));
     }
 
     /**
@@ -59,5 +83,13 @@ public class Intake extends SubsystemBase {
 
     public Command retractIntake() {
         return Commands.runOnce(() -> setPivotPosition(IntakeConstants.pivotIn), this);
+    }
+
+    public Command pivotSysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return m_pivotSysIdRoutine.quasistatic(direction);
+    }
+
+    public Command pivotSysIdDynamic(SysIdRoutine.Direction direction) {
+        return m_pivotSysIdRoutine.dynamic(direction);
     }
 }
