@@ -75,7 +75,7 @@ public class Constants {
             configs.CurrentLimits.StatorCurrentLimit = 0.0;
             configs.CurrentLimits.SupplyCurrentLimit = 0.0;
 
-            configs.Feedback.SensorToMechanismRatio = 0.0;
+            configs.Feedback.SensorToMechanismRatio = (70/11 * 40/12);
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
             configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -93,10 +93,12 @@ public class Constants {
             configs.Slot0.kV = 0.0;
             configs.Slot0.kA = 0.0;
 
+            configs.MotionMagic.MotionMagicAcceleration = 0.0;
+
             configs.CurrentLimits.StatorCurrentLimit = 0.0;
             configs.CurrentLimits.SupplyCurrentLimit = 0.0;
 
-            configs.Feedback.SensorToMechanismRatio = 0.0;
+            configs.Feedback.SensorToMechanismRatio = (2/1 * 30/24);
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
             configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
