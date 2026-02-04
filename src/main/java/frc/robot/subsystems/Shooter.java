@@ -89,6 +89,14 @@ public class Shooter extends SubsystemBase {
         m_hoodMotor.setControl(m_expoRequest.withPosition(position));
     }
 
+    public void setHoodAngle(double angle) {
+        double clampedAngle = Math.clamp(angle, ShooterConstants.minAngle, ShooterConstants.maxAngle);
+        double angleDelta = clampedAngle - ShooterConstants.minAngle;
+        double position = ShooterConstants.posAtMinAngle + angleDelta * ShooterConstants.perDegree;
+
+        setHoodPosition(position);
+    }
+
     public void setFlywheelVelocity(double velocity) {
         m_topRightFlywheel.setControl(m_velocityRequest.withVelocity(velocity));
         m_bottomRightFlywheel.setControl(m_opposedFollower);
