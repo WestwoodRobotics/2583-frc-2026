@@ -56,6 +56,12 @@ public class Constants {
 
         public static final double shootingVel = 0.0;
 
+        public static final double posAtMinAngle = 0.0;
+        public static final double posAtMaxAngle = 0.0;
+        public static final double minAngle = 0.0;
+        public static final double maxAngle = 0.0;
+        public static final double perDegree = (posAtMaxAngle - posAtMinAngle) / (maxAngle - minAngle);
+
         public static TalonFXConfiguration getHoodMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
