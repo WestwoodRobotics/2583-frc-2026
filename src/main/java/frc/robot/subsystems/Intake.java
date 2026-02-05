@@ -100,8 +100,12 @@ public class Intake extends SubsystemBase {
         }, this);
     }
 
-    public Command retractIntake() {
+    public Command fullRetract() {
         return Commands.runOnce(() -> setPivotPosition(IntakeConstants.pivotIn), this);
+    }
+
+    public Command partialRetract() {
+        return Commands.runOnce(() -> setPivotPosition(IntakeConstants.pivotPartial), this);
     }
 
     public Command pivotSysIdQuasistatic(SysIdRoutine.Direction direction) {

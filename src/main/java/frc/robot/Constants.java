@@ -51,6 +51,7 @@ public class Constants {
         public static final CANBus kCANBus = new CANBus("rio");
 
         public static final double pivotIn = 0.0;
+        public static final double pivotPartial = 0.05;
         public static final double pivotOut = 0.1;
 
         public static final double rollerNeutralVel = 0.0;
