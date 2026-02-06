@@ -12,7 +12,7 @@ public class Constants {
 
     public static final class LEDConstants {
         public static final int candleId = 30;
-        public static final CANBus canBus = new CANBus("CANivore");
+        public static final CANBus canBus = new CANBus("SwerveCAN");
         public static final int endIndex = 26;
     }
 
