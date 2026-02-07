@@ -70,7 +70,7 @@ public class PhotonVision extends SubsystemBase{
     public PhotonVision(/* LED candle */){
 /*         this.candle = candle;
  */
-        this.cameraOne = new PhotonCamera("cameraone");
+        this.cameraOne = new PhotonCamera("backLeft");
         this.cameraTwo = new PhotonCamera("cameratwo");
         this.cameraThree = new PhotonCamera("camerathree");
         this.cameraFour = new PhotonCamera("camerafour");
