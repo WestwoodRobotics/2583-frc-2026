@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.util.Map;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.utils.ShotParam;
 
 public class Shooter extends SubsystemBase {
 
@@ -111,5 +114,26 @@ public class Shooter extends SubsystemBase {
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_routineToApply.dynamic(direction);
     }
-}
 
+    public ShotParam getShotParam(double distance) {
+        var map = ShooterConstants.kDistanceToShotParam;
+        Map.Entry<Double, ShotParam> floor = map.floorEntry(distance);
+        Map.Entry<Double, ShotParam> ceil = map.ceilingEntry(distance);
+
+        if (floor == null && ceil == null) return new ShotParam(ShooterConstants.minAngle, 0);
+        if (floor == null) return ceil.getValue();
+        if (ceil == null) return floor.getValue();
+
+        ShotParam floorVal = floor.getValue();
+        ShotParam ceilVal = ceil.getValue();
+
+        if (floor.getKey().equals(ceil.getKey())) return floorVal;
+
+        double t = (distance - floor.getKey()) / (ceil.getKey() - floor.getKey());
+        double angle = floorVal.angle + t * (ceilVal.angle - floorVal.angle);
+        double velocity = floorVal.velocity + t * (ceilVal.velocity - floorVal.velocity);
+
+        angle = Math.clamp(angle, ShooterConstants.minAngle, ShooterConstants.maxAngle);
+        return new ShotParam(angle, velocity);
+    }
+}
