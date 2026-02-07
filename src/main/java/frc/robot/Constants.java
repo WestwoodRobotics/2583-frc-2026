@@ -10,11 +10,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 
+import java.util.TreeMap;
+
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import frc.robot.utils.ShotParam;
 
 public class Constants {
 
@@ -127,6 +130,12 @@ public class Constants {
         public static final double minAngle = 0.0;
         public static final double maxAngle = 0.0;
         public static final double perDegree = (posAtMaxAngle - posAtMinAngle) / (maxAngle - minAngle);
+
+        public static final TreeMap<Double, ShotParam> kDistanceToShotParam = new TreeMap<>();
+        static {
+            kDistanceToShotParam.put(0.0, new ShotParam(0.0, 0.0));
+            kDistanceToShotParam.put(10.0, new ShotParam(0.0, 0.0));
+        }
 
         public static TalonFXConfiguration getHoodMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
