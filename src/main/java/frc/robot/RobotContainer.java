@@ -22,6 +22,7 @@ import frc.robot.commands.AimShooter;
 import frc.robot.commands.AutoAlign;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Vision;
 
 public class RobotContainer {
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -38,6 +39,8 @@ public class RobotContainer {
     private final CommandXboxController driver = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+    public final Vision vision = new Vision(drivetrain);
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -57,16 +60,16 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() -> {
-                    double[] drives = CommandSwerveDrivetrain.joyStickPolar(driver, 2);
+        // drivetrain.setDefaultCommand(
+        //     // Drivetrain will execute this command periodically
+        //     drivetrain.applyRequest(() -> {
+        //             double[] drives = CommandSwerveDrivetrain.joyStickPolar(driver, 2);
 
-                    return drive.withVelocityX(drives[0]) // Drive forward with negative Y (forward)
-                        .withVelocityY(drives[1]) // Drive left with negative X (left)
-                        .withRotationalRate(drives[2]); // Drive counterclockwise with negative X (left)
-                })
-        );
+        //             return drive.withVelocityX(drives[0]) // Drive forward with negative Y (forward)
+        //                 .withVelocityY(drives[1]) // Drive left with negative X (left)
+        //                 .withRotationalRate(drives[2]); // Drive counterclockwise with negative X (left)
+        //         })
+        // );
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
