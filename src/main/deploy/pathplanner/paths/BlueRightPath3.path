@@ -1,0 +1,74 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.757,
+        "y": 3.457
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.766255572234352,
+        "y": 2.345546306404658
+      },
+      "isLocked": false,
+      "linkedName": "BlueLeftPoint2"
+    },
+    {
+      "anchor": {
+        "x": 2.510448906022562,
+        "y": 2.4343573166848613
+      },
+      "prevControl": {
+        "x": 3.818030215156478,
+        "y": 2.3362213996542938
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "BlueLeftPoint3"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.46462903012685,
+      "rotationDegrees": 45.0
+    },
+    {
+      "waypointRelativePos": 0.8600852272727276,
+      "rotationDegrees": 45.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.625594,
+        "y": 4.034536
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.9172945748730958,
+      "maxWaypointRelativePos": 1.0,
+      "name": "Point towards shooter"
+    }
+  ],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 37.11174166
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "useDefaultConstraints": true
+}
