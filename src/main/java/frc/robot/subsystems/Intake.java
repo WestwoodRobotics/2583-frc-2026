@@ -108,11 +108,11 @@ public class Intake extends SubsystemBase {
         return Commands.runOnce(() -> setPivotPosition(IntakeConstants.pivotPartial), this);
     }
 
-    public Command pivotSysIdQuasistatic(SysIdRoutine.Direction direction) {
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutineToApply.quasistatic(direction);
     }
 
-    public Command pivotSysIdDynamic(SysIdRoutine.Direction direction) {
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutineToApply.dynamic(direction);
     }
 }
