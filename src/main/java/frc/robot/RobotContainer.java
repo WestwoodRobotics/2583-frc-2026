@@ -8,6 +8,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj.Notifier;
 
@@ -77,6 +79,11 @@ public class RobotContainer {
     };
     
     public RobotContainer() {
+        NamedCommands.registerCommand("runintake",  intake.runIntake());
+        NamedCommands.registerCommand("stopintake", Commands.runOnce(() -> {}, intake)); 
+        NamedCommands.registerCommand("faceHub",  new AimShooter(drivetrain, faceAngle, driver).withTimeout(0.8));
+        NamedCommands.registerCommand("shoot", new LaunchFuelSim(drivetrain, 0.762) );
+
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
         //fuel
@@ -91,8 +98,8 @@ public class RobotContainer {
 
         FuelSim.getInstance().registerIntake(
         0.2722, 0.8, -0.45, 0.45, // robot-centric coordinates for bounding box
-        driver.leftBumper()); // (optional) BooleanSupplier for whether the intake should be active at a given moment
-
+        intake.intakerun); // (optional) BooleanSupplier for whether the intake should be active at a given moment
+        SmartDashboard.putBoolean("intake running", intake.intakerun.getAsBoolean());
         FuelSim.getInstance().start();
 
     // Start AdvantageScope logging at 50 Hz so the CTRE sim tools can use

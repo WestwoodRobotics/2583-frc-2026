@@ -30,7 +30,7 @@ public class LaunchFuelSim extends Command{
     private double disttohub;
 
     private final Timer shootTimer = new Timer();
-    private static final double SHOOT_INTERVAL = 0.0833; // Time between shots in seconds (0.05 = 20 shots/sec)
+    private static final double SHOOT_INTERVAL = 0.05; // Time between shots in seconds (0.05 = 20 shots/sec)
 
     public LaunchFuelSim(CommandSwerveDrivetrain drivetrain , double launchheight) {
         this.drivetrain = drivetrain;

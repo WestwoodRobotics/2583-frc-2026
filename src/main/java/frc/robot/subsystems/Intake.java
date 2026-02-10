@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -13,7 +15,11 @@ public class Intake extends SubsystemBase {
 
     private final TalonFX m_positionMotor;
     private final TalonFX m_velocityMotor;
-
+    // Tracks whether the intake command is actively running. Exposed as a supplier
+    // so external systems (like FuelSim) can query it without depending on
+    // command scheduling internals.
+    private volatile boolean m_intakeRunning = false;
+    public BooleanSupplier intakerun = () -> m_intakeRunning;
     private final MotionMagicExpoTorqueCurrentFOC m_expoRequest = new MotionMagicExpoTorqueCurrentFOC(0.0);
     private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
 
@@ -51,10 +57,19 @@ public class Intake extends SubsystemBase {
 
     // Set position to out and velocity to intaking
     public Command runIntake() {
-        return Commands.run(() -> {
-            setPivotPosition(IntakeConstants.pivotOut);
-            setRollerVelocity(IntakeConstants.rollerIntakingVel);
-        }, this);
+        return Commands.runEnd(
+            () -> {
+                // active behavior
+                setPivotPosition(IntakeConstants.pivotOut);
+                setRollerVelocity(IntakeConstants.rollerIntakingVel);
+                m_intakeRunning = true;
+            },
+            () -> {
+                // cleanup on end
+                m_intakeRunning = false;
+            },
+            this
+        ).withTimeout(2.0);
     }
 
     public Command retractIntake() {
