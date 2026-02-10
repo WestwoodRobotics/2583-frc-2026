@@ -84,6 +84,9 @@ public class Vision extends SubsystemBase {
         for (int i = 0; i < cameras.length; i++) {
             for (PhotonPipelineResult result : cameras[i].getAllUnreadResults()) {
                 Optional<EstimatedRobotPose> poseOptional = poseEstimators[i].estimateCoprocMultiTagPose(result);
+                if (poseOptional.isEmpty()) {
+                    poseOptional = poseEstimators[i].estimateLowestAmbiguityPose(result);
+                }
                 if (poseOptional.isPresent()) {
                     EstimatedRobotPose pose = poseOptional.get();
                     SmartDashboard.putNumber("Vision X", pose.estimatedPose.getX());
