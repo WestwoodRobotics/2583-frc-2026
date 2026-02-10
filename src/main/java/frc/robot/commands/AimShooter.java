@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -12,6 +13,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.utils.LED;
 
 public class AimShooter extends Command {
     private final CommandSwerveDrivetrain drivetrain;
@@ -71,5 +73,15 @@ public class AimShooter extends Command {
             .withVelocityX(drives[0])
             .withVelocityY(drives[1])
             .withTargetDirection(targetHeading));
+
+        if(Math.abs(drivetrain.getState().RawHeading.getDegrees() - targetHeading.getDegrees()) < 5){
+            LED.clearColor();
+            LED.setSolidColor(Color.kGreen);
+        } else{
+            LED.clearColor();
+            LED.setSolidColor(Color.kOrange);
+        }
     }
+
+
 }

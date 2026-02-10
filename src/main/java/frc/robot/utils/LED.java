@@ -15,7 +15,7 @@ import frc.robot.Constants.LEDConstants;
 
 public class LED {
 
-    private CANdle candle;
+    private static CANdle candle;
     public LED() {
         candle = new CANdle(LEDConstants.candleId, LEDConstants.canBus);
 
@@ -26,19 +26,19 @@ public class LED {
         candle.getConfigurator().apply(cfg);
     }
 
-    public void setSolidColor(Color color, double brightness){
+    public static void setSolidColor(Color color, double brightness){
         candle.setControl(new SolidColor(0, LEDConstants.endIndex).withColor(new RGBWColor(color).scaleBrightness(brightness)));
     }
 
-    public void setSolidColor(Color color){
-        this.setSolidColor(color, 1);
+    public static void setSolidColor(Color color){
+        candle.setControl(new SolidColor(0, LEDConstants.endIndex).withColor(new RGBWColor(color).scaleBrightness(1)));
     }
     
-    public void clearColor(){
+    public static void clearColor(){
         candle.setControl(new SolidColor(0, LEDConstants.endIndex).withColor(new RGBWColor(new Color(0,0,0)).scaleBrightness(1)));
     }
     
-    public void startFireAnimation(){
+    public static void startFireAnimation(){
         FireAnimation FIRE = new FireAnimation(0, LEDConstants.endIndex).withBrightness(1).withCooling(0.3);
         candle.setControl(FIRE);   
     }
