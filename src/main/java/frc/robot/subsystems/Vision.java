@@ -28,6 +28,8 @@ public class Vision extends SubsystemBase {
     private final PhotonCamera[] cameras;
     private final PhotonPoseEstimator[] poseEstimators;
 
+    private final Field2d field = new Field2d();
+
     private boolean wasOnBump = false;
     private double landingStartTime = 0.0;
 
@@ -58,7 +60,6 @@ public class Vision extends SubsystemBase {
     }
 
     private void updateSmartDashboard() {
-        Field2d field = new Field2d();
         field.setRobotPose(drivetrain.getState().Pose);
         SmartDashboard.putData("Field", field);
     }
@@ -85,6 +86,9 @@ public class Vision extends SubsystemBase {
                 Optional<EstimatedRobotPose> poseOptional = poseEstimators[i].estimateCoprocMultiTagPose(result);
                 if (poseOptional.isPresent()) {
                     EstimatedRobotPose pose = poseOptional.get();
+                    SmartDashboard.putNumber("Vision X", pose.estimatedPose.getX());
+                    SmartDashboard.putNumber("Vision Y", pose.estimatedPose.getY());
+                    SmartDashboard.putNumber("Vision Rotation", pose.estimatedPose.getRotation().getAngle() * 180 /  Math.PI);
                     Matrix<N3, N1> stdDevs;
 
                     if (isLanding) {
