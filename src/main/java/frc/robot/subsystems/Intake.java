@@ -104,7 +104,7 @@ public class Intake extends SubsystemBase {
     public Command runIntake() {
         return Commands.run(() -> {
             setPivotPosition(IntakeConstants.pivotOut);
-            setRollerVelocity(IntakeConstants.rollerIntakingVel);
+            //setRollerVelocity(IntakeConstants.rollerIntakingVel);
         }, this);
     }
 

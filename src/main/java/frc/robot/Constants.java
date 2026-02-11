@@ -46,14 +46,14 @@ public class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int kPivotMotorId = 1;
-        public static final int kRollerMotorId = 2;
+        public static final int kPivotMotorId = 20;
+        public static final int kRollerMotorId = 21;
         public static final CANBus kCANBus = new CANBus("SwerveCAN");
 
-        public static final double kpivotOffset = 0.0;
+        public static final double kpivotOffset = 0.3656;
 
-        public static final double pivotIn = 0.25;
-        public static final double pivotPartial = 0.1;
+        public static final double pivotIn = 0.40;
+        public static final double pivotPartial = 0.0;
         public static final double pivotOut = 0;
 
         public static final double rollerNeutralVel = 0.0;
@@ -63,13 +63,13 @@ public class Constants {
         public static TalonFXConfiguration getPivotConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
-            configs.Slot0.kP = 0.0;
+            configs.Slot0.kP = 120.0;
             configs.Slot0.kI = 0.0;
-            configs.Slot0.kD = 0.0;
-            configs.Slot0.kS = 0.0;
+            configs.Slot0.kD = 15.0;
+            configs.Slot0.kS = 3.0;    
             configs.Slot0.kV = 0.0;
-            configs.Slot0.kA = 0.0;
-            configs.Slot0.kG = 0.0;
+            configs.Slot0.kA = 15.0;
+            configs.Slot0.kG = 37.0;
             configs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
             
             configs.MotionMagic.MotionMagicExpo_kV = 1.521187975; // DO NOT CHANGE
@@ -80,7 +80,7 @@ public class Constants {
 
             configs.Feedback.SensorToMechanismRatio = (70/11 * 40/16);
             
-            configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+            configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
             configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
             
             return configs;
