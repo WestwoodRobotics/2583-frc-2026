@@ -9,6 +9,9 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,28 +20,15 @@ import frc.robot.Constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
 
-    private final TalonFX m_pivotMotor;
-    private final TalonFX m_rollerMotor;
+    private final TalonFX m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorId, IntakeConstants.kCANBus);
+    private final TalonFX m_rollerMotor = new TalonFX(IntakeConstants.kRollerMotorId, IntakeConstants.kCANBus);
 
     private final MotionMagicExpoTorqueCurrentFOC m_expoRequest = new MotionMagicExpoTorqueCurrentFOC(0.0);
-    private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
+    private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest = new MotionMagicVelocityTorqueCurrentFOC(0.0);
 
     private final VoltageOut m_voltReq = new VoltageOut(0.0);
 
-    private final SysIdRoutine m_pivotSysIdRoutine;
-    private final SysIdRoutine m_rollerSysIdRoutine;
-
-    private SysIdRoutine m_sysIdRoutineToApply;
-
-    public Intake() {
-        m_pivotMotor = new TalonFX(IntakeConstants.kPositionMotorId, IntakeConstants.kCANBus);
-        m_rollerMotor = new TalonFX(IntakeConstants.kVelocityMotorId, IntakeConstants.kCANBus);
-
-        // Apply configurations directly from constants to keep constructor clean of variables
-        m_pivotMotor.getConfigurator().apply(IntakeConstants.getPositionMotorConfigs());
-        m_rollerMotor.getConfigurator().apply(IntakeConstants.getVelocityMotorConfigs());
-
-        m_pivotSysIdRoutine = 
+    private final SysIdRoutine m_pivotSysIdRoutine = 
             new SysIdRoutine(
                 new SysIdRoutine.Config(
                     Volts.of(0.25).per(Second),
@@ -51,8 +41,8 @@ public class Intake extends SubsystemBase {
                     null,
                     this)
             );
-        
-        m_rollerSysIdRoutine  = 
+
+    private final SysIdRoutine m_rollerSysIdRoutine  = 
             new SysIdRoutine(
                     new SysIdRoutine.Config(
                         Volts.of(0.25).per(Second),
@@ -66,7 +56,25 @@ public class Intake extends SubsystemBase {
                         this)
                 );
 
-        m_sysIdRoutineToApply = m_pivotSysIdRoutine;
+    private SysIdRoutine m_sysIdRoutineToApply = m_pivotSysIdRoutine;
+
+    private final ShuffleboardTab m_tab = Shuffleboard.getTab("intake");
+    private final GenericEntry m_pivotPosEntry = m_tab.add("Pivot Position (Rot)", 0).getEntry();
+    private final GenericEntry m_rollerVelEntry = m_tab.add("Roller Velocity (RPS)", 0).getEntry();
+
+    public Intake() {
+        // Apply configurations directly from constants to keep constructor clean of variables
+        m_pivotMotor.getConfigurator().apply(IntakeConstants.getPivotConfigs());
+        m_rollerMotor.getConfigurator().apply(IntakeConstants.getRollerConfigs());
+
+        // Apply pivot offset
+        m_pivotMotor.setPosition(IntakeConstants.kpivotOffset);
+    }
+
+    @Override
+    public void periodic() {
+        m_pivotPosEntry.setDouble(m_pivotMotor.getPosition().getValueAsDouble());
+        m_rollerVelEntry.setDouble(m_rollerMotor.getVelocity().getValueAsDouble());
     }
 
     /**

@@ -46,19 +46,21 @@ public class Constants {
     }
 
     public static final class IntakeConstants {
-        public static final int kPositionMotorId = 1;
-        public static final int kVelocityMotorId = 2;
-        public static final CANBus kCANBus = new CANBus("rio");
+        public static final int kPivotMotorId = 1;
+        public static final int kRollerMotorId = 2;
+        public static final CANBus kCANBus = new CANBus("SwerveCAN");
 
-        public static final double pivotIn = 0.0;
-        public static final double pivotPartial = 0.05;
-        public static final double pivotOut = 0.1;
+        public static final double kpivotOffset = 0.0;
+
+        public static final double pivotIn = 0.25;
+        public static final double pivotPartial = 0.1;
+        public static final double pivotOut = 0;
 
         public static final double rollerNeutralVel = 0.0;
         public static final double rollerIntakingVel = 0.0;
         public static final double rollerShootingVel = 0.0;
 
-        public static TalonFXConfiguration getPositionMotorConfigs() {
+        public static TalonFXConfiguration getPivotConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
             configs.Slot0.kP = 0.0;
@@ -70,13 +72,13 @@ public class Constants {
             configs.Slot0.kG = 0.0;
             configs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
             
-            configs.MotionMagic.MotionMagicExpo_kV = 0.0;
+            configs.MotionMagic.MotionMagicExpo_kV = 1.521187975; // DO NOT CHANGE
             configs.MotionMagic.MotionMagicExpo_kA = 0.0;
 
-            configs.CurrentLimits.StatorCurrentLimit = 0.0;
-            configs.CurrentLimits.SupplyCurrentLimit = 0.0;
+            configs.CurrentLimits.StatorCurrentLimit = 80.0;
+            configs.CurrentLimits.SupplyCurrentLimit = 60.0;
 
-            configs.Feedback.SensorToMechanismRatio = (70/11 * 40/12);
+            configs.Feedback.SensorToMechanismRatio = (70/11 * 40/16);
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
             configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -84,7 +86,7 @@ public class Constants {
             return configs;
         }
 
-        public static TalonFXConfiguration getVelocityMotorConfigs() {
+        public static TalonFXConfiguration getRollerConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
             configs.Slot0.kP = 0.0;
@@ -96,8 +98,8 @@ public class Constants {
 
             configs.MotionMagic.MotionMagicAcceleration = 0.0;
 
-            configs.CurrentLimits.StatorCurrentLimit = 0.0;
-            configs.CurrentLimits.SupplyCurrentLimit = 0.0;
+            configs.CurrentLimits.StatorCurrentLimit = 80.0;
+            configs.CurrentLimits.SupplyCurrentLimit = 60.0;
 
             configs.Feedback.SensorToMechanismRatio = (2/1 * 30/24);
             
