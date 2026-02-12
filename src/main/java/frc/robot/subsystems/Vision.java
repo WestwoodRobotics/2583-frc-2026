@@ -40,6 +40,7 @@ public class Vision extends SubsystemBase {
     private final GenericEntry visionXEntry;
     private final GenericEntry visionYEntry;
     private final GenericEntry visionRotEntry;
+    private final GenericEntry xyStdDevEntry;
 
     private boolean wasOnBump = false;
     private double landingStartTime = 0.0;
@@ -71,6 +72,7 @@ public class Vision extends SubsystemBase {
         visionXEntry = visionTab.add("Vision X", 0).getEntry();
         visionYEntry = visionTab.add("Vision Y", 0).getEntry();
         visionRotEntry = visionTab.add("Vision Rot", 0).getEntry();
+        xyStdDevEntry = visionTab.add("XY Std Dev", 0).getEntry();
     }
 
     @Override
@@ -122,6 +124,7 @@ public class Vision extends SubsystemBase {
                     } else {
                         stdDevs = getEstimationStdDevs(pose, pitch, roll, yawRate);
                     }
+                    xyStdDevEntry.setDouble(stdDevs.get(0, 0));
 
                     drivetrain.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, stdDevs);
                 }
