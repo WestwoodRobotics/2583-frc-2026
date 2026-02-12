@@ -7,12 +7,15 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 
@@ -29,6 +32,14 @@ public class Vision extends SubsystemBase {
     private final PhotonPoseEstimator[] poseEstimators;
 
     private final Field2d field = new Field2d();
+
+    private final ShuffleboardTab visionTab;
+    private final GenericEntry driveXEntry;
+    private final GenericEntry driveYEntry;
+    private final GenericEntry driveRotEntry;
+    private final GenericEntry visionXEntry;
+    private final GenericEntry visionYEntry;
+    private final GenericEntry visionRotEntry;
 
     private boolean wasOnBump = false;
     private double landingStartTime = 0.0;
@@ -51,17 +62,29 @@ public class Vision extends SubsystemBase {
                 transforms[i]
             );
         }
+
+        visionTab = Shuffleboard.getTab("Vision");
+        visionTab.add("Field", field);
+        driveXEntry = visionTab.add("Drive X", 0).getEntry();
+        driveYEntry = visionTab.add("Drive Y", 0).getEntry();
+        driveRotEntry = visionTab.add("Drive Rot", 0).getEntry();
+        visionXEntry = visionTab.add("Vision X", 0).getEntry();
+        visionYEntry = visionTab.add("Vision Y", 0).getEntry();
+        visionRotEntry = visionTab.add("Vision Rot", 0).getEntry();
     }
 
     @Override
     public void periodic() {
         updateVisionPose();
-        updateSmartDashboard();
+        updateShuffleboard();
     }
 
-    private void updateSmartDashboard() {
-        field.setRobotPose(drivetrain.getState().Pose);
-        SmartDashboard.putData("Field", field);
+    private void updateShuffleboard() {
+        Pose2d pose = drivetrain.getState().Pose;
+        field.setRobotPose(pose);
+        driveXEntry.setDouble(pose.getX());
+        driveYEntry.setDouble(pose.getY());
+        driveRotEntry.setDouble(pose.getRotation().getDegrees());
     }
 
     private void updateVisionPose() {
@@ -89,9 +112,9 @@ public class Vision extends SubsystemBase {
                 }
                 if (poseOptional.isPresent()) {
                     EstimatedRobotPose pose = poseOptional.get();
-                    SmartDashboard.putNumber("Vision X", pose.estimatedPose.getX());
-                    SmartDashboard.putNumber("Vision Y", pose.estimatedPose.getY());
-                    SmartDashboard.putNumber("Vision Rotation", pose.estimatedPose.getRotation().getAngle() * 180 /  Math.PI);
+                    visionXEntry.setDouble(pose.estimatedPose.getX());
+                    visionYEntry.setDouble(pose.estimatedPose.getY());
+                    visionRotEntry.setDouble(pose.estimatedPose.toPose2d().getRotation().getDegrees());
                     Matrix<N3, N1> stdDevs;
 
                     if (isLanding) {
