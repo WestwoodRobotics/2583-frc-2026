@@ -50,18 +50,18 @@ public class Constants {
 
     public static final class VisionConstants {
         public static final String[] cameraNames = {
-            "backLeft",
-            "backRight"
+            "frontLeft",
+            "frontRight"
         };
 
         public static final Transform3d[] robotToCamTransforms = {
             new Transform3d(
-                new Translation3d(-0.26430478, 0.3150616, 0.1874266),
-                new Rotation3d(0.0, Math.toRadians(20), Math.toRadians(180 - 41.641))
+                new Translation3d(0.26430478, 0.3150616, 0.1874266),
+                new Rotation3d(0.0, Math.toRadians(20), Math.toRadians(-41.641))
             ),
             new Transform3d(
-                new Translation3d(-0.26430478, -0.3150616, 0.1874266),
-                new Rotation3d(0.0, Math.toRadians(20), Math.toRadians(180 + 41.641))
+                new Translation3d(0.26430478, -0.3150616, 0.1874266),
+                new Rotation3d(0.0, Math.toRadians(20), Math.toRadians(41.641))
             ),
         };
 
@@ -75,7 +75,7 @@ public class Constants {
             }
         }
 
-        public static final double bumpThresholdDegrees = 10.0;
+        public static final double bumpThresholdDegrees = 8.0;
         public static final double landingTimeSeconds = 0.25;
         public static final double landingStdDev = 0.1;
         public static final double maxYawRateDegreesPerSec = 720.0;
