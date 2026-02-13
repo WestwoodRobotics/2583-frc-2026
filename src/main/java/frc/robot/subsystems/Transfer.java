@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.CANBus;
@@ -83,51 +81,4 @@ public class Transfer extends SubsystemBase {
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_routineToApply.dynamic(direction);
     }
-=======
-=======
-import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.wpilibj2.command.Command;
->>>>>>> 614d92b (rebased constant imports)
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.TransferConstants;
-
-<<<<<<< HEAD
-public class Transfer extends SubsystemBase{
-    
->>>>>>> 14ae7a6 (rebased constants)
-=======
-public class Transfer extends SubsystemBase {
-    private final TalonFX floorMotor = new TalonFX(TransferConstants.kFloorId, new CANBus(TransferConstants.kCANBus));
-    private final TalonFX transferMotor = new TalonFX(TransferConstants.kTransferId, new CANBus(TransferConstants.kCANBus));
-
-    private final MotionMagicVelocityTorqueCurrentFOC floorRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
-    private final MotionMagicVelocityTorqueCurrentFOC transferRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
-
-    public Transfer() {
-        floorMotor.getConfigurator().apply(TransferConstants.getVelocityMotorConfigs());
-        transferMotor.getConfigurator().apply(TransferConstants.getVelocityMotorConfigs());
-    }
-
-    private void runMotors(double floorVel, double transferVel) {
-        floorMotor.setControl(floorRequest.withVelocity(floorVel));
-        transferMotor.setControl(transferRequest.withVelocity(transferVel));
-    }
-
-    public Command defaultCommand() {
-        // Default: Floor spins at default speed, Transfer is stopped (default speed is 0.0 in constants)
-        return run(() -> runMotors(TransferConstants.kFloorDefaultVel, TransferConstants.kTransferDefaultVel));
-    }
-
-    public Command intakeCommand() {
-        // Left Trigger: Floor spins at intake speed, Transfer remains at default (stopped)
-        return run(() -> runMotors(TransferConstants.kFloorIntakeVel, TransferConstants.kTransferDefaultVel));
-    }
-
-    public Command shootCommand() {
-        // Right Trigger: Both motors spin at their respective shooting velocities
-        return run(() -> runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel));
-    }
->>>>>>> 614d92b (rebased constant imports)
 }
