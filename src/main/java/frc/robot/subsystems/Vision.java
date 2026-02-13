@@ -7,15 +7,14 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.IntegerPublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 
@@ -31,16 +30,16 @@ public class Vision extends SubsystemBase {
     private final PhotonCamera[] cameras;
     private final PhotonPoseEstimator[] poseEstimators;
 
-    private final Field2d field = new Field2d();
-
-    private final ShuffleboardTab visionTab;
-    private final GenericEntry driveXEntry;
-    private final GenericEntry driveYEntry;
-    private final GenericEntry driveRotEntry;
-    private final GenericEntry visionXEntry;
-    private final GenericEntry visionYEntry;
-    private final GenericEntry visionRotEntry;
-    private final GenericEntry xyStdDevEntry;
+    private final NetworkTable visionTable = NetworkTableInstance.getDefault().getTable("Vision");
+    
+    private final DoublePublisher[] visionXPubs;
+    private final DoublePublisher[] visionYPubs;
+    private final DoublePublisher[] visionRotPubs;
+    private final DoublePublisher[] xyStdDevPubs;
+    private final DoublePublisher[] rotStdDevPubs;
+    private final IntegerPublisher[] numTagsPubs;
+    private final DoublePublisher[] totalAreaPubs;
+    private final DoublePublisher[] ambiguityPubs;
 
     private boolean wasOnBump = false;
     private double landingStartTime = 0.0;
@@ -55,6 +54,15 @@ public class Vision extends SubsystemBase {
 
         cameras = new PhotonCamera[cameraNames.length];
         poseEstimators = new PhotonPoseEstimator[cameraNames.length];
+        
+        visionXPubs = new DoublePublisher[cameraNames.length];
+        visionYPubs = new DoublePublisher[cameraNames.length];
+        visionRotPubs = new DoublePublisher[cameraNames.length];
+        xyStdDevPubs = new DoublePublisher[cameraNames.length];
+        rotStdDevPubs = new DoublePublisher[cameraNames.length];
+        numTagsPubs = new IntegerPublisher[cameraNames.length];
+        totalAreaPubs = new DoublePublisher[cameraNames.length];
+        ambiguityPubs = new DoublePublisher[cameraNames.length];
 
         for (int i = 0; i < cameraNames.length; i++) {
             cameras[i] = new PhotonCamera(cameraNames[i]);
@@ -62,31 +70,22 @@ public class Vision extends SubsystemBase {
                 fieldLayout,
                 transforms[i]
             );
-        }
 
-        visionTab = Shuffleboard.getTab("Vision");
-        visionTab.add("Field", field);
-        driveXEntry = visionTab.add("Drive X", 0).getEntry();
-        driveYEntry = visionTab.add("Drive Y", 0).getEntry();
-        driveRotEntry = visionTab.add("Drive Rot", 0).getEntry();
-        visionXEntry = visionTab.add("Vision X", 0).getEntry();
-        visionYEntry = visionTab.add("Vision Y", 0).getEntry();
-        visionRotEntry = visionTab.add("Vision Rot", 0).getEntry();
-        xyStdDevEntry = visionTab.add("XY Std Dev", 0).getEntry();
+            NetworkTable camTable = visionTable.getSubTable(cameraNames[i]);
+            visionXPubs[i] = camTable.getDoubleTopic("EstimatedPose/X").publish();
+            visionYPubs[i] = camTable.getDoubleTopic("EstimatedPose/Y").publish();
+            visionRotPubs[i] = camTable.getDoubleTopic("EstimatedPose/Rot").publish();
+            xyStdDevPubs[i] = camTable.getDoubleTopic("StdDevs/XY").publish();
+            rotStdDevPubs[i] = camTable.getDoubleTopic("StdDevs/Rot").publish();
+            numTagsPubs[i] = camTable.getIntegerTopic("Tag/numTags").publish();
+            totalAreaPubs[i] = camTable.getDoubleTopic("Tag/TotalArea").publish();
+            ambiguityPubs[i] = camTable.getDoubleTopic("Tag/ambiguity").publish();
+        }
     }
 
     @Override
     public void periodic() {
         updateVisionPose();
-        updateShuffleboard();
-    }
-
-    private void updateShuffleboard() {
-        Pose2d pose = drivetrain.getState().Pose;
-        field.setRobotPose(pose);
-        driveXEntry.setDouble(pose.getX());
-        driveYEntry.setDouble(pose.getY());
-        driveRotEntry.setDouble(pose.getRotation().getDegrees());
     }
 
     private void updateVisionPose() {
@@ -114,9 +113,6 @@ public class Vision extends SubsystemBase {
                 }
                 if (poseOptional.isPresent()) {
                     EstimatedRobotPose pose = poseOptional.get();
-                    visionXEntry.setDouble(pose.estimatedPose.getX());
-                    visionYEntry.setDouble(pose.estimatedPose.getY());
-                    visionRotEntry.setDouble(pose.estimatedPose.toPose2d().getRotation().getDegrees());
                     Matrix<N3, N1> stdDevs;
 
                     if (isLanding) {
@@ -124,9 +120,8 @@ public class Vision extends SubsystemBase {
                     } else {
                         stdDevs = getEstimationStdDevs(pose, pitch, roll, yawRate);
                     }
-                    xyStdDevEntry.setDouble(stdDevs.get(0, 0));
 
-                    drivetrain.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
+                    drivetrain.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, stdDevs);
                 }
             }
         }

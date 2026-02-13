@@ -1,6 +1,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,6 +15,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,14 +24,18 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class Telemetry {
     private final double MaxSpeed;
+    private final Pigeon2 m_pigeon;
+    private final Field2d m_field = new Field2d();
 
     /**
      * Construct a telemetry object, with the specified max speed of the robot
      * 
      * @param maxSpeed Maximum speed in meters per second
+     * @param pigeon Pigeon2 reference for gyro telemetry
      */
-    public Telemetry(double maxSpeed) {
+    public Telemetry(double maxSpeed, Pigeon2 pigeon) {
         MaxSpeed = maxSpeed;
+        m_pigeon = pigeon;
         SignalLogger.start();
 
         /* Set up the module state Mechanism2d telemetry */
@@ -50,6 +56,13 @@ public class Telemetry {
     private final StructArrayPublisher<SwerveModulePosition> driveModulePositions = driveStateTable.getStructArrayTopic("ModulePositions", SwerveModulePosition.struct).publish();
     private final DoublePublisher driveTimestamp = driveStateTable.getDoubleTopic("Timestamp").publish();
     private final DoublePublisher driveOdometryFrequency = driveStateTable.getDoubleTopic("OdometryFrequency").publish();
+
+    /* Gyro state */
+    private final NetworkTable gyroTable = inst.getTable("Gyro");
+    private final DoublePublisher gyroPitch = gyroTable.getDoubleTopic("Pitch").publish();
+    private final DoublePublisher gyroRoll = gyroTable.getDoubleTopic("Roll").publish();
+    private final DoublePublisher gyroYaw = gyroTable.getDoubleTopic("Yaw").publish();
+    private final DoublePublisher gyroYawRate = gyroTable.getDoubleTopic("YawRate").publish();
 
     /* Robot pose for field positioning */
     private final NetworkTable table = inst.getTable("Pose");
@@ -95,6 +108,13 @@ public class Telemetry {
         driveTimestamp.set(state.Timestamp);
         driveOdometryFrequency.set(1.0 / state.OdometryPeriod);
 
+        /* Telemeterize gyro data */
+        gyroPitch.set(m_pigeon.getPitch().getValueAsDouble());
+        gyroRoll.set(m_pigeon.getRoll().getValueAsDouble());
+        gyroYaw.set(state.Pose.getRotation().getDegrees());
+        gyroYawRate.set(m_pigeon.getAngularVelocityZWorld().getValueAsDouble());
+        SmartDashboard.putData("Field", m_field);
+
         /* Also write to log file */
         SignalLogger.writeStruct("DriveState/Pose", Pose2d.struct, state.Pose);
         SignalLogger.writeStruct("DriveState/Speeds", ChassisSpeeds.struct, state.Speeds);
@@ -105,6 +125,7 @@ public class Telemetry {
 
         /* Telemeterize the pose to a Field2d */
         fieldTypePub.set("Field2d");
+        m_field.setRobotPose(state.Pose);
 
         m_poseArray[0] = state.Pose.getX();
         m_poseArray[1] = state.Pose.getY();

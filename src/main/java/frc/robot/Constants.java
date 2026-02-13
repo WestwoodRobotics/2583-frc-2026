@@ -10,7 +10,6 @@ import java.io.IOException;
 import com.ctre.phoenix6.CANBus;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -57,11 +56,11 @@ public class Constants {
         public static final Transform3d[] robotToCamTransforms = {
             new Transform3d(
                 new Translation3d(0.26430478, 0.3150616, 0.1874266),
-                new Rotation3d(0.0, Math.toRadians(20), Math.toRadians(-41.641))
+                new Rotation3d(0.0, Math.toRadians(20), Math.toRadians(41.641))
             ),
             new Transform3d(
                 new Translation3d(0.26430478, -0.3150616, 0.1874266),
-                new Rotation3d(0.0, Math.toRadians(20), Math.toRadians(41.641))
+                new Rotation3d(0.0, Math.toRadians(20), Math.toRadians(-41.641))
             ),
         };
 
