@@ -126,7 +126,7 @@ public class Vision extends SubsystemBase {
                     }
                     xyStdDevEntry.setDouble(stdDevs.get(0, 0));
 
-                    drivetrain.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, stdDevs);
+                    drivetrain.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds);
                 }
             }
         }
