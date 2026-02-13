@@ -90,9 +90,9 @@ public class RobotContainer {
         driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        joystick.leftTrigger().whileTrue(transfer.intakeCommand());
+        driver.leftTrigger().whileTrue(transfer.intakeCommand());
 
-        joystick.rightTrigger().whileTrue(transfer.shootCommand());
+        driver.rightTrigger().whileTrue(transfer.shootCommand());
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
