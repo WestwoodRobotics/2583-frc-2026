@@ -37,11 +37,11 @@ public class RobotContainer {
         .withDeadband(0).withRotationalDeadband(0)
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    private final Telemetry logger = new Telemetry(CommandSwerveDrivetrain.MaxSpeed);
-
     private final CommandXboxController driver = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    
+    private final Telemetry logger = new Telemetry(CommandSwerveDrivetrain.MaxSpeed, drivetrain.getPigeon2());
 
     public final Intake intake = new Intake();
     public final Vision vision = new Vision(drivetrain);
