@@ -24,9 +24,9 @@ public class Constants {
 
     public static final class SwerveConstants {
 
-        public static final double fieldWidth = 16.540988;
-        public static final double fieldLength = 8.069326;
-        public static final double allianceZoneWidth = 4.625594;
+        public static final double fieldWidth = 16.513048;
+        public static final double fieldLength = 8.042656;
+        public static final double allianceZoneWidth = 4.611624;
 
         public static final Transform2d shooterToRobot = new Transform2d(
             new Translation2d(0.0, 0.0),
