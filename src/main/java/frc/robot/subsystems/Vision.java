@@ -148,6 +148,9 @@ public class Vision extends SubsystemBase {
 
                     drivetrain.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, stdDevs);
                 }
+                else {
+                    numTagsPubs[i].set(0);
+                }
             }
         }
     }
