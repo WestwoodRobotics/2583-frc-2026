@@ -9,9 +9,9 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -45,22 +45,24 @@ public class Intake extends SubsystemBase {
     private final SysIdRoutine m_rollerSysIdRoutine  = 
             new SysIdRoutine(
                     new SysIdRoutine.Config(
-                        Volts.of(0.25).per(Second),
-                        Volts.of(1),
+                        null,
+                        null,
                         null,
                         state -> SignalLogger.writeString("SysIdRoller_state", state.toString())
                     ),
                     new SysIdRoutine.Mechanism(
-                        (volts) -> m_pivotMotor.setControl(m_voltReq.withOutput(volts.in(Volts))),
+                        (volts) -> m_rollerMotor.setControl(m_voltReq.withOutput(volts.in(Volts))),
                         null,
                         this)
                 );
 
-    private SysIdRoutine m_sysIdRoutineToApply = m_pivotSysIdRoutine;
+    private SysIdRoutine m_sysIdRoutineToApply = m_rollerSysIdRoutine;
 
-    private final ShuffleboardTab m_tab = Shuffleboard.getTab("intake");
-    private final GenericEntry m_pivotPosEntry = m_tab.add("Pivot Position (Rot)", 0).getEntry();
-    private final GenericEntry m_rollerVelEntry = m_tab.add("Roller Velocity (RPS)", 0).getEntry();
+    private final NetworkTable m_intakeTable = NetworkTableInstance.getDefault().getTable("Intake");
+    private final DoublePublisher m_pivotDesiredPub = m_intakeTable.getDoubleTopic("Pivot/DesiredPos").publish();
+    private final DoublePublisher m_pivotActualPub = m_intakeTable.getDoubleTopic("Pivot/ActualPos").publish();
+    private final DoublePublisher m_rollerDesiredPub = m_intakeTable.getDoubleTopic("Roller/DesiredVelocityRPS").publish();
+    private final DoublePublisher m_rollerActualPub = m_intakeTable.getDoubleTopic("Roller/ActualVelocityRPS").publish();
 
     public Intake() {
         // Apply configurations directly from constants to keep constructor clean of variables
@@ -73,8 +75,13 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        m_pivotPosEntry.setDouble(m_pivotMotor.getPosition().getValueAsDouble());
-        m_rollerVelEntry.setDouble(m_rollerMotor.getVelocity().getValueAsDouble());
+        double pivotActual = m_pivotMotor.getPosition().getValueAsDouble();
+        double rollerActual = m_rollerMotor.getVelocity().getValueAsDouble();
+
+        m_pivotDesiredPub.set(m_expoRequest.Position);
+        m_pivotActualPub.set(pivotActual);
+        m_rollerDesiredPub.set(m_velocityRequest.Velocity);
+        m_rollerActualPub.set(rollerActual);
     }
 
     /**
