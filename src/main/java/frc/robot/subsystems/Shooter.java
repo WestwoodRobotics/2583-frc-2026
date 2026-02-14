@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import java.util.Map;
@@ -15,6 +14,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -23,39 +23,18 @@ import frc.robot.utils.ShotParam;
 
 public class Shooter extends SubsystemBase {
 
-    private final TalonFX m_hoodMotor;
-    private final TalonFX m_bottomLeftFlywheel;
-    private final TalonFX m_bottomRightFlywheel;
-    private final TalonFX m_topLeftFlywheel;
-    private final TalonFX m_topRightFlywheel;
+    private final CANBus canBus = ShooterConstants.kCANBus;
+    private final TalonFX m_hoodMotor = new TalonFX(ShooterConstants.kHoodMotorId, canBus);
+    private final TalonFX m_bottomLeftFlywheel = new TalonFX(ShooterConstants.kBottomLeftFlywheelId, canBus);
+    private final TalonFX m_bottomRightFlywheel = new TalonFX(ShooterConstants.kBottomRightFlywheelId, canBus);
+    private final TalonFX m_topLeftFlywheel = new TalonFX(ShooterConstants.kTopLeftFlywheelId, canBus);
+    private final TalonFX m_topRightFlywheel = new TalonFX(ShooterConstants.kTopRightFlywheelId, canBus);
 
     private final MotionMagicExpoTorqueCurrentFOC m_expoRequest = new MotionMagicExpoTorqueCurrentFOC(0.0);
     private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
 
     private final VoltageOut m_voltReq = new VoltageOut(0.0);
-    private SysIdRoutine m_hoodSysIdRoutine;
-    private SysIdRoutine m_flywheelSysIdRoutine;
-    private SysIdRoutine m_routineToApply;
-
-    private final Follower m_alignedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Aligned);
-    private final Follower m_opposedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Opposed);
-
-    public Shooter() {
-        CANBus canBus = ShooterConstants.kCANBus;
-        m_hoodMotor = new TalonFX(ShooterConstants.kHoodMotorId, canBus);
-        m_bottomLeftFlywheel = new TalonFX(ShooterConstants.kBottomLeftFlywheelId, canBus);
-        m_bottomRightFlywheel = new TalonFX(ShooterConstants.kBottomRightFlywheelId, canBus);
-        m_topLeftFlywheel = new TalonFX(ShooterConstants.kTopLeftFlywheelId, canBus);
-        m_topRightFlywheel = new TalonFX(ShooterConstants.kTopRightFlywheelId, canBus);
-
-        // Apply configurations directly from constants to keep constructor clean of variables
-        m_hoodMotor.getConfigurator().apply(ShooterConstants.getHoodMotorConfigs());
-        m_bottomLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
-        m_bottomRightFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
-        m_topLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
-        m_topRightFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
-
-        m_hoodSysIdRoutine = new SysIdRoutine(
+    private SysIdRoutine m_hoodSysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
                 Volts.of(0.25).per(Second),
                 Volts.of(1),
@@ -69,8 +48,7 @@ public class Shooter extends SubsystemBase {
                 this
             )
         );
-
-        m_flywheelSysIdRoutine = new SysIdRoutine(
+    private SysIdRoutine m_flywheelSysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
                 null,
                 null,
@@ -84,8 +62,18 @@ public class Shooter extends SubsystemBase {
                 this
             )
         );
+    private SysIdRoutine m_routineToApply = m_hoodSysIdRoutine;
 
-        m_routineToApply = m_hoodSysIdRoutine;
+    private final Follower m_alignedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Aligned);
+    private final Follower m_opposedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Opposed);
+
+    public Shooter() {
+        // Apply configurations directly from constants to keep constructor clean of variables
+        m_hoodMotor.getConfigurator().apply(ShooterConstants.getHoodMotorConfigs());
+        m_bottomLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
+        m_bottomRightFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
+        m_topLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
+        m_topRightFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
     }
 
     public void setHoodPosition(double position) {
@@ -93,7 +81,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setHoodAngle(double angle) {
-        double clampedAngle = Math.clamp(angle, ShooterConstants.minAngle, ShooterConstants.maxAngle);
+        double clampedAngle = MathUtil.clamp(angle, ShooterConstants.minAngle, ShooterConstants.maxAngle);
         double angleDelta = clampedAngle - ShooterConstants.minAngle;
         double position = ShooterConstants.posAtMinAngle + angleDelta * ShooterConstants.perDegree;
 
@@ -133,7 +121,7 @@ public class Shooter extends SubsystemBase {
         double angle = floorVal.angle + t * (ceilVal.angle - floorVal.angle);
         double velocity = floorVal.velocity + t * (ceilVal.velocity - floorVal.velocity);
 
-        angle = Math.clamp(angle, ShooterConstants.minAngle, ShooterConstants.maxAngle);
+        angle = MathUtil.clamp(angle, ShooterConstants.minAngle, ShooterConstants.maxAngle);
         return new ShotParam(angle, velocity);
     }
 }
