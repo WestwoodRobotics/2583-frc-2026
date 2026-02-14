@@ -13,7 +13,9 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -134,15 +136,7 @@ public class Constants {
             ),
         };
 
-        public static final AprilTagFieldLayout kFieldLayout;
-        
-        static {
-            try {
-                kFieldLayout = new AprilTagFieldLayout("/home/lvuser/deploy/2026-rebuilt-andymark.json");
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to load AprilTag field layout", e);
-            }
-        }
+        public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
 
         public static final double bumpThresholdDegrees = 8.0;
         public static final double landingTimeSeconds = 0.25;
