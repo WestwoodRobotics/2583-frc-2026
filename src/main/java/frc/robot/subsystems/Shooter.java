@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.utils.ShotParam;
 
 public class Shooter extends SubsystemBase {
 
@@ -57,7 +56,12 @@ public class Shooter extends SubsystemBase {
             
             ), 
             new SysIdRoutine.Mechanism(
-                (volts) -> m_hoodMotor.setControl(m_voltReq.withOutput(volts.in(Volts))),
+                (volts) -> {
+                    m_topRightFlywheel.setControl(m_voltReq.withOutput(volts.in(Volts)));
+                    m_bottomRightFlywheel.setControl(m_voltReq.withOutput(-volts.in(Volts)));
+                    m_topLeftFlywheel.setControl(m_voltReq.withOutput(volts.in(Volts)));
+                    m_bottomLeftFlywheel.setControl(m_voltReq.withOutput(-volts.in(Volts)));
+                },
                 null,
                 this
             )
@@ -81,9 +85,9 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setHoodAngle(double angle) {
-        double clampedAngle = MathUtil.clamp(angle, ShooterConstants.minAngle, ShooterConstants.maxAngle);
-        double angleDelta = clampedAngle - ShooterConstants.minAngle;
-        double position = ShooterConstants.posAtMinAngle + angleDelta * ShooterConstants.perDegree;
+        double clampedAngle = MathUtil.clamp(angle, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
+        double angleDelta = clampedAngle - ShooterConstants.kMinAngle;
+        double position = ShooterConstants.kPosAtMinAngle + angleDelta * ShooterConstants.kPerDegree;
 
         setHoodPosition(position);
     }
@@ -103,25 +107,28 @@ public class Shooter extends SubsystemBase {
         return m_routineToApply.dynamic(direction);
     }
 
-    public ShotParam getShotParam(double distance) {
-        var map = ShooterConstants.kDistanceToShotParam;
-        Map.Entry<Double, ShotParam> floor = map.floorEntry(distance);
-        Map.Entry<Double, ShotParam> ceil = map.ceilingEntry(distance);
+    public double getHoodAngle(double distance) {
+        Double angle = ShooterConstants.kMaxAngle - (ShooterConstants.kMaxAngle - ShooterConstants.kMinAngle) / (ShooterConstants.kFarDistance - ShooterConstants.kNearDistance) * (distance - 40);
+        return MathUtil.clamp(angle, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
+    }
 
-        if (floor == null && ceil == null) return new ShotParam(ShooterConstants.minAngle, 0);
+    public double getFlywheelRPS(double distance) {
+        var map = ShooterConstants.kDistanceToRPS;
+        Map.Entry<Double, Double> floor = map.floorEntry(distance);
+        Map.Entry<Double, Double> ceil = map.ceilingEntry(distance);
+
+        if (floor == null && ceil == null) return 0.0;
         if (floor == null) return ceil.getValue();
         if (ceil == null) return floor.getValue();
 
-        ShotParam floorVal = floor.getValue();
-        ShotParam ceilVal = ceil.getValue();
+        Double floorVal = floor.getValue();
+        Double ceilVal = ceil.getValue();
 
         if (floor.getKey().equals(ceil.getKey())) return floorVal;
 
         double t = (distance - floor.getKey()) / (ceil.getKey() - floor.getKey());
-        double angle = floorVal.angle + t * (ceilVal.angle - floorVal.angle);
-        double velocity = floorVal.velocity + t * (ceilVal.velocity - floorVal.velocity);
+        double rps = floorVal + t * (ceilVal - floorVal);
 
-        angle = MathUtil.clamp(angle, ShooterConstants.minAngle, ShooterConstants.maxAngle);
-        return new ShotParam(angle, velocity);
+        return rps;
     }
 }

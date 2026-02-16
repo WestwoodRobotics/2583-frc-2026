@@ -17,7 +17,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import frc.robot.utils.ShotParam;
 
 public class Constants {
 
@@ -114,27 +113,30 @@ public class Constants {
     }
 
     public static final class ShooterConstants {
-        public static final int kHoodMotorId = 1;
-        public static final int kTopLeftFlywheelId = 2;
-        public static final int kTopRightFlywheelId = 3;
-        public static final int kBottomLeftFlywheelId = 4;
-        public static final int kBottomRightFlywheelId = 5;
+        public static final int kHoodMotorId = 24;
+        public static final int kTopLeftFlywheelId = 27;
+        public static final int kTopRightFlywheelId = 25;
+        public static final int kBottomLeftFlywheelId = 28;
+        public static final int kBottomRightFlywheelId = 26;
         public static final CANBus kCANBus = new CANBus("rio");
 
-        public static final double hoodInPos = 0.0;
+        public static final double kHoodInPos = 0.0;
 
-        public static final double shootingVel = 0.0;
+        public static final double kShootingVel = 0.0;
 
-        public static final double posAtMinAngle = 0.0;
-        public static final double posAtMaxAngle = 0.0;
-        public static final double minAngle = 0.0;
-        public static final double maxAngle = 0.0;
-        public static final double perDegree = (posAtMaxAngle - posAtMinAngle) / (maxAngle - minAngle);
+        public static final double kPosAtMinAngle = 0.0;
+        public static final double kPosAtMaxAngle = 0.0;
+        public static final double kMinAngle = 0.0;
+        public static final double kMaxAngle = 0.0;
+        public static final double kPerDegree = (kPosAtMaxAngle - kPosAtMinAngle) / (kMaxAngle - kMinAngle);
 
-        public static final TreeMap<Double, ShotParam> kDistanceToShotParam = new TreeMap<>();
+        public static final double kNearDistance = 40.0;
+        public static final double kFarDistance = 120.0;
+
+        public static final TreeMap<Double, Double> kDistanceToRPS = new TreeMap<>();
         static {
-            kDistanceToShotParam.put(0.0, new ShotParam(0.0, 0.0));
-            kDistanceToShotParam.put(10.0, new ShotParam(0.0, 0.0));
+            kDistanceToRPS.put(0.0, 0.0);
+            kDistanceToRPS.put(1.0, 0.0);
         }
 
         public static TalonFXConfiguration getHoodMotorConfigs() {
