@@ -157,7 +157,7 @@ public class Constants {
             configs.Feedback.SensorToMechanismRatio = 0.0;
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-            configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+            configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
             
             return configs;
         }
@@ -180,7 +180,7 @@ public class Constants {
             configs.Feedback.SensorToMechanismRatio = 0.0;
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-            configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+            configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
             
             return configs;
         }
