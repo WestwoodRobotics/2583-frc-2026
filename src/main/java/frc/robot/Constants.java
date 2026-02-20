@@ -50,11 +50,11 @@ public class Constants {
         public static final int kRollerMotorId = 21;
         public static final CANBus kCANBus = new CANBus("SwerveCAN");
 
-        public static final double kpivotOffset = 0.3656;
+        public static final double kpivotOffset = 0.25;
 
-        public static final double pivotIn = 0.40;
-        public static final double pivotPartial = 0.0;
-        public static final double pivotOut = 0;
+        public static final double pivotIn = 0.25;
+        public static final double pivotPartial = 0.1;
+        public static final double pivotOut = -0.17;
 
         public static final double rollerNeutralVel = 0.0;
         public static final double rollerIntakingVel = 0.0;
@@ -63,22 +63,22 @@ public class Constants {
         public static TalonFXConfiguration getPivotConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
-            configs.Slot0.kP = 120.0;
+            configs.Slot0.kP = 80.0;
             configs.Slot0.kI = 0.0;
-            configs.Slot0.kD = 15.0;
-            configs.Slot0.kS = 3.0;    
+            configs.Slot0.kD = 12.0;
+            configs.Slot0.kS = 2.0;    
             configs.Slot0.kV = 0.0;
-            configs.Slot0.kA = 15.0;
-            configs.Slot0.kG = 37.0;
+            configs.Slot0.kA = 2.0;
+            configs.Slot0.kG = 17.0;
             configs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
             
-            configs.MotionMagic.MotionMagicExpo_kV = 1.521187975; // DO NOT CHANGE
-            configs.MotionMagic.MotionMagicExpo_kA = 0.0;
+            configs.MotionMagic.MotionMagicAcceleration = 2.5;
+            configs.MotionMagic.MotionMagicCruiseVelocity = 1;
 
-            configs.CurrentLimits.StatorCurrentLimit = 80.0;
-            configs.CurrentLimits.SupplyCurrentLimit = 60.0;
+            // configs.CurrentLimits.StatorCurrentLimit = 80.0;
+            // configs.CurrentLimits.SupplyCurrentLimit = 60.0;
 
-            configs.Feedback.SensorToMechanismRatio = (70/11 * 40/16);
+            configs.Feedback.SensorToMechanismRatio = (70/11 * 40/12);
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
             configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -92,14 +92,14 @@ public class Constants {
             configs.Slot0.kP = 0.0;
             configs.Slot0.kI = 0.0;
             configs.Slot0.kD = 0.0;
-            configs.Slot0.kS = 0.0;
+            configs.Slot0.kS = 17.774;
             configs.Slot0.kV = 0.0;
-            configs.Slot0.kA = 0.0;
+            configs.Slot0.kA = 0.16294;
 
             configs.MotionMagic.MotionMagicAcceleration = 0.0;
 
-            configs.CurrentLimits.StatorCurrentLimit = 80.0;
-            configs.CurrentLimits.SupplyCurrentLimit = 60.0;
+            // configs.CurrentLimits.StatorCurrentLimit = 80.0;
+            // configs.CurrentLimits.SupplyCurrentLimit = 60.0;
 
             configs.Feedback.SensorToMechanismRatio = (2/1 * 30/24);
             

@@ -4,7 +4,7 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -23,7 +23,7 @@ public class Intake extends SubsystemBase {
     private final TalonFX m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorId, IntakeConstants.kCANBus);
     private final TalonFX m_rollerMotor = new TalonFX(IntakeConstants.kRollerMotorId, IntakeConstants.kCANBus);
 
-    private final MotionMagicExpoTorqueCurrentFOC m_expoRequest = new MotionMagicExpoTorqueCurrentFOC(0.0);
+    private final MotionMagicTorqueCurrentFOC m_expoRequest = new MotionMagicTorqueCurrentFOC(0.0);
     private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest = new MotionMagicVelocityTorqueCurrentFOC(0.0);
 
     private final VoltageOut m_voltReq = new VoltageOut(0.0);
@@ -97,7 +97,7 @@ public class Intake extends SubsystemBase {
      * @param velocity Target velocity in rotations per second.
      */
     public void setRollerVelocity(double velocity) {
-        m_rollerMotor.setControl(m_velocityRequest.withVelocity(velocity));
+        m_rollerMotor.setControl(m_voltReq.withOutput(velocity));
     }
 
     public Command intakeDefault() {
@@ -111,7 +111,7 @@ public class Intake extends SubsystemBase {
     public Command runIntake() {
         return Commands.run(() -> {
             setPivotPosition(IntakeConstants.pivotOut);
-            //setRollerVelocity(IntakeConstants.rollerIntakingVel);
+            setRollerVelocity(10.0);
         }, this);
     }
 
