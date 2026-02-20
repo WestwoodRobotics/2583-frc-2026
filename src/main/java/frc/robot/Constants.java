@@ -63,17 +63,17 @@ public class Constants {
         public static TalonFXConfiguration getPivotConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
-            configs.Slot0.kP = 80.0;
+            configs.Slot0.kP = 240.0;
             configs.Slot0.kI = 0.0;
-            configs.Slot0.kD = 12.0;
-            configs.Slot0.kS = 2.0;    
+            configs.Slot0.kD = 60.0;
+            configs.Slot0.kS = 5.0;    
             configs.Slot0.kV = 0.0;
             configs.Slot0.kA = 2.0;
             configs.Slot0.kG = 17.0;
             configs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
             
-            configs.MotionMagic.MotionMagicAcceleration = 2.5;
-            configs.MotionMagic.MotionMagicCruiseVelocity = 1;
+            configs.MotionMagic.MotionMagicAcceleration = 7;
+            configs.MotionMagic.MotionMagicCruiseVelocity = 2;
 
             // configs.CurrentLimits.StatorCurrentLimit = 80.0;
             // configs.CurrentLimits.SupplyCurrentLimit = 60.0;
