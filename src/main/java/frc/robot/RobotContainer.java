@@ -89,16 +89,16 @@ public class RobotContainer {
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        driver.x().whileTrue(intake.sysIdDynamic(Direction.kForward));
-        driver.y().whileTrue(intake.sysIdDynamic(Direction.kReverse));
-        driver.b().whileTrue(intake.sysIdQuasistatic(Direction.kForward));
-        driver.a().whileTrue(intake.sysIdQuasistatic(Direction.kReverse));
+        // driver.x().whileTrue(intake.sysIdDynamic(Direction.kForward));
+        // driver.y().whileTrue(intake.sysIdDynamic(Direction.kReverse));
+        // driver.b().whileTrue(intake.sysIdQuasistatic(Direction.kForward));
+        // driver.a().whileTrue(intake.sysIdQuasistatic(Direction.kReverse));
 
-        driver.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
-        driver.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+        // driver.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
+        // driver.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
         // Run intake while holding left trigger
-        driver.leftTrigger().whileTrue(intake.runIntake()).onFalse(Commands.runOnce(() -> intake.setRollerVelocity(0.0), intake));
+        driver.leftTrigger().whileTrue(intake.runIntake());
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

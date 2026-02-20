@@ -71,6 +71,8 @@ public class Intake extends SubsystemBase {
 
         // Apply pivot offset
         m_pivotMotor.setPosition(IntakeConstants.kpivotOffset);
+
+        m_pivotMotor.setControl(m_expoRequest.withPosition(IntakeConstants.pivotIn));
     }
 
     @Override
@@ -97,7 +99,7 @@ public class Intake extends SubsystemBase {
      * @param velocity Target velocity in rotations per second.
      */
     public void setRollerVelocity(double velocity) {
-        m_rollerMotor.setControl(m_voltReq.withOutput(velocity));
+        m_rollerMotor.setControl(m_velocityRequest.withVelocity(velocity));
     }
 
     public Command intakeDefault() {
@@ -111,7 +113,7 @@ public class Intake extends SubsystemBase {
     public Command runIntake() {
         return Commands.run(() -> {
             setPivotPosition(IntakeConstants.pivotOut);
-            setRollerVelocity(10.0);
+            setRollerVelocity(IntakeConstants.rollerIntakingVel);
         }, this);
     }
 

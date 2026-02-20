@@ -53,11 +53,11 @@ public class Constants {
         public static final double kpivotOffset = 0.25;
 
         public static final double pivotIn = 0.25;
-        public static final double pivotPartial = 0.1;
+        public static final double pivotPartial = 0.00;
         public static final double pivotOut = -0.17;
 
-        public static final double rollerNeutralVel = 0.0;
-        public static final double rollerIntakingVel = 0.0;
+        public static final double rollerNeutralVel = 5.0;
+        public static final double rollerIntakingVel = 35.0;
         public static final double rollerShootingVel = 0.0;
 
         public static TalonFXConfiguration getPivotConfigs() {
@@ -89,21 +89,22 @@ public class Constants {
         public static TalonFXConfiguration getRollerConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
-            configs.Slot0.kP = 0.0;
+            configs.Slot0.kP = 20.0;
             configs.Slot0.kI = 0.0;
             configs.Slot0.kD = 0.0;
             configs.Slot0.kS = 17.774;
             configs.Slot0.kV = 0.0;
             configs.Slot0.kA = 0.16294;
 
-            configs.MotionMagic.MotionMagicAcceleration = 0.0;
+            configs.MotionMagic.MotionMagicAcceleration = 300.0;
+            configs.MotionMagic.MotionMagicCruiseVelocity = 35.0;
 
             // configs.CurrentLimits.StatorCurrentLimit = 80.0;
             // configs.CurrentLimits.SupplyCurrentLimit = 60.0;
 
             configs.Feedback.SensorToMechanismRatio = (2/1 * 30/24);
             
-            configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+            configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
             configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
             
             return configs;
