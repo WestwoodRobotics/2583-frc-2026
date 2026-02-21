@@ -130,7 +130,7 @@ public class Constants {
             new Transform3d(
                 new Translation3d(0.26430478, -0.3150616, 0.1874266),
                 new Rotation3d(0.0, Math.toRadians(20), Math.toRadians(-41.641))
-            ),
+            )
         };
 
         public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
