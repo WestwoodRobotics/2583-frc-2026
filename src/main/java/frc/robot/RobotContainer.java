@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -22,6 +24,7 @@ import frc.robot.commands.AimShooter;
 import frc.robot.commands.AutoAlign;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Intake;
 
 public class RobotContainer {
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -38,6 +41,8 @@ public class RobotContainer {
     private final CommandXboxController driver = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+    public final Intake intake = new Intake();
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -68,6 +73,8 @@ public class RobotContainer {
                 })
         );
 
+        intake.setDefaultCommand(intake.intakeDefault());
+
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
@@ -75,15 +82,23 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        driver.a().whileTrue(new AimShooter(drivetrain, faceAngle, driver));
-        driver.x().whileTrue(new AutoAlign(drivetrain));
+        // driver.a().whileTrue(new AimShooter(drivetrain, faceAngle, driver));
+        // driver.x().whileTrue(new AutoAlign(drivetrain));
+        driver.y().onTrue(intake.fullRetract());
+        driver.b().onTrue(intake.partialRetract());
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        driver.back().and(driver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        // driver.x().whileTrue(intake.sysIdDynamic(Direction.kForward));
+        // driver.y().whileTrue(intake.sysIdDynamic(Direction.kReverse));
+        // driver.b().whileTrue(intake.sysIdQuasistatic(Direction.kForward));
+        // driver.a().whileTrue(intake.sysIdQuasistatic(Direction.kReverse));
+
+        // driver.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
+        // driver.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+
+        // Run intake while holding left trigger
+        driver.leftTrigger().whileTrue(intake.runIntake());
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
