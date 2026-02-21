@@ -25,6 +25,7 @@ import frc.robot.commands.AutoAlign;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Vision;
 
 public class RobotContainer {
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -36,13 +37,14 @@ public class RobotContainer {
         .withDeadband(0).withRotationalDeadband(0)
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    private final Telemetry logger = new Telemetry(CommandSwerveDrivetrain.MaxSpeed);
-
     private final CommandXboxController driver = new CommandXboxController(0);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    
+    private final Telemetry logger = new Telemetry(CommandSwerveDrivetrain.MaxSpeed, drivetrain.getPigeon2());
 
     public final Intake intake = new Intake();
+    public final Vision vision = new Vision(drivetrain);
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
