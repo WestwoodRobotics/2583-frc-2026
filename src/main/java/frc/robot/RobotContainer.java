@@ -9,7 +9,9 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -63,6 +65,12 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
+
+        // Register Event Triggers
+        new EventTrigger("RunIntake").whileTrue(intake.runIntake());
+        new EventTrigger("PartialRetract").onTrue(intake.partialRetract());
+        new EventTrigger("FullRetract").onTrue(intake.fullRetract());
+
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -100,6 +108,12 @@ public class RobotContainer {
         );
 
         driver.a().whileTrue(new AimSwerve(drivetrain, faceAngle, driver));
+        // RobotModeTriggers.autonomous().onTrue(intake.fullRetract());
+
+        // driver.a().whileTrue(new AimShooter(drivetrain, faceAngle, driver));
+        // driver.x().whileTrue(new AutoAlign(drivetrain));
+        driver.y().onTrue(intake.fullRetract());
+        driver.b().onTrue(intake.partialRetract());
 
         driver.x().whileTrue(drivetrain.applyRequest(() -> {
             double[] drives = CommandSwerveDrivetrain.joyStickPolar(driver, 2);

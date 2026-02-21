@@ -51,7 +51,20 @@
       "name": "Point towards shooter"
     }
   ],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "PartialRetract",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "FullRetract",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -62,13 +75,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 37.11174166
+    "rotation": 37.112
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }
