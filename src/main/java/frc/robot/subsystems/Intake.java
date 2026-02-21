@@ -70,7 +70,7 @@ public class Intake extends SubsystemBase {
         m_rollerMotor.getConfigurator().apply(IntakeConstants.getRollerConfigs());
 
         // Apply pivot offset
-        m_pivotMotor.setPosition(IntakeConstants.kpivotOffset);
+        m_pivotMotor.setPosition(IntakeConstants.kPivotOffset);
 
         m_pivotMotor.setControl(m_expoRequest.withPosition(IntakeConstants.pivotIn));
     }
