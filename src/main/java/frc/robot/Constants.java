@@ -50,7 +50,7 @@ public class Constants {
         public static final int kRollerMotorId = 21;
         public static final CANBus kCANBus = new CANBus("SwerveCAN");
 
-        public static final double kpivotOffset = 0.25;
+        public static final double kPivotOffset = 0.25;
 
         public static final double pivotIn = 0.25;
         public static final double pivotPartial = 0.00;
