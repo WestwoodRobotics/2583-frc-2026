@@ -9,7 +9,7 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -30,7 +30,7 @@ public class Shooter extends SubsystemBase {
     private final TalonFX m_topRightFlywheel = new TalonFX(ShooterConstants.kTopRightFlywheelId, canBus);
 
     private final MotionMagicExpoTorqueCurrentFOC m_expoRequest = new MotionMagicExpoTorqueCurrentFOC(0.0);
-    private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
+    private final VelocityTorqueCurrentFOC m_velocityRequest = new VelocityTorqueCurrentFOC(0);
 
     private final VoltageOut m_voltReq = new VoltageOut(0.0);
     private SysIdRoutine m_hoodSysIdRoutine = new SysIdRoutine(
@@ -66,7 +66,8 @@ public class Shooter extends SubsystemBase {
                 this
             )
         );
-    private SysIdRoutine m_routineToApply = m_hoodSysIdRoutine;
+    
+    private final SysIdRoutine m_routineToApply = m_hoodSysIdRoutine;
 
     private final Follower m_alignedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Aligned);
     private final Follower m_opposedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Opposed);
@@ -105,30 +106,5 @@ public class Shooter extends SubsystemBase {
 
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_routineToApply.dynamic(direction);
-    }
-
-    public double getHoodAngle(double distance) {
-        Double angle = ShooterConstants.kMaxAngle - (ShooterConstants.kMaxAngle - ShooterConstants.kMinAngle) / (ShooterConstants.kFarDistance - ShooterConstants.kNearDistance) * (distance - 40);
-        return MathUtil.clamp(angle, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
-    }
-
-    public double getFlywheelRPS(double distance) {
-        var map = ShooterConstants.kDistanceToRPS;
-        Map.Entry<Double, Double> floor = map.floorEntry(distance);
-        Map.Entry<Double, Double> ceil = map.ceilingEntry(distance);
-
-        if (floor == null && ceil == null) return 0.0;
-        if (floor == null) return ceil.getValue();
-        if (ceil == null) return floor.getValue();
-
-        Double floorVal = floor.getValue();
-        Double ceilVal = ceil.getValue();
-
-        if (floor.getKey().equals(ceil.getKey())) return floorVal;
-
-        double t = (distance - floor.getKey()) / (ceil.getKey() - floor.getKey());
-        double rps = floorVal + t * (ceilVal - floorVal);
-
-        return rps;
     }
 }

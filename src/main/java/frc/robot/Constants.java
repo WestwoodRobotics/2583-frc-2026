@@ -125,11 +125,12 @@ public class Constants {
         public static final double kHoodInPos = 0.0;
 
         public static final double kShootingVel = 0.0;
+        public static final double kMaxFlywheelRPS = 0.0;
 
         public static final double kPosAtMinAngle = 0.0;
-        public static final double kPosAtMaxAngle = 0.0;
+        public static final double kPosAtMaxAngle = 10.0; // TODO: Tune this
         public static final double kMinAngle = 0.0;
-        public static final double kMaxAngle = 0.0;
+        public static final double kMaxAngle = 45.0; // TODO: Tune this
         public static final double kPerDegree = (kPosAtMaxAngle - kPosAtMinAngle) / (kMaxAngle - kMinAngle);
 
         public static final double kNearDistance = 40.0;
@@ -155,8 +156,8 @@ public class Constants {
             configs.MotionMagic.MotionMagicExpo_kV = 0.0;
             configs.MotionMagic.MotionMagicExpo_kA = 0.0;
 
-            configs.CurrentLimits.StatorCurrentLimit = 0.0;
-            configs.CurrentLimits.SupplyCurrentLimit = 0.0;
+            // configs.CurrentLimits.StatorCurrentLimit = 0.0;
+            // configs.CurrentLimits.SupplyCurrentLimit = 0.0;
 
             configs.Feedback.SensorToMechanismRatio = 0.0;
             
@@ -178,8 +179,10 @@ public class Constants {
 
             configs.MotionMagic.MotionMagicAcceleration = 0.0;
 
-            configs.CurrentLimits.StatorCurrentLimit = 0.0;
-            configs.CurrentLimits.SupplyCurrentLimit = 0.0;
+            // configs.CurrentLimits.StatorCurrentLimit = 0.0;
+            // configs.CurrentLimits.SupplyCurrentLimit = 0.0;
+
+            configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
             configs.Feedback.SensorToMechanismRatio = 0.0;
             
@@ -191,6 +194,7 @@ public class Constants {
     }
     
     public static final class VisionConstants {
+
         public static final String[] cameraNames = {
             "frontLeft",
             "frontRight"
