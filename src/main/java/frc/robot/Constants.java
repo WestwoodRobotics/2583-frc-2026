@@ -109,6 +109,8 @@ public class Constants {
             // configs.CurrentLimits.SupplyCurrentLimit = 60.0;
 
             configs.Feedback.SensorToMechanismRatio = (2.0/1.0 * 30.0/24.0);
+
+            return configs;
         }
     }
 
