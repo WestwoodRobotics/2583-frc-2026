@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.commands.AimShooter;
+import frc.robot.commands.AimSwerve;
 import frc.robot.commands.AutoAlign;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -87,7 +87,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        // driver.a().whileTrue(new AimShooter(drivetrain, faceAngle, driver));
+        driver.a().whileTrue(new AimSwerve(drivetrain, faceAngle, driver));
         // driver.x().whileTrue(new AutoAlign(drivetrain));
         driver.y().onTrue(intake.fullRetract());
         driver.b().onTrue(intake.partialRetract());
