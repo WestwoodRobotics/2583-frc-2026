@@ -3,50 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9949788049768524,
-        "y": 2.5685389901620375
+        "x": 3.203249259159483,
+        "y": 2.4786898908943966
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.6206999975577934,
-        "y": 2.590028833895534
+        "x": 3.892976612587302,
+        "y": 2.429974736413033
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "BlueRightPoint1"
     },
     {
       "anchor": {
-        "x": 6.591420138888889,
-        "y": 1.5689625289351854
+        "x": 5.6620619359509705,
+        "y": 2.2716476545662716
       },
       "prevControl": {
-        "x": 6.655032188710167,
-        "y": 2.6595031490095336
+        "x": 5.442746901155482,
+        "y": 2.3988954375413845
       },
       "nextControl": {
-        "x": 6.542081018518519,
-        "y": 0.7231115451388892
+        "x": 7.73198797817888,
+        "y": 1.0706652411099131
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.757122468171296,
-        "y": 0.8227083333333338
+        "x": 7.958844878098061,
+        "y": 3.9423788557381467
       },
       "prevControl": {
-        "x": 7.28052756076389,
-        "y": 0.8417353877314816
+        "x": 7.902722420528018,
+        "y": 3.549063510237069
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BlueLeftPoint1"
+      "linkedName": "BlueRightPoint2"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.7656844860406089,
+      "waypointRelativePos": 1.2804901215805475,
       "rotationDegrees": -135.0
     }
   ],
@@ -61,7 +61,7 @@
     },
     {
       "name": "RunIntake",
-      "waypointRelativePos": 1.9,
+      "waypointRelativePos": 1.052299222797927,
       "endWaypointRelativePos": 2.0,
       "command": null
     }

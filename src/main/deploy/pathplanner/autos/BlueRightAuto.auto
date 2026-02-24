@@ -15,12 +15,6 @@
           "data": {
             "pathName": "BlueRightPath2"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BlueRightPath3"
-          }
         }
       ]
     }
