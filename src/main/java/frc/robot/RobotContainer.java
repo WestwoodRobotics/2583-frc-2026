@@ -11,6 +11,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.commands.AimSwerve;
-import frc.robot.commands.AutoAlign;
+import frc.robot.commands.AlignCornerShot;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
@@ -37,6 +38,7 @@ public class RobotContainer {
     private final SwerveRequest.FieldCentricFacingAngle faceAngle = new SwerveRequest.FieldCentricFacingAngle()
         .withDeadband(0).withRotationalDeadband(0)
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
     private final CommandXboxController driver = new CommandXboxController(0);
 
@@ -88,11 +90,29 @@ public class RobotContainer {
         );
 
         driver.a().whileTrue(new AimSwerve(drivetrain, faceAngle, driver));
-        // driver.x().whileTrue(new AutoAlign(drivetrain));
+
+        driver.x().whileTrue(drivetrain.applyRequest(() -> {
+            double[] drives = CommandSwerveDrivetrain.joyStickPolar(driver, 2);
+
+            Rotation2d currentRot = drivetrain.getState().Pose.getRotation();
+            double currentDeg = currentRot.getDegrees();
+            double closestDiagonalDeg = Math.round((currentDeg - 45) / 90.0) * 90.0 + 45;
+
+            return faceAngle
+                .withVelocityX(drives[0])
+                .withVelocityY(drives[1])
+                .withTargetDirection(Rotation2d.fromDegrees(closestDiagonalDeg));
+        }));
+
         driver.y().onTrue(intake.fullRetract());
         driver.b().onTrue(intake.partialRetract());
 
         driver.rightTrigger().whileTrue(transfer.shootCommand());
+        driver.povRight().whileTrue(new AlignCornerShot(drivetrain));
+        driver.povDown().whileTrue(drivetrain.applyRequest(() -> brake));
+
+        // Run intake while holding left trigger
+        driver.leftTrigger().whileTrue(intake.runIntake());
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -103,9 +123,6 @@ public class RobotContainer {
 
         // driver.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
         // driver.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
-
-        // Run intake while holding left trigger
-        driver.leftTrigger().whileTrue(intake.runIntake());
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

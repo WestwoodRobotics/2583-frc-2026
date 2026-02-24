@@ -33,18 +33,27 @@ public class Constants {
         public static final double allianceZoneWidth = 4.611624;
 
         public static final Transform2d shooterToRobot = new Transform2d(
-            new Translation2d(0.0, 0.0),
+            new Translation2d(0.1344549, 0.0),
             new Rotation2d(Math.toRadians(0))
         );
 
         public static final Translation2d blueHub = new Translation2d(allianceZoneWidth, fieldLength / 2);
         public static final Translation2d redHub = new Translation2d(fieldWidth - allianceZoneWidth, fieldLength / 2);
 
-        public static final Pose2d leftTower = new Pose2d(2.0, 5.0, new Rotation2d());
-        public static final double alignMaxVel = 1.0;
-        public static final double alignMaxAccel = 1.0;
-        public static final double alignMaxOmega = 0.75;
-        public static final double alignMaxAlpha = 0.75;
+        public static final double upperCornerY = 7.350;
+        public static final double lowerCornerY = fieldLength - upperCornerY;
+        public static final double blueCornerX = 4;
+        public static final double redCornerX = fieldWidth - blueCornerX;
+
+        public static final double upperBlueCornerAngle = Math.toRadians(-79.58837132);
+        public static final double lowerBlueCornerAngle = Math.toRadians(79.58837132);
+        public static final double upperRedCornerAngle = Math.toRadians(79.58837132 - 180);
+        public static final double lowerRedCornerAngle = Math.toRadians(-79.58837132 + 180);
+
+        public static final double alignMaxVel = 3;
+        public static final double alignMaxAccel = 3;
+        public static final double alignMaxOmega = 1.5;
+        public static final double alignMaxAlpha = 2;
 
         public static final double aimKp = 4.0;
         public static final double aimKi = 0.0;
@@ -159,7 +168,7 @@ public class Constants {
             // configs.CurrentLimits.StatorCurrentLimit = 0.0;
             // configs.CurrentLimits.SupplyCurrentLimit = 0.0;
 
-            configs.Feedback.SensorToMechanismRatio = 0.0;
+            configs.Feedback.SensorToMechanismRatio = 16/1;
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
             configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -184,7 +193,7 @@ public class Constants {
 
             configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
-            configs.Feedback.SensorToMechanismRatio = 0.0;
+            configs.Feedback.SensorToMechanismRatio = (16 / 42) * (33 / 15);
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
             configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
