@@ -34,8 +34,8 @@ public class GetTargetLocation {
             // Lock to alliance corner
             boolean isTop = robotPose.getY() >= (SwerveConstants.fieldLength / 2.0);
             
-            double targetX = isBlue ? 0.0 : SwerveConstants.fieldWidth;
-            double targetY = isTop ? SwerveConstants.fieldLength : 0.0;
+            double targetX = isBlue ? SwerveConstants.bluePassX : SwerveConstants.redPassX;
+            double targetY = isTop ? SwerveConstants.upperPassY : SwerveConstants.lowerPassY;
             
             targetLocation = new Translation2d(targetX, targetY);
         }

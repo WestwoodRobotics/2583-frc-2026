@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 
@@ -54,6 +53,11 @@ public class Constants {
         public static final double alignMaxAccel = 3;
         public static final double alignMaxOmega = 1.5;
         public static final double alignMaxAlpha = 2;
+
+        public static final double bluePassX = 2.5;
+        public static final double redPassX = fieldWidth - bluePassX;
+        public static final double lowerPassY = 1.5;
+        public static final double upperPassY = fieldLength - lowerPassY;
 
         public static final double aimKp = 4.0;
         public static final double aimKi = 0.0;
