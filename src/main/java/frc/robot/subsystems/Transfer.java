@@ -4,22 +4,29 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.TransferConstants;
 
 public class Transfer extends SubsystemBase {
-    private final TalonFX m_floorMotor = new TalonFX(TransferConstants.kFloorId, new CANBus(TransferConstants.kCANBus));
+    private final TalonFX m_floorMotor1 = new TalonFX(TransferConstants.kFloorId1, new CANBus(TransferConstants.kCANBus));
+    private final TalonFX m_floorMotor2 = new TalonFX(TransferConstants.kFloorId2, new CANBus(TransferConstants.kCANBus));
     private final TalonFX m_transferMotor = new TalonFX(TransferConstants.kTransferId, new CANBus(TransferConstants.kCANBus));
 
-    private final MotionMagicVelocityTorqueCurrentFOC m_floorRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
-    private final MotionMagicVelocityTorqueCurrentFOC m_transferRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
+    private final PositionTorqueCurrentFOC m_floorRequest = new PositionTorqueCurrentFOC(0);
+    private final PositionTorqueCurrentFOC m_transferRequest = new PositionTorqueCurrentFOC(0);
 
     private final VoltageOut m_voltReq = new VoltageOut(0.0);
+
+    private final Follower m_invertedFollower = new Follower(TransferConstants.kFloorId1, MotorAlignmentValue.Opposed);
 
     private final SysIdRoutine m_floorSysIdRoutine = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -29,7 +36,7 @@ public class Transfer extends SubsystemBase {
             (state) -> SignalLogger.writeString("floor_state", state.toString())
         ),
         new SysIdRoutine.Mechanism(
-            (volts) -> m_floorMotor.setControl(m_voltReq.withOutput(volts.in(Volts))), 
+            (volts) -> m_floorMotor1.setControl(m_voltReq.withOutput(volts.in(Volts))), 
             null, 
             this)
     );
@@ -39,7 +46,7 @@ public class Transfer extends SubsystemBase {
             null,
             null,
             null,
-            (state) -> SignalLogger.writeString("floor_state", state.toString())
+            (state) -> SignalLogger.writeString("transfer_state", state.toString())
         ),
         new SysIdRoutine.Mechanism(
             (volts) -> m_transferMotor.setControl(m_voltReq.withOutput(volts.in(Volts))), 
@@ -50,12 +57,14 @@ public class Transfer extends SubsystemBase {
     private final SysIdRoutine m_routineToApply = m_floorSysIdRoutine;
 
     public Transfer() {
-        m_floorMotor.getConfigurator().apply(TransferConstants.getVelocityMotorConfigs());
-        m_transferMotor.getConfigurator().apply(TransferConstants.getVelocityMotorConfigs());
+        m_floorMotor1.getConfigurator().apply(TransferConstants.getFloorMotorConfigs());
+        m_floorMotor2.getConfigurator().apply(TransferConstants.getFloorMotorConfigs());
+        m_transferMotor.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
     }
 
     private void runMotors(double floorVel, double transferVel) {
-        m_floorMotor.setControl(m_floorRequest.withVelocity(floorVel));
+        m_floorMotor1.setControl(m_floorRequest.withVelocity(floorVel));
+        m_floorMotor2.setControl(m_invertedFollower);
         m_transferMotor.setControl(m_transferRequest.withVelocity(transferVel));
     }
 
