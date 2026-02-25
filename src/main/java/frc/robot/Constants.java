@@ -59,9 +59,9 @@ public class Constants {
         public static final double lowerPassY = 1.5;
         public static final double upperPassY = fieldLength - lowerPassY;
 
-        public static final double aimKp = 4.0;
+        public static final double aimKp = 11.0;
         public static final double aimKi = 0.0;
-        public static final double aimKd = 0.1;
+        public static final double aimKd = 0.;
     }
 
     public static final class IntakeConstants {
@@ -115,8 +115,7 @@ public class Constants {
             configs.Slot0.kV = 0.0;
             configs.Slot0.kA = 0.16294;
 
-            configs.MotionMagic.MotionMagicAcceleration = 300.0;
-            configs.MotionMagic.MotionMagicCruiseVelocity = 35.0;
+            configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
             // configs.CurrentLimits.StatorCurrentLimit = 80.0;
             // configs.CurrentLimits.SupplyCurrentLimit = 60.0;
@@ -133,7 +132,7 @@ public class Constants {
         public static final int kTopRightFlywheelId = 25;
         public static final int kBottomLeftFlywheelId = 28;
         public static final int kBottomRightFlywheelId = 26;
-        public static final CANBus kCANBus = new CANBus("rio");
+        public static final CANBus kCANBus = new CANBus("SwerveCAN");
 
         public static final double kHoodInPos = 0.0;
 
@@ -165,9 +164,6 @@ public class Constants {
             configs.Slot0.kV = 0.0;
             configs.Slot0.kA = 0.0;
             configs.Slot0.kG = 0.0;
-            
-            configs.MotionMagic.MotionMagicExpo_kV = 0.0;
-            configs.MotionMagic.MotionMagicExpo_kA = 0.0;
 
             // configs.CurrentLimits.StatorCurrentLimit = 0.0;
             // configs.CurrentLimits.SupplyCurrentLimit = 0.0;

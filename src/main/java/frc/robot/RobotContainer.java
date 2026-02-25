@@ -27,6 +27,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Transfer;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
 
 public class RobotContainer {
@@ -49,6 +50,7 @@ public class RobotContainer {
     public final Intake intake = new Intake();
     public final Vision vision = new Vision(drivetrain);
     public final Transfer transfer = new Transfer();
+    public final Shooter shooter = new Shooter();
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -116,10 +118,10 @@ public class RobotContainer {
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        // driver.x().whileTrue(intake.sysIdDynamic(Direction.kForward));
-        // driver.y().whileTrue(intake.sysIdDynamic(Direction.kReverse));
-        // driver.b().whileTrue(intake.sysIdQuasistatic(Direction.kForward));
-        // driver.a().whileTrue(intake.sysIdQuasistatic(Direction.kReverse));
+        // driver.x().whileTrue(shooter.sysIdDynamic(Direction.kForward));
+        // driver.y().whileTrue(shooter.sysIdDynamic(Direction.kReverse));
+        // driver.b().whileTrue(shooter.sysIdQuasistatic(Direction.kForward));
+        // driver.a().whileTrue(shooter.sysIdQuasistatic(Direction.kReverse));
 
         // driver.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
         // driver.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
