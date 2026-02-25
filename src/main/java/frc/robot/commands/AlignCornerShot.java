@@ -22,6 +22,7 @@ public class AlignCornerShot extends Command {
     private LinearPath path;
     private LinearPath.State current;
     private Pose2d target;
+    private final SwerveRequest.ApplyFieldSpeeds m_fieldSpeeds = new SwerveRequest.ApplyFieldSpeeds();
 
     private Timer timer;
     private double currentTime;
@@ -77,6 +78,8 @@ public class AlignCornerShot extends Command {
             robotPose,
             m_drivetrain.getState().Speeds
         );
+        // Initialize path duration by calling calculate once
+        current = path.calculate(0, current, target);
         timer.restart();
         currentTime = 0.0;
     }
@@ -91,8 +94,7 @@ public class AlignCornerShot extends Command {
 
         current = path.calculate(deltaTime, current, target);
         m_drivetrain.setControl(
-            new SwerveRequest.ApplyFieldSpeeds()
-                .withSpeeds(current.speeds)
+            m_fieldSpeeds.withSpeeds(current.speeds)
         );
     }
 
