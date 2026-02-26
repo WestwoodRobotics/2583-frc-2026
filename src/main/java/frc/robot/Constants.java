@@ -149,9 +149,14 @@ public class Constants {
         public static final double kFarDistance = 120.0;
 
         public static final InterpolatingDoubleTreeMap kDistanceToRPS = new InterpolatingDoubleTreeMap();
+        public static final InterpolatingDoubleTreeMap kTOFMap = new InterpolatingDoubleTreeMap();
+
         static {
             kDistanceToRPS.put(0.0, 0.0);
             kDistanceToRPS.put(1.0, 0.0);
+
+            kTOFMap.put(0.0, 0.0);
+            kTOFMap.put(999.0, 0.0);
         }
 
         public static TalonFXConfiguration getHoodMotorConfigs() {

@@ -38,7 +38,7 @@ public class AimSwerve extends Command {
         Pose2d robotPose = drivetrain.getState().Pose;
         Pose2d shooterPose = robotPose.transformBy(SwerveConstants.shooterToRobot);
 
-        Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose);
+        Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose, drivetrain.getState().Speeds);
 
         double[] drives = CommandSwerveDrivetrain.joyStickPolar(controller, 2);
 

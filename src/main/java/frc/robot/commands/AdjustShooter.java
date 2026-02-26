@@ -26,7 +26,7 @@ public class AdjustShooter extends Command {
     public void execute() {
         Pose2d robotPose = m_drivetrain.getState().Pose;
         Pose2d shooterPose = robotPose.transformBy(SwerveConstants.shooterToRobot);
-        Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose);
+        Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose, m_drivetrain.getState().Speeds);
 
         if (targetLocation == null) {
             m_shooter.setFlywheelVelocity(0.0);
