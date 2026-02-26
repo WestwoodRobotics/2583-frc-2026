@@ -1,8 +1,5 @@
 package frc.robot.commands;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -44,23 +41,7 @@ public class AdjustShooter extends Command {
     }
 
     public double getFlywheelRPS(double distance) {
-        TreeMap<Double, Double> map = ShooterConstants.kDistanceToRPS;
-        Map.Entry<Double, Double> floor = map.floorEntry(distance);
-        Map.Entry<Double, Double> ceil = map.ceilingEntry(distance);
-
-        if (floor == null && ceil == null) return 0.0;
-        if (floor == null) return ceil.getValue();
-        if (ceil == null) return floor.getValue();
-
-        Double floorVal = floor.getValue();
-        Double ceilVal = ceil.getValue();
-
-        if (floor.getKey().equals(ceil.getKey())) return floorVal;
-
-        double t = (distance - floor.getKey()) / (ceil.getKey() - floor.getKey());
-        double rps = Math.min(floorVal + t * (ceilVal - floorVal), ShooterConstants.kMaxFlywheelRPS);
-
-        return rps;
+        return Math.min(ShooterConstants.kDistanceToRPS.get(distance), ShooterConstants.kMaxFlywheelRPS);
     }
 
     public double getHoodAngle(double distance) {

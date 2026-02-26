@@ -9,7 +9,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 
-import java.util.TreeMap;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -148,7 +148,7 @@ public class Constants {
         public static final double kNearDistance = 40.0;
         public static final double kFarDistance = 120.0;
 
-        public static final TreeMap<Double, Double> kDistanceToRPS = new TreeMap<>();
+        public static final InterpolatingDoubleTreeMap kDistanceToRPS = new InterpolatingDoubleTreeMap();
         static {
             kDistanceToRPS.put(0.0, 0.0);
             kDistanceToRPS.put(1.0, 0.0);
