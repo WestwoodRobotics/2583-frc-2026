@@ -41,11 +41,11 @@ public class AdjustShooter extends Command {
     }
 
     public double getFlywheelRPS(double distance) {
-        return Math.min(ShooterConstants.kDistanceToRPS.get(distance), ShooterConstants.kMaxFlywheelRPS);
+        return ShooterConstants.kDistanceToRPS.get(distance);
     }
 
     public double getHoodAngle(double distance) {
-        Double angle = ShooterConstants.kMaxAngle - (ShooterConstants.kMaxAngle - ShooterConstants.kMinAngle) / (ShooterConstants.kFarDistance - ShooterConstants.kNearDistance) * (distance - 40);
+        Double angle = ShooterConstants.kMaxAngle - (ShooterConstants.kMaxAngle - ShooterConstants.kMinAngle) / (ShooterConstants.kFarDistance - ShooterConstants.kNearDistance) * (distance - ShooterConstants.kNearDistance);
         return MathUtil.clamp(angle, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
     }
 }

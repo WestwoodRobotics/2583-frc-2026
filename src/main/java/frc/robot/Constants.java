@@ -141,22 +141,22 @@ public class Constants {
 
         public static final double kPosAtMinAngle = 0.0;
         public static final double kPosAtMaxAngle = 10.0; // TODO: Tune this
-        public static final double kMinAngle = 0.0;
-        public static final double kMaxAngle = 45.0; // TODO: Tune this
+        public static final double kMinAngle = 57.0;
+        public static final double kMaxAngle = 80.0; // TODO: Tune this
         public static final double kPerDegree = (kPosAtMaxAngle - kPosAtMinAngle) / (kMaxAngle - kMinAngle);
 
         public static final double kNearDistance = 40.0;
         public static final double kFarDistance = 120.0;
 
         public static final InterpolatingDoubleTreeMap kDistanceToRPS = new InterpolatingDoubleTreeMap();
-        public static final InterpolatingDoubleTreeMap kTOFMap = new InterpolatingDoubleTreeMap();
+        public static final InterpolatingDoubleTreeMap kDistanceToTOF = new InterpolatingDoubleTreeMap();
 
         static {
             kDistanceToRPS.put(0.0, 0.0);
-            kDistanceToRPS.put(1.0, 0.0);
+            kDistanceToRPS.put(999.0, kMaxFlywheelRPS);
 
-            kTOFMap.put(0.0, 0.0);
-            kTOFMap.put(999.0, 0.0);
+            kDistanceToTOF.put(0.0, 0.0);
+            kDistanceToTOF.put(999.0, 0.0);
         }
 
         public static TalonFXConfiguration getHoodMotorConfigs() {

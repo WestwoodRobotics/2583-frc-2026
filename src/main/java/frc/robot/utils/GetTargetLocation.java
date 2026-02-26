@@ -70,7 +70,7 @@ public class GetTargetLocation {
             // NOTE: This assumes kTOFMap contains an entry for every possible distance.
             // If 'distance' is not in the map, this will cause a NullPointerException.
             // Consider using interpolation or a method that handles out-of-range values.
-            double timeOfFlight = ShooterConstants.kTOFMap.get(distance);
+            double timeOfFlight = ShooterConstants.kDistanceToTOF.get(distance);
 
             // 3. Calculate how much the robot will move during that time
             Translation2d robotMovement = robotVelocity.times(timeOfFlight);
