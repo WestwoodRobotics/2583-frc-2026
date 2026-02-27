@@ -140,12 +140,12 @@ public class Constants {
         public static final double kMaxFlywheelRPS = 0.0;
 
         public static final double kPosAtMinAngle = 0.0;
-        public static final double kPosAtMaxAngle = 10.0; // TODO: Tune this
-        public static final double kMinAngle = 57.0;
-        public static final double kMaxAngle = 80.0; // TODO: Tune this
+        public static final double kPosAtMaxAngle = 10.0;
+        public static final double kMinAngle = 60.8;
+        public static final double kMaxAngle = 87.0;
         public static final double kPerDegree = (kPosAtMaxAngle - kPosAtMinAngle) / (kMaxAngle - kMinAngle);
 
-        public static final double kNearDistance = 40.0;
+        public static final double kNearDistance = 20.0;
         public static final double kFarDistance = 120.0;
 
         public static final InterpolatingDoubleTreeMap kDistanceToRPS = new InterpolatingDoubleTreeMap();
@@ -173,7 +173,7 @@ public class Constants {
             // configs.CurrentLimits.StatorCurrentLimit = 0.0;
             // configs.CurrentLimits.SupplyCurrentLimit = 0.0;
 
-            configs.Feedback.SensorToMechanismRatio = 16/1;
+            configs.Feedback.SensorToMechanismRatio = 52/11 * 110/7;
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
             configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -191,14 +191,12 @@ public class Constants {
             configs.Slot0.kV = 0.0;
             configs.Slot0.kA = 0.0;
 
-            configs.MotionMagic.MotionMagicAcceleration = 0.0;
-
             // configs.CurrentLimits.StatorCurrentLimit = 0.0;
             // configs.CurrentLimits.SupplyCurrentLimit = 0.0;
 
             configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
-            configs.Feedback.SensorToMechanismRatio = (16 / 42) * (33 / 15);
+            configs.Feedback.SensorToMechanismRatio = 42/16 * 15/33;
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
             configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
