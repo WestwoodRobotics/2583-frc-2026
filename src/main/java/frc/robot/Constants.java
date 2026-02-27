@@ -142,11 +142,12 @@ public class Constants {
         public static final double kPosAtMinAngle = 0.0;
         public static final double kPosAtMaxAngle = 10.0;
         public static final double kMinAngle = 60.8;
-        public static final double kMaxAngle = 87.0;
+        public static final double kMaxAngle = 90.0;
         public static final double kPerDegree = (kPosAtMaxAngle - kPosAtMinAngle) / (kMaxAngle - kMinAngle);
 
         public static final double kNearDistance = 20.0;
         public static final double kFarDistance = 120.0;
+        public static final double kMaxShootingAngle = 87.0;
 
         public static final InterpolatingDoubleTreeMap kDistanceToRPS = new InterpolatingDoubleTreeMap();
         public static final InterpolatingDoubleTreeMap kDistanceToTOF = new InterpolatingDoubleTreeMap();

@@ -45,7 +45,7 @@ public class AdjustShooter extends Command {
     }
 
     public double getHoodAngle(double distance) {
-        Double angle = ShooterConstants.kMaxAngle - (ShooterConstants.kMaxAngle - ShooterConstants.kMinAngle) / (ShooterConstants.kFarDistance - ShooterConstants.kNearDistance) * (distance - ShooterConstants.kNearDistance);
+        Double angle = ShooterConstants.kMaxAngle - (ShooterConstants.kMaxShootingAngle - ShooterConstants.kMinAngle) / (ShooterConstants.kFarDistance - ShooterConstants.kNearDistance) * (distance - ShooterConstants.kNearDistance);
         return MathUtil.clamp(angle, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
     }
 }
