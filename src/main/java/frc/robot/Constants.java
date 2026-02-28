@@ -52,25 +52,23 @@ public class Constants {
         public static final double kFloorDefaultVel = 0.0;
         public static final double kFloorIntakeVel = 0.0;
         public static final double kTransferDefaultVel = 0.0;
-        public static final double kTransferShootVel = 0.0;
-        public static final double kFloorShootVel = 0.0;
+        public static final double kTransferShootVel = 20.0;
+        public static final double kFloorShootVel = 20.0;
 
         public static TalonFXConfiguration getFloorMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
-            configs.Slot0.kP = 0.0;
+            configs.Slot0.kP = 15.0;
             configs.Slot0.kI = 0.0;
             configs.Slot0.kD = 0.0;
-            configs.Slot0.kS = 0.0;
+            configs.Slot0.kS = 10.365;
             configs.Slot0.kV = 0.0;
-            configs.Slot0.kA = 0.0;
-
-            configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
+            configs.Slot0.kA = 0.21273;
 
             // configs.CurrentLimits.StatorCurrentLimit = 0.0;
             // configs.CurrentLimits.SupplyCurrentLimit = 0.0;
 
-            configs.Feedback.SensorToMechanismRatio = 0.0;
+            configs.Feedback.SensorToMechanismRatio = 47.0/11.0;
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
             configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -81,19 +79,19 @@ public class Constants {
         public static TalonFXConfiguration getTransferMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
-            configs.Slot0.kP = 0.0;
+            configs.Slot0.kP = 15.0;
             configs.Slot0.kI = 0.0;
             configs.Slot0.kD = 0.0;
-            configs.Slot0.kS = 0.0;
+            configs.Slot0.kS = 11.751;
             configs.Slot0.kV = 0.0;
-            configs.Slot0.kA = 0.0;
+            configs.Slot0.kA = 0.20257;
 
             configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
             // configs.CurrentLimits.StatorCurrentLimit = 0.0;
             // configs.CurrentLimits.SupplyCurrentLimit = 0.0;
 
-            configs.Feedback.SensorToMechanismRatio = 0.0;
+            configs.Feedback.SensorToMechanismRatio = 33.0/15.0;
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
             configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;

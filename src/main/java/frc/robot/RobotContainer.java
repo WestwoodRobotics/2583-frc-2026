@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -83,16 +85,17 @@ public class RobotContainer {
         driver.a().whileTrue(new AimShooter(drivetrain, faceAngle, driver));
         driver.x().whileTrue(new AutoAlign(drivetrain));
 
+        driver.rightTrigger().whileTrue(transfer.shootCommand());
+
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        driver.back().and(driver.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        driver.back().and(driver.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        driver.start().and(driver.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        driver.start().and(driver.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        // driver.x().whileTrue(transfer.sysIdDynamic(Direction.kForward));
+        // driver.y().whileTrue(transfer.sysIdDynamic(Direction.kReverse));
+        // driver.b().whileTrue(transfer.sysIdQuasistatic(Direction.kForward));
+        // driver.a().whileTrue(transfer.sysIdQuasistatic(Direction.kReverse));
 
-        driver.leftTrigger().whileTrue(transfer.intakeCommand());
-
-        driver.rightTrigger().whileTrue(transfer.shootCommand());
+        // driver.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
+        // driver.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }

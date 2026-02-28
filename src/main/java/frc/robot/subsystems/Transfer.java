@@ -5,8 +5,7 @@ import static edu.wpi.first.units.Units.Volts;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -21,8 +20,8 @@ public class Transfer extends SubsystemBase {
     private final TalonFX m_floorMotor2 = new TalonFX(TransferConstants.kFloorId2, new CANBus(TransferConstants.kCANBus));
     private final TalonFX m_transferMotor = new TalonFX(TransferConstants.kTransferId, new CANBus(TransferConstants.kCANBus));
 
-    private final PositionTorqueCurrentFOC m_floorRequest = new PositionTorqueCurrentFOC(0);
-    private final PositionTorqueCurrentFOC m_transferRequest = new PositionTorqueCurrentFOC(0);
+    private final VelocityTorqueCurrentFOC m_floorRequest = new VelocityTorqueCurrentFOC(0);
+    private final VelocityTorqueCurrentFOC m_transferRequest = new VelocityTorqueCurrentFOC(0);
 
     private final VoltageOut m_voltReq = new VoltageOut(0.0);
 
@@ -36,7 +35,10 @@ public class Transfer extends SubsystemBase {
             (state) -> SignalLogger.writeString("floor_state", state.toString())
         ),
         new SysIdRoutine.Mechanism(
-            (volts) -> m_floorMotor1.setControl(m_voltReq.withOutput(volts.in(Volts))), 
+            (volts) -> {
+                m_floorMotor1.setControl(m_voltReq.withOutput(volts.in(Volts)));
+                m_floorMotor2.setControl(m_voltReq.withOutput(-volts.in(Volts)));
+            }, 
             null, 
             this)
     );
@@ -54,7 +56,7 @@ public class Transfer extends SubsystemBase {
             this)
     );
 
-    private final SysIdRoutine m_routineToApply = m_floorSysIdRoutine;
+    private final SysIdRoutine m_routineToApply = m_transferSysIdRoutine;
 
     public Transfer() {
         m_floorMotor1.getConfigurator().apply(TransferConstants.getFloorMotorConfigs());
