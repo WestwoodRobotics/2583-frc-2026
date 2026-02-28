@@ -25,6 +25,7 @@ import frc.robot.commands.AutoAlign;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Vision;
 
 public class RobotContainer {
@@ -45,6 +46,7 @@ public class RobotContainer {
 
     public final Intake intake = new Intake();
     public final Vision vision = new Vision(drivetrain);
+    public final Transfer transfer = new Transfer();
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -76,6 +78,7 @@ public class RobotContainer {
         );
 
         intake.setDefaultCommand(intake.intakeDefault());
+        transfer.setDefaultCommand(transfer.defaultCommand());
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
@@ -88,6 +91,8 @@ public class RobotContainer {
         // driver.x().whileTrue(new AutoAlign(drivetrain));
         driver.y().onTrue(intake.fullRetract());
         driver.b().onTrue(intake.partialRetract());
+
+        driver.rightTrigger().whileTrue(transfer.shootCommand());
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
