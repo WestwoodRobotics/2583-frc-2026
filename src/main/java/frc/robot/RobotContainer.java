@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.SwerveConstants;
  import frc.robot.commands.AimShooter;
  import frc.robot.commands.AutoAlign;
+import frc.robot.commands.DriveToObject;
 import frc.robot.commands.LaunchFuelSim;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -143,7 +144,7 @@ public class RobotContainer {
          driver.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
         ));
-        driver.x().whileTrue(new AutoAlign(drivetrain));
+        driver.x().whileTrue(new DriveToObject(drivetrain));
         driver.y().whileTrue(new AimShooter(drivetrain, faceAngle, driver));
 
         //intake

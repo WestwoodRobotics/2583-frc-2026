@@ -133,7 +133,7 @@ public class Constants {
             )
         };
 
-        public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
+        public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
         public static final double bumpThresholdDegrees = 8.0;
         public static final double landingTimeSeconds = 0.25;

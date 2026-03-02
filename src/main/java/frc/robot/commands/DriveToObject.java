@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -17,11 +18,17 @@ import com.ctre.phoenix6.swerve.utility.LinearPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructArraySubscriber;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.Constants.VisionConstants;
@@ -44,22 +51,19 @@ public class DriveToObject extends Command{
     private Pose2d target;
 
 
-    private Vision vision;
     private PhotonCamera camera;
-
-
-
 
     private Timer timer;
     private double currentTime;
     private double deltaTime;
 
+    private StructArraySubscriber<Translation3d> fuelSubscriber = NetworkTableInstance.getDefault()
+        .getStructArrayTopic("Fuel Simulation/Fuels", Translation3d.struct)
+        .subscribe(new Translation3d[0]); 
 
-    public DriveToObject(CommandSwerveDrivetrain drivetrain, Vision vision){
+    public DriveToObject(CommandSwerveDrivetrain drivetrain){
         m_drivetrain = drivetrain;
         timer = new Timer();
-        this.vision = vision;
-        camera = vision.getCamera(5);
     }
 
 
@@ -68,26 +72,28 @@ public class DriveToObject extends Command{
 
         targets = new ArrayList<Pose2d>();
         nears = new ArrayList<Pose2d>();
-        List<Transform3d> transforms = vision.getObjectPos(camera, VisionConstants.robotToCamTransforms[2]);
-
+        List<Translation3d> transform = Arrays.asList(fuelSubscriber.get());
+        List<Transform3d> transforms = transform.stream().map(t -> new Transform3d(t, new Rotation3d())).toList();
 
         for(int i = 0; i < transforms.size(); i++){
             Transform3d object3d = transforms.get(i);
 
 
-            Transform2d object2d = new Transform2d(
+            Pose2d object2d = new Pose2d(
                 object3d.getX(),
                 object3d.getY(),
                 object3d.getRotation().toRotation2d()
             );
 
 
-            targets.add(m_drivetrain.getState().Pose.plus(object2d));
+            targets.add(object2d);
         }
 
         if(targets.isEmpty()) return;
        
         Iterator<Pose2d> iterator = targets.iterator();
+
+        Pose2d nearest = m_drivetrain.getState().Pose.nearest(new ArrayList<>(targets));
 
 
         for(int j = 0; j < targets.size(); j++){
@@ -106,7 +112,7 @@ public class DriveToObject extends Command{
 
 
             Double distance = objTranslation.getDistance(nearTranslation);
-            if(distance < 2 && !nears.contains(object)){
+            if(distance < 2 && !nears.contains(object) && object.getTranslation().getDistance(nearest.getTranslation()) < 2){
                 nears.add(object);
             }
         }
@@ -129,10 +135,10 @@ public class DriveToObject extends Command{
             new Rotation2d()
         );
 
-
+        SmartDashboard.putNumberArray("targetpose", new double[]{target.getX(), target.getY(), target.getRotation().getRadians()});
         path = new LinearPath(
-            new TrapezoidProfile.Constraints(SwerveConstants.alignMaxVel, SwerveConstants.alignMaxAccel),
-            new TrapezoidProfile.Constraints(SwerveConstants.alignMaxOmega, SwerveConstants.alignMaxAlpha)
+            new TrapezoidProfile.Constraints(5.0, 2.0),
+            new TrapezoidProfile.Constraints(2.0, 2.0)
         );
 
         current = new LinearPath.State(
@@ -149,6 +155,8 @@ public class DriveToObject extends Command{
 
     @Override
     public void execute(){
+
+        SmartDashboard.putBoolean("running is true", true);
         Double newTime = timer.get();
         deltaTime = newTime - currentTime;
         currentTime = newTime;
@@ -165,7 +173,9 @@ public class DriveToObject extends Command{
 
     @Override
     public boolean isFinished() {
-        return path!= null && path.isFinished(currentTime);
+        if(target==null || path == null) return true;
+        double targetdist = m_drivetrain.getState().Pose.getTranslation().getDistance(target.getTranslation());
+        return targetdist <0.1;
     }
 
 

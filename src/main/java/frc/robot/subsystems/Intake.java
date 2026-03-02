@@ -24,12 +24,12 @@ public class Intake extends SubsystemBase {
     private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest = new MotionMagicVelocityTorqueCurrentFOC(0);
 
     public Intake() {
-        m_positionMotor = new TalonFX(IntakeConstants.kPositionMotorId, IntakeConstants.kCANBus);
-        m_velocityMotor = new TalonFX(IntakeConstants.kVelocityMotorId, IntakeConstants.kCANBus);
+        m_positionMotor = new TalonFX(IntakeConstants.kPivotMotorId, IntakeConstants.kCANBus);
+        m_velocityMotor = new TalonFX(IntakeConstants.kRollerMotorId, IntakeConstants.kCANBus);
 
         // Apply configurations directly from constants to keep constructor clean of variables
-        m_positionMotor.getConfigurator().apply(IntakeConstants.getPositionMotorConfigs());
-        m_velocityMotor.getConfigurator().apply(IntakeConstants.getVelocityMotorConfigs());
+        m_positionMotor.getConfigurator().apply(IntakeConstants.getPivotConfigs());
+        m_velocityMotor.getConfigurator().apply(IntakeConstants.getRollerConfigs());
     }
 
     /**
