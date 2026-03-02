@@ -107,12 +107,7 @@ public class DriveToObject extends Command{
 
             if(noObj.isEmpty()) continue;
 
-            Pose2d near = object.nearest(noObj);
-            Translation2d nearTranslation = near.getTranslation();
-
-
-            Double distance = objTranslation.getDistance(nearTranslation);
-            if(distance < 2 && !nears.contains(object) && object.getTranslation().getDistance(nearest.getTranslation()) < 2){
+            if(object.getTranslation().getDistance(nearest.getTranslation()) < 2){
                 nears.add(object);
             }
         }
