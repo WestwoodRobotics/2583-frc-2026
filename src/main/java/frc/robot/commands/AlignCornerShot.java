@@ -101,6 +101,6 @@ public class AlignCornerShot extends Command {
     @Override
     public boolean isFinished() {
         if (path == null) return true;
-        return path.isFinished(currentTime);
+        return false;
     }
 }

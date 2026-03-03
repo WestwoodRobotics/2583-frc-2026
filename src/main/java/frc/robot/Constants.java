@@ -80,7 +80,7 @@ public class Constants {
 
         public static final double rollerNeutralVel = 0.0;
         public static final double rollerIntakingVel = 35.0;
-        public static final double rollerShootingVel = 0.0;
+        public static final double rollerShootingVel = 25.0;
 
         public static TalonFXConfiguration getPivotConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
@@ -145,8 +145,8 @@ public class Constants {
         public static final double kMaxAngle = 90.0;
         public static final double kPerDegree = (kPosAtMaxAngle - kPosAtMinAngle) / (kMaxAngle - kMinAngle);
 
-        public static final double kNearDistance = 20.0;
-        public static final double kFarDistance = 120.0;
+        public static final double kManualHoodVolts = 1.0;
+        public static final double kManualFlywheelInc = 2.5;
 
         public static final TreeMap<Double, ShotParam> kDistanceToShotParam = new TreeMap<>();
 
@@ -266,7 +266,7 @@ public class Constants {
         public static final double kFloorDefaultVel = 0.0;
         public static final double kFloorIntakeVel = 0.0;
         public static final double kTransferDefaultVel = 0.0;
-        public static final double kTransferShootVel = 45.0;
+        public static final double kTransferShootVel = 30.0;
         public static final double kFloorShootVel = 20.0;
 
         public static TalonFXConfiguration getFloorMotorConfigs() {
@@ -299,8 +299,6 @@ public class Constants {
             configs.Slot0.kS = 11.751;
             configs.Slot0.kV = 0.0;
             configs.Slot0.kA = 0.20257;
-
-            configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
             // configs.CurrentLimits.StatorCurrentLimit = 0.0;
             // configs.CurrentLimits.SupplyCurrentLimit = 0.0;

@@ -21,7 +21,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.AimSwerve;
+import frc.robot.commands.AdjustShooter;
 import frc.robot.commands.AlignCornerShot;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -84,6 +86,7 @@ public class RobotContainer {
 
         intake.setDefaultCommand(intake.intakeDefault());
         transfer.setDefaultCommand(transfer.defaultCommand());
+        shooter.setDefaultCommand(new AdjustShooter(shooter, drivetrain));
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
@@ -105,20 +108,42 @@ public class RobotContainer {
                 .withVelocityX(drives[0])
                 .withVelocityY(drives[1])
                 .withTargetDirection(Rotation2d.fromDegrees(closestDiagonalDeg));
-        }).alongWith(intake.partialRetract()));
 
-        driver.y().onTrue(intake.fullRetract());
-        driver.b().onTrue(intake.partialRetract());
+        }).alongWith(intake.partialRetract()))
+            .onFalse(intake.runIntake());
+        
+        driver.y().whileTrue(new AlignCornerShot(drivetrain));
+        driver.b().whileTrue(drivetrain.applyRequest(() -> brake));
 
         driver.rightTrigger().whileTrue(transfer.shootCommand());
-        driver.povRight().whileTrue(new AlignCornerShot(drivetrain));
-        driver.povDown().whileTrue(drivetrain.applyRequest(() -> brake));
+        
 
         // Run intake while holding left trigger
         driver.leftTrigger().whileTrue(intake.runIntake());
 
-        driver.x().whileTrue(Commands.run(() -> shooter.setFlywheelVelocity(0)));
+        operator.x().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter)
+            .alongWith(Commands.runOnce(() -> shooter.setFlywheelVelocity(0.0), shooter)));
+        operator.y().onTrue(intake.fullRetract());
+        operator.b().onTrue(intake.partialRetract());
+        operator.a().onTrue(transfer.reverseCommand());
         
+        operator.rightTrigger().whileTrue(Commands.startEnd(
+            () -> shooter.setHoodVoltage(ShooterConstants.kManualHoodVolts),
+            () -> shooter.setHoodVoltage(0),
+            shooter));
+        operator.leftTrigger().whileTrue(Commands.startEnd(
+            () -> shooter.setHoodVoltage(-ShooterConstants.kManualHoodVolts),
+            () -> shooter.setHoodVoltage(0),
+            shooter));
+
+        operator.rightBumper().onTrue(Commands.runOnce(
+            () -> shooter.changeFlywheelVelocity(ShooterConstants.kManualFlywheelInc), shooter));
+        operator.leftBumper().onTrue(Commands.runOnce(
+            () -> shooter.changeFlywheelVelocity(-ShooterConstants.kManualFlywheelInc), shooter));
+
+        operator.povDown().onTrue(Commands.runOnce(shooter::resetHoodPosition, shooter));
+        operator.povRight().onTrue(Commands.runOnce(intake::resetPivot, intake));
+
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         // driver.x().whileTrue(shooter.sysIdDynamic(Direction.kForward));

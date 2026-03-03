@@ -85,6 +85,10 @@ public class Transfer extends SubsystemBase {
         return run(() -> runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel));
     }
 
+    public Command reverseCommand() {
+        return run(() -> runMotors(0.0, -TransferConstants.kTransferShootVel));
+    }
+
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return m_routineToApply.quasistatic(direction);
     }

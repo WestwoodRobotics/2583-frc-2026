@@ -83,8 +83,10 @@ public class Shooter extends SubsystemBase {
     private final DoublePublisher m_hoodActualPos = m_table.getDoubleTopic("Hood/ActualPos").publish();
     private final DoublePublisher m_hoodDesiredAngle = m_table.getDoubleTopic("Hood/DesiredAngle").publish();
     private final DoublePublisher m_hoodActualAngle = m_table.getDoubleTopic("Hood/ActualAngle").publish();
+    private final BooleanPublisher m_autoAimEnabledPub = m_table.getBooleanTopic("AutoAimEnabled").publish();
 
     private double m_desiredAngle = ShooterConstants.kMinAngle;
+    private boolean m_autoAimEnabled = true;
 
     public Shooter() {
         // Apply configurations directly from constants to keep constructor clean of variables
@@ -109,6 +111,7 @@ public class Shooter extends SubsystemBase {
 
         double actualAngle = (hoodPos - ShooterConstants.kPosAtMinAngle) / ShooterConstants.kPerDegree + ShooterConstants.kMinAngle;
         m_hoodActualAngle.set(actualAngle);
+        m_autoAimEnabledPub.set(m_autoAimEnabled);
     }
 
     public void setHoodPosition(double position) {
@@ -121,6 +124,30 @@ public class Shooter extends SubsystemBase {
         double position = ShooterConstants.kPosAtMinAngle + angleDelta * ShooterConstants.kPerDegree;
 
         setHoodPosition(position);
+    }
+
+    public void toggleAutoAim() {
+        m_autoAimEnabled = !m_autoAimEnabled;
+    }
+
+    public boolean isAutoAimEnabled() {
+        return m_autoAimEnabled;
+    }
+
+    public void setHoodVoltage(double volts) {
+        m_autoAimEnabled = false;
+        m_hoodMotor.setControl(m_voltReq.withOutput(volts));
+    }
+
+    public void changeFlywheelVelocity(double delta) {
+        m_autoAimEnabled = false;
+        double newVel = m_flywheelRequest.Velocity + delta;
+        newVel = MathUtil.clamp(newVel, 0, ShooterConstants.kMaxFlywheelRPS);
+        setFlywheelVelocity(newVel);
+    }
+
+    public void resetHoodPosition() {
+        m_hoodMotor.setPosition(0.0);
     }
 
     public void setFlywheelVelocity(double velocity) {

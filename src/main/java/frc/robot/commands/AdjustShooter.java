@@ -27,6 +27,10 @@ public class AdjustShooter extends Command {
 
     @Override
     public void execute() {
+        if (!m_shooter.isAutoAimEnabled()) {
+            return;
+        }
+
         Pose2d robotPose = m_drivetrain.getState().Pose;
         Pose2d shooterPose = robotPose.transformBy(SwerveConstants.robotToShooter);
         Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose, m_drivetrain.getState().Speeds);
