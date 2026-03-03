@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.AimSwerve;
 import frc.robot.commands.AdjustShooter;
@@ -28,9 +29,11 @@ import frc.robot.commands.AlignCornerShot;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
+import frc.robot.utils.GetHubStatus;
 
 public class RobotContainer {
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -54,6 +57,7 @@ public class RobotContainer {
     public final Vision vision = new Vision(drivetrain);
     public final Transfer transfer = new Transfer();
     public final Shooter shooter = new Shooter();
+    public final LED led = new LED(drivetrain, driver, operator);
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -110,7 +114,7 @@ public class RobotContainer {
                 .withTargetDirection(Rotation2d.fromDegrees(closestDiagonalDeg));
 
         }).alongWith(intake.partialRetract()))
-            .onFalse(intake.runIntake());
+            .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.pivotOut)));
         
         driver.y().whileTrue(new AlignCornerShot(drivetrain));
         driver.b().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -122,7 +126,7 @@ public class RobotContainer {
         driver.leftTrigger().whileTrue(intake.runIntake());
 
         operator.x().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter)
-            .alongWith(Commands.runOnce(() -> shooter.setFlywheelVelocity(0.0), shooter)));
+            .andThen(Commands.runOnce(() -> shooter.setFlywheelVelocity(0.0), shooter)));
         operator.y().onTrue(intake.fullRetract());
         operator.b().onTrue(intake.partialRetract());
         operator.a().onTrue(transfer.reverseCommand());
@@ -143,6 +147,10 @@ public class RobotContainer {
 
         operator.povDown().onTrue(Commands.runOnce(shooter::resetHoodPosition, shooter));
         operator.povRight().onTrue(Commands.runOnce(intake::resetPivot, intake));
+        operator.povLeft().onTrue(Commands.runOnce(GetHubStatus::togglePracticeMode));
+
+        operator.start().onTrue(Commands.runOnce(() -> GetHubStatus.changeWhoWon(true)));
+        operator.back().onTrue(Commands.runOnce(() -> GetHubStatus.changeWhoWon(false)));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

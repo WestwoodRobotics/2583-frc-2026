@@ -26,6 +26,8 @@ public class Constants {
         public static final int candleId = 30;
         public static final CANBus canBus = new CANBus("SwerveCAN");
         public static final int endIndex = 26;
+
+        public static final double kMaxHeadingError = 2.0;
     }
 
     public static final class SwerveConstants {

@@ -84,6 +84,7 @@ public class Shooter extends SubsystemBase {
     private final DoublePublisher m_hoodDesiredAngle = m_table.getDoubleTopic("Hood/DesiredAngle").publish();
     private final DoublePublisher m_hoodActualAngle = m_table.getDoubleTopic("Hood/ActualAngle").publish();
     private final BooleanPublisher m_autoAimEnabledPub = m_table.getBooleanTopic("AutoAimEnabled").publish();
+    private final BooleanPublisher m_isManualPub = m_table.getBooleanTopic("IsManual").publish();
 
     private double m_desiredAngle = ShooterConstants.kMinAngle;
     private boolean m_autoAimEnabled = true;
@@ -112,6 +113,7 @@ public class Shooter extends SubsystemBase {
         double actualAngle = (hoodPos - ShooterConstants.kPosAtMinAngle) / ShooterConstants.kPerDegree + ShooterConstants.kMinAngle;
         m_hoodActualAngle.set(actualAngle);
         m_autoAimEnabledPub.set(m_autoAimEnabled);
+        m_isManualPub.set(!m_autoAimEnabled);
     }
 
     public void setHoodPosition(double position) {
