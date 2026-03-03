@@ -42,6 +42,7 @@ public class RobotContainer {
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
     private final CommandXboxController driver = new CommandXboxController(0);
+    private final CommandXboxController operator = new CommandXboxController(1);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     
@@ -104,7 +105,7 @@ public class RobotContainer {
                 .withVelocityX(drives[0])
                 .withVelocityY(drives[1])
                 .withTargetDirection(Rotation2d.fromDegrees(closestDiagonalDeg));
-        }));
+        }).alongWith(intake.partialRetract()));
 
         driver.y().onTrue(intake.fullRetract());
         driver.b().onTrue(intake.partialRetract());
@@ -116,6 +117,8 @@ public class RobotContainer {
         // Run intake while holding left trigger
         driver.leftTrigger().whileTrue(intake.runIntake());
 
+        driver.x().whileTrue(Commands.run(() -> shooter.setFlywheelVelocity(0)));
+        
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         // driver.x().whileTrue(shooter.sysIdDynamic(Direction.kForward));

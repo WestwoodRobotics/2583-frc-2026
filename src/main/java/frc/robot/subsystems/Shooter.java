@@ -12,6 +12,7 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
+import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -60,8 +61,8 @@ public class Shooter extends SubsystemBase {
             new SysIdRoutine.Mechanism(
                 (volts) -> {
                     m_topRightFlywheel.setControl(m_voltReq.withOutput(volts.in(Volts)));
-                    m_bottomRightFlywheel.setControl(m_voltReq.withOutput(-volts.in(Volts)));
-                    m_topLeftFlywheel.setControl(m_voltReq.withOutput(volts.in(Volts)));
+                    m_bottomRightFlywheel.setControl(m_voltReq.withOutput(volts.in(Volts)));
+                    m_topLeftFlywheel.setControl(m_voltReq.withOutput(-volts.in(Volts)));
                     m_bottomLeftFlywheel.setControl(m_voltReq.withOutput(-volts.in(Volts)));
                 },
                 null,
@@ -69,7 +70,7 @@ public class Shooter extends SubsystemBase {
             )
         );
     
-    private final SysIdRoutine m_routineToApply = m_hoodSysIdRoutine;
+    private final SysIdRoutine m_routineToApply = m_flywheelSysIdRoutine;
 
     private final Follower m_alignedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Aligned);
     private final Follower m_opposedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Opposed);
@@ -77,6 +78,7 @@ public class Shooter extends SubsystemBase {
     private final NetworkTable m_table = NetworkTableInstance.getDefault().getTable("Shooter");
     private final DoublePublisher m_flywheelDesiredRPS = m_table.getDoubleTopic("Flywheel/DesiredRPS").publish();
     private final DoublePublisher m_flywheelActualRPS = m_table.getDoubleTopic("Flywheel/ActualRPS").publish();
+    private final BooleanPublisher m_atDesiredRPS = m_table.getBooleanTopic("Flywheel/AtDesiredRPS").publish();
     private final DoublePublisher m_hoodDesiredPos = m_table.getDoubleTopic("Hood/DesiredPos").publish();
     private final DoublePublisher m_hoodActualPos = m_table.getDoubleTopic("Hood/ActualPos").publish();
     private final DoublePublisher m_hoodDesiredAngle = m_table.getDoubleTopic("Hood/DesiredAngle").publish();
@@ -103,6 +105,7 @@ public class Shooter extends SubsystemBase {
         m_hoodDesiredPos.set(m_hoodRequest.Position);
         m_hoodActualPos.set(hoodPos);
         m_hoodDesiredAngle.set(m_desiredAngle);
+        m_atDesiredRPS.set(Math.abs(flywheelVel - m_flywheelRequest.Velocity) < 2.5);
 
         double actualAngle = (hoodPos - ShooterConstants.kPosAtMinAngle) / ShooterConstants.kPerDegree + ShooterConstants.kMinAngle;
         m_hoodActualAngle.set(actualAngle);
@@ -122,9 +125,9 @@ public class Shooter extends SubsystemBase {
 
     public void setFlywheelVelocity(double velocity) {
         m_topRightFlywheel.setControl(m_flywheelRequest.withVelocity(velocity));
-        m_bottomRightFlywheel.setControl(m_opposedFollower);
+        m_bottomRightFlywheel.setControl(m_alignedFollower);
         m_topLeftFlywheel.setControl(m_opposedFollower);
-        m_bottomLeftFlywheel.setControl(m_alignedFollower);
+        m_bottomLeftFlywheel.setControl(m_opposedFollower);
     }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

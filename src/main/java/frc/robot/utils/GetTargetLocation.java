@@ -1,10 +1,13 @@
 package frc.robot.utils;
 
+import java.util.Map;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
 
@@ -16,7 +19,16 @@ public class GetTargetLocation {
      */
     private static final int kTargetingIterations = 3;
 
+    private static double mLastTimestamp = -1.0;
+    private static Translation2d mCachedTarget = null;
+
     public static Translation2d getTargetLocation(Pose2d robotPose, ChassisSpeeds currentSpeeds) {
+        // Cache result to avoid recalculating multiple times per loop cycle (approx 20ms)
+        double currentTimestamp = Timer.getFPGATimestamp();
+        if (Math.abs(currentTimestamp - mLastTimestamp) < 0.005 && mCachedTarget != null) {
+            return mCachedTarget;
+        }
+
         var allianceOpt = DriverStation.getAlliance();
         if (allianceOpt.isEmpty()) {
             return null;
@@ -48,6 +60,9 @@ public class GetTargetLocation {
             
             targetLocation = new Translation2d(targetX, targetY);
         }
+
+        mLastTimestamp = currentTimestamp;
+        mCachedTarget = targetLocation;
         return targetLocation;
     }
 

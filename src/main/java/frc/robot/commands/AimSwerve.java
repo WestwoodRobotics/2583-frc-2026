@@ -36,7 +36,7 @@ public class AimSwerve extends Command {
     public void execute() {
 
         Pose2d robotPose = drivetrain.getState().Pose;
-        Pose2d shooterPose = robotPose.transformBy(SwerveConstants.shooterToRobot);
+        Pose2d shooterPose = robotPose.transformBy(SwerveConstants.robotToShooter);
 
         Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose, drivetrain.getState().Speeds);
 
@@ -56,7 +56,7 @@ public class AimSwerve extends Command {
 
         Rotation2d targetHeading = targetLocation.minus(shooterPose.getTranslation())
             .getAngle()
-            .minus(SwerveConstants.shooterToRobot.getRotation());
+            .minus(SwerveConstants.robotToShooter.getRotation());
 
         drivetrain.setControl(driveRequest
             .withVelocityX(drives[0])
