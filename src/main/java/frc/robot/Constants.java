@@ -23,7 +23,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 public class Constants {
 
     public static final class LEDConstants {
-        public static final int candleId = 30;
+        public static final int candleId = 50;
         public static final CANBus canBus = new CANBus("SwerveCAN");
         public static final int endIndex = 26;
 
@@ -175,18 +175,19 @@ public class Constants {
         public static TalonFXConfiguration getHoodMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
-            configs.Slot0.kP = 300.0;
+            configs.Slot0.kP = 0.0;
             configs.Slot0.kI = 0.0;
-            configs.Slot0.kD = 5.0;
-            configs.Slot0.kS = 20;
+            configs.Slot0.kD = 0.0;
+            configs.Slot0.kS = 0.0;
             configs.Slot0.kV = 0.0;
-            configs.Slot0.kA = 0.2;
+            configs.Slot0.kA = 0.0;
             configs.Slot0.kG = 0.0;
 
             // configs.CurrentLimits.StatorCurrentLimit = 0.0;
             // configs.CurrentLimits.SupplyCurrentLimit = 0.0;
 
-            configs.Feedback.SensorToMechanismRatio = 52/11 * 110/7;
+           // configs.Feedback.SensorToMechanismRatio = 52/11 * 110/7;
+           configs.Feedback.SensorToMechanismRatio = 0.0;
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
             configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -262,7 +263,8 @@ public class Constants {
     public static final class TransferConstants {
         public static final int kFloorId1 = 22;
         public static final int kFloorId2 = 29;
-        public static final int kTransferId = 23;
+        public static final int kTransferId1 = 23;
+        public static final int kTransferId2 = 30;
         public static final String kCANBus = "SwerveCAN";
 
         public static final double kFloorDefaultVel = 0.0;

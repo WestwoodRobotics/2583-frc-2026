@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.CANdleConfiguration;
 import com.ctre.phoenix6.controls.FireAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.signals.LossOfSignalBehaviorValue;
 import com.ctre.phoenix6.signals.RGBWColor;
 import com.ctre.phoenix6.signals.StripTypeValue;
 
@@ -54,7 +55,7 @@ public class LED extends SubsystemBase {
 
         CANdleConfiguration cfg = new CANdleConfiguration();
         cfg.LED.BrightnessScalar = 1.0;
-        cfg.LED.StripType = StripTypeValue.BRG;
+        cfg.LED.LossOfSignalBehavior = LossOfSignalBehaviorValue.DisableLEDs;
 
         candle.getConfigurator().apply(cfg);
 

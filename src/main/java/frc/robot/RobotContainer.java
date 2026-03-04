@@ -77,20 +77,20 @@ public class RobotContainer {
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
-        drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
-            drivetrain.applyRequest(() -> {
-                    double[] drives = CommandSwerveDrivetrain.joyStickPolar(driver, 2);
+        // drivetrain.setDefaultCommand(
+        //     // Drivetrain will execute this command periodically
+        //     drivetrain.applyRequest(() -> {
+        //             double[] drives = CommandSwerveDrivetrain.joyStickPolar(driver, 2);
 
-                    return drive.withVelocityX(drives[0]) // Drive forward with negative Y (forward)
-                        .withVelocityY(drives[1]) // Drive left with negative X (left)
-                        .withRotationalRate(drives[2]); // Drive counterclockwise with negative X (left)
-                })
-        );
+        //             return drive.withVelocityX(drives[0]) // Drive forward with negative Y (forward)
+        //                 .withVelocityY(drives[1]) // Drive left with negative X (left)
+        //                 .withRotationalRate(drives[2]); // Drive counterclockwise with negative X (left)
+        //         })
+        // );
 
         intake.setDefaultCommand(intake.intakeDefault());
         transfer.setDefaultCommand(transfer.defaultCommand());
-        shooter.setDefaultCommand(new AdjustShooter(shooter, drivetrain));
+        // shooter.setDefaultCommand(new AdjustShooter(shooter, drivetrain));
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
@@ -120,7 +120,6 @@ public class RobotContainer {
         driver.b().whileTrue(drivetrain.applyRequest(() -> brake));
 
         driver.rightTrigger().whileTrue(transfer.shootCommand());
-        
 
         // Run intake while holding left trigger
         driver.leftTrigger().whileTrue(intake.runIntake());
