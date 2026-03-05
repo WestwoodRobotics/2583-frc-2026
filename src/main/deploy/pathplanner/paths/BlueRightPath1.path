@@ -1,0 +1,88 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.418691623263889,
+        "y": 2.493742983217593
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.108418976691708,
+        "y": 2.445027828736229
+      },
+      "isLocked": false,
+      "linkedName": "BlueRightPoint1"
+    },
+    {
+      "anchor": {
+        "x": 5.6620619359509705,
+        "y": 2.2716476545662716
+      },
+      "prevControl": {
+        "x": 5.442746901155482,
+        "y": 2.3988954375413845
+      },
+      "nextControl": {
+        "x": 7.73198797817888,
+        "y": 1.0706652411099133
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.958844878098061,
+        "y": 3.9423788557381467
+      },
+      "prevControl": {
+        "x": 7.902722420528018,
+        "y": 3.549063510237069
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "BlueRightPoint2"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.2804901215805475,
+      "rotationDegrees": -135.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "FullRetract",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "RunIntake",
+      "waypointRelativePos": 1.052299222797927,
+      "endWaypointRelativePos": 2.0,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -90.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -135.0
+  },
+  "useDefaultConstraints": false
+}
