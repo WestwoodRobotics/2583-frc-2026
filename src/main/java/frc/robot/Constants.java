@@ -286,7 +286,7 @@ public class Constants {
             // configs.CurrentLimits.StatorCurrentLimit = 0.0;
             // configs.CurrentLimits.SupplyCurrentLimit = 0.0;
 
-            configs.Feedback.SensorToMechanismRatio = 47.0/11.0;
+            configs.Feedback.SensorToMechanismRatio = 42.0/12.0;
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
             configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
