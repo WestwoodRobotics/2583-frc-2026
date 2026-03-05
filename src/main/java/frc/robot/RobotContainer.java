@@ -90,7 +90,7 @@ public class RobotContainer {
 
         intake.setDefaultCommand(intake.intakeDefault());
         transfer.setDefaultCommand(transfer.defaultCommand());
-        // shooter.setDefaultCommand(new AdjustShooter(shooter, drivetrain));
+        shooter.setDefaultCommand(new AdjustShooter(shooter, drivetrain));
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
