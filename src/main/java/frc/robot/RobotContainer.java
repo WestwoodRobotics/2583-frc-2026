@@ -128,7 +128,7 @@ public class RobotContainer {
             .andThen(Commands.runOnce(() -> shooter.setFlywheelVelocity(0.0), shooter)));
         operator.y().onTrue(intake.fullRetract());
         operator.b().onTrue(intake.partialRetract());
-        operator.a().onTrue(transfer.reverseCommand());
+        operator.a().whileTrue(transfer.reverseCommand());
         
         operator.rightTrigger().whileTrue(Commands.startEnd(
             () -> shooter.setHoodVoltage(ShooterConstants.kManualHoodVolts),
