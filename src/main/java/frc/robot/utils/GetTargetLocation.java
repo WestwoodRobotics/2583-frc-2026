@@ -38,8 +38,7 @@ public class GetTargetLocation {
 
         Translation2d targetLocation;
 
-        // Determine if we are in the alliance's shooting zone.
-        // Per WPILib convention, X is the short dimension of the field, Y is the long dimension.
+        // Determine if we are in the alliance's shooting zone based on the robot's X position.
         boolean inZone;
         if (isBlue) {
             inZone = robotPose.getX() < SwerveConstants.allianceZoneWidth;
