@@ -186,8 +186,8 @@ public class Constants {
             // configs.CurrentLimits.StatorCurrentLimit = 0.0;
             // configs.CurrentLimits.SupplyCurrentLimit = 0.0;
 
-           // configs.Feedback.SensorToMechanismRatio = 52/11 * 110/7;
-           configs.Feedback.SensorToMechanismRatio = 0.0;
+            configs.Feedback.SensorToMechanismRatio = (52.0 / 11.0) * (110.0 / 7.0);
+            
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
             configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
