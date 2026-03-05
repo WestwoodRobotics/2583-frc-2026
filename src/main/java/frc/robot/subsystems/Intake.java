@@ -126,7 +126,7 @@ public class Intake extends SubsystemBase {
     }
 
     public Command resetPivot() {
-        return Commands.runOnce(() -> m_pivotMotor.setPosition(IntakeConstants.pivotOut + 0.1));
+        return Commands.runOnce(() -> m_pivotMotor.setPosition(IntakeConstants.pivotOut + 0.1), this);
     }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
