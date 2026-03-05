@@ -210,7 +210,7 @@ public class Constants {
 
             configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
-            configs.Feedback.SensorToMechanismRatio = 42/16 * 15/33;
+            configs.Feedback.SensorToMechanismRatio = (42.0 / 16.0) * (15.0 / 33.0);
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
             configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
