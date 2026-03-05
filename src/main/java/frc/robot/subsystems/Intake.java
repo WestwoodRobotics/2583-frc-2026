@@ -5,7 +5,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.MotionMagicVelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -23,8 +23,8 @@ public class Intake extends SubsystemBase {
     private final TalonFX m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorId, IntakeConstants.kCANBus);
     private final TalonFX m_rollerMotor = new TalonFX(IntakeConstants.kRollerMotorId, IntakeConstants.kCANBus);
 
-    private final MotionMagicTorqueCurrentFOC m_expoRequest = new MotionMagicTorqueCurrentFOC(0.0);
-    private final MotionMagicVelocityTorqueCurrentFOC m_velocityRequest = new MotionMagicVelocityTorqueCurrentFOC(0.0);
+    private final MotionMagicTorqueCurrentFOC m_pivotRequest = new MotionMagicTorqueCurrentFOC(0.0);
+    private final VelocityTorqueCurrentFOC m_rollerRequest = new VelocityTorqueCurrentFOC(0.0);
 
     private final VoltageOut m_voltReq = new VoltageOut(0.0);
 
@@ -72,7 +72,7 @@ public class Intake extends SubsystemBase {
         // Apply pivot offset
         m_pivotMotor.setPosition(IntakeConstants.kPivotOffset);
 
-        m_pivotMotor.setControl(m_expoRequest.withPosition(IntakeConstants.pivotIn));
+        m_pivotMotor.setControl(m_pivotRequest.withPosition(IntakeConstants.pivotIn));
     }
 
     @Override
@@ -80,9 +80,9 @@ public class Intake extends SubsystemBase {
         double pivotActual = m_pivotMotor.getPosition().getValueAsDouble();
         double rollerActual = m_rollerMotor.getVelocity().getValueAsDouble();
 
-        m_pivotDesiredPub.set(m_expoRequest.Position);
+        m_pivotDesiredPub.set(m_pivotRequest.Position);
         m_pivotActualPub.set(pivotActual);
-        m_rollerDesiredPub.set(m_velocityRequest.Velocity);
+        m_rollerDesiredPub.set(m_rollerRequest.Velocity);
         m_rollerActualPub.set(rollerActual);
     }
 
@@ -91,7 +91,7 @@ public class Intake extends SubsystemBase {
      * @param position Target position in rotations.
      */
     public void setPivotPosition(double position) {
-        m_pivotMotor.setControl(m_expoRequest.withPosition(position));
+        m_pivotMotor.setControl(m_pivotRequest.withPosition(position));
     }
 
     /**
@@ -99,7 +99,7 @@ public class Intake extends SubsystemBase {
      * @param velocity Target velocity in rotations per second.
      */
     public void setRollerVelocity(double velocity) {
-        m_rollerMotor.setControl(m_velocityRequest.withVelocity(velocity));
+        m_rollerMotor.setControl(m_rollerRequest.withVelocity(velocity));
     }
 
     public Command intakeDefault() {
@@ -123,6 +123,10 @@ public class Intake extends SubsystemBase {
 
     public Command partialRetract() {
         return Commands.runOnce(() -> setPivotPosition(IntakeConstants.pivotPartial), this);
+    }
+
+    public Command resetPivot() {
+        return Commands.runOnce(() -> m_pivotMotor.setPosition(IntakeConstants.pivotOut + 0.1), this);
     }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

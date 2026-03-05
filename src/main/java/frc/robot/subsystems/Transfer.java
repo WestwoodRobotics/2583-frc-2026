@@ -18,14 +18,16 @@ import frc.robot.Constants.TransferConstants;
 public class Transfer extends SubsystemBase {
     private final TalonFX m_floorMotor1 = new TalonFX(TransferConstants.kFloorId1, new CANBus(TransferConstants.kCANBus));
     private final TalonFX m_floorMotor2 = new TalonFX(TransferConstants.kFloorId2, new CANBus(TransferConstants.kCANBus));
-    private final TalonFX m_transferMotor = new TalonFX(TransferConstants.kTransferId, new CANBus(TransferConstants.kCANBus));
+    private final TalonFX m_transferMotor1 = new TalonFX(TransferConstants.kTransferId1, new CANBus(TransferConstants.kCANBus));
+    private final TalonFX m_transferMotor2 = new TalonFX(TransferConstants.kTransferId2, new CANBus(TransferConstants.kCANBus));
 
     private final VelocityTorqueCurrentFOC m_floorRequest = new VelocityTorqueCurrentFOC(0);
     private final VelocityTorqueCurrentFOC m_transferRequest = new VelocityTorqueCurrentFOC(0);
 
     private final VoltageOut m_voltReq = new VoltageOut(0.0);
 
-    private final Follower m_invertedFollower = new Follower(TransferConstants.kFloorId1, MotorAlignmentValue.Opposed);
+    private final Follower m_floorInvertedFollower = new Follower(TransferConstants.kFloorId1, MotorAlignmentValue.Opposed);
+    private final Follower m_transferInvertedFollower = new Follower(TransferConstants.kTransferId1, MotorAlignmentValue.Opposed);
 
     private final SysIdRoutine m_floorSysIdRoutine = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -51,7 +53,10 @@ public class Transfer extends SubsystemBase {
             (state) -> SignalLogger.writeString("transfer_state", state.toString())
         ),
         new SysIdRoutine.Mechanism(
-            (volts) -> m_transferMotor.setControl(m_voltReq.withOutput(volts.in(Volts))), 
+            (volts) -> {
+                m_transferMotor1.setControl(m_voltReq.withOutput(volts.in(Volts)));
+                m_transferMotor2.setControl(m_voltReq.withOutput(-volts.in(Volts)));
+            }, 
             null, 
             this)
     );
@@ -61,13 +66,15 @@ public class Transfer extends SubsystemBase {
     public Transfer() {
         m_floorMotor1.getConfigurator().apply(TransferConstants.getFloorMotorConfigs());
         m_floorMotor2.getConfigurator().apply(TransferConstants.getFloorMotorConfigs());
-        m_transferMotor.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
+        m_transferMotor1.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
+        m_transferMotor2.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
     }
 
     private void runMotors(double floorVel, double transferVel) {
         m_floorMotor1.setControl(m_floorRequest.withVelocity(floorVel));
-        m_floorMotor2.setControl(m_invertedFollower);
-        m_transferMotor.setControl(m_transferRequest.withVelocity(transferVel));
+        m_floorMotor2.setControl(m_floorInvertedFollower);
+        m_transferMotor1.setControl(m_transferRequest.withVelocity(transferVel));
+        m_transferMotor2.setControl(m_transferInvertedFollower);
     }
 
     public Command defaultCommand() {
@@ -83,6 +90,10 @@ public class Transfer extends SubsystemBase {
     public Command shootCommand() {
         // Right Trigger: Both motors spin at their respective shooting velocities
         return run(() -> runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel));
+    }
+
+    public Command reverseCommand() {
+        return run(() -> runMotors(0.0, -TransferConstants.kTransferShootVel));
     }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
