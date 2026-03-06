@@ -65,9 +65,9 @@
       "command": null
     },
     {
-      "name": "FullRetract",
-      "waypointRelativePos": 1.0,
-      "endWaypointRelativePos": null,
+      "name": "RunIntake",
+      "waypointRelativePos": 0.8021607022282191,
+      "endWaypointRelativePos": 0.81,
       "command": null
     }
   ],

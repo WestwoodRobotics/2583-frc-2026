@@ -54,12 +54,6 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "FullRetract",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
       "name": "RunIntake",
       "waypointRelativePos": 1.052299222797927,
       "endWaypointRelativePos": 2.0,

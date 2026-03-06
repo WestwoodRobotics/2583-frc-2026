@@ -9,7 +9,6 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.events.EventTrigger;
 
@@ -65,14 +64,24 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-
-        // Register Event Triggers
-        new EventTrigger("RunIntake").whileTrue(intake.runIntake());
-        new EventTrigger("PartialRetract").onTrue(intake.partialRetract());
-        new EventTrigger("FullRetract").onTrue(intake.fullRetract());
-
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
+
+        new EventTrigger("AdjustShooterRight").onTrue(Commands.runOnce(() -> {
+            shooter.setFlywheelVelocity(45);
+            shooter.setHoodAngle(54.96);
+        }, shooter));
+
+        new EventTrigger("AdjustShooterDepot").onTrue(Commands.runOnce(() -> {
+            shooter.setFlywheelVelocity(45);
+            shooter.setHoodAngle(65.0);
+        }, shooter));
+
+        new EventTrigger("Shoot").whileTrue(transfer.shootCommand());
+        new EventTrigger("StopShooting").onTrue(Commands.runOnce(() -> transfer.runMotors(0.0, 0.0), transfer));
+
+        new EventTrigger("RunIntake").whileTrue(intake.runIntake());
+        new EventTrigger("PartialRetract").onTrue((intake.partialRetract()));
 
         configureBindings();
 
@@ -98,7 +107,7 @@ public class RobotContainer {
 
         intake.setDefaultCommand(intake.intakeDefault());
         transfer.setDefaultCommand(transfer.defaultCommand());
-        shooter.setDefaultCommand(new AdjustShooter(shooter, drivetrain));
+        // shooter.setDefaultCommand(new AdjustShooter(shooter, drivetrain));
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
@@ -108,12 +117,6 @@ public class RobotContainer {
         );
 
         driver.a().whileTrue(new AimSwerve(drivetrain, faceAngle, driver));
-        // RobotModeTriggers.autonomous().onTrue(intake.fullRetract());
-
-        // driver.a().whileTrue(new AimShooter(drivetrain, faceAngle, driver));
-        // driver.x().whileTrue(new AutoAlign(drivetrain));
-        driver.y().onTrue(intake.fullRetract());
-        driver.b().onTrue(intake.partialRetract());
 
         driver.x().whileTrue(drivetrain.applyRequest(() -> {
             double[] drives = CommandSwerveDrivetrain.joyStickPolar(driver, 2);
@@ -133,7 +136,8 @@ public class RobotContainer {
         driver.y().whileTrue(new AlignCornerShot(drivetrain));
         driver.b().whileTrue(drivetrain.applyRequest(() -> brake));
 
-        driver.rightTrigger().whileTrue(transfer.shootCommand());
+        driver.rightTrigger().whileTrue(transfer.shootCommand()
+            .alongWith(Commands.run(() -> intake.setRollerVelocity(IntakeConstants.rollerShootingVel), intake)));
 
         // Run intake while holding left trigger
         driver.leftTrigger().whileTrue(intake.runIntake());
@@ -142,7 +146,7 @@ public class RobotContainer {
             .andThen(Commands.runOnce(() -> shooter.setFlywheelVelocity(0.0), shooter)));
         operator.y().onTrue(intake.fullRetract());
         operator.b().onTrue(intake.partialRetract());
-        operator.a().whileTrue(transfer.reverseCommand());
+        operator.a().onTrue(transfer.reverseCommand());
         
         operator.rightTrigger().whileTrue(Commands.startEnd(
             () -> shooter.setHoodVoltage(ShooterConstants.kManualHoodVolts),

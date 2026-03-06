@@ -120,8 +120,6 @@ public class Constants {
             configs.Slot0.kV = 0.0;
             configs.Slot0.kA = 0.16294;
 
-            configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
-
             // configs.CurrentLimits.StatorCurrentLimit = 80.0;
             // configs.CurrentLimits.SupplyCurrentLimit = 60.0;
 
@@ -270,8 +268,8 @@ public class Constants {
         public static final double kFloorDefaultVel = 0.0;
         public static final double kFloorIntakeVel = 0.0;
         public static final double kTransferDefaultVel = 0.0;
-        public static final double kTransferShootVel = 30.0;
-        public static final double kFloorShootVel = 20.0;
+        public static final double kTransferShootVel = 28.5714285714;
+        public static final double kFloorShootVel = 5.0;
 
         public static TalonFXConfiguration getFloorMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();

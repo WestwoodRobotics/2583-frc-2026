@@ -1,10 +1,12 @@
 package frc.robot.commands;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.SwerveConstants;
@@ -27,7 +29,7 @@ public class AdjustShooter extends Command {
 
     @Override
     public void execute() {
-        if (!m_shooter.isAutoAimEnabled()) {
+        if (DriverStation.isAutonomousEnabled() || !m_shooter.isAutoAimEnabled()) {
             return;
         }
 
@@ -46,7 +48,7 @@ public class AdjustShooter extends Command {
     }
 
     public ShotParam getShotParam(double distance) {
-        var map = ShooterConstants.kDistanceToShotParam;
+        TreeMap<Double, ShotParam> map = ShooterConstants.kDistanceToShotParam;
         Map.Entry<Double, ShotParam> floor = map.floorEntry(distance);
         Map.Entry<Double, ShotParam> ceil = map.ceilingEntry(distance);
 

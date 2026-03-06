@@ -70,7 +70,7 @@ public class Transfer extends SubsystemBase {
         m_transferMotor2.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
     }
 
-    private void runMotors(double floorVel, double transferVel) {
+    public void runMotors(double floorVel, double transferVel) {
         m_floorMotor1.setControl(m_floorRequest.withVelocity(floorVel));
         m_floorMotor2.setControl(m_floorInvertedFollower);
         m_transferMotor1.setControl(m_transferRequest.withVelocity(transferVel));
