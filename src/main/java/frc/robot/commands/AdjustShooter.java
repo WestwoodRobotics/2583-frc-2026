@@ -6,6 +6,8 @@ import java.util.TreeMap;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ShooterConstants;
@@ -20,6 +22,10 @@ public class AdjustShooter extends Command {
     private Shooter m_shooter;
     private CommandSwerveDrivetrain m_drivetrain;
 
+    private final DoublePublisher distancePub = NetworkTableInstance.getDefault()
+        .getTable("Shooter")
+        .getDoubleTopic("Aim/DistanceToTarget")
+        .publish();
 
     public AdjustShooter(Shooter shooter, CommandSwerveDrivetrain drivetrain) {
         m_shooter = shooter;
@@ -29,19 +35,23 @@ public class AdjustShooter extends Command {
 
     @Override
     public void execute() {
-        if (DriverStation.isAutonomousEnabled() || !m_shooter.isAutoAimEnabled()) {
-            return;
-        }
+        
 
         Pose2d robotPose = m_drivetrain.getState().Pose;
         Pose2d shooterPose = robotPose.plus(SwerveConstants.robotToShooter);
         Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose, m_drivetrain.getState().Speeds);
 
         if (targetLocation == null) {
+            distancePub.set(0);
             return;
         }
 
         double distance = shooterPose.getTranslation().getDistance(targetLocation);
+        distancePub.set(distance);
+
+        if (DriverStation.isAutonomousEnabled() || !m_shooter.isAutoAimEnabled()) {
+            return;
+        }
         ShotParam shotParam = getShotParam(distance);
         m_shooter.setHoodAngle(shotParam.angle);
         m_shooter.setFlywheelVelocity(shotParam.velocity);

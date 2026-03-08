@@ -67,22 +67,6 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
-        new EventTrigger("AdjustShooterRight").onTrue(Commands.runOnce(() -> {
-            shooter.setFlywheelVelocity(45);
-            shooter.setHoodAngle(54.96);
-        }, shooter));
-
-        new EventTrigger("AdjustShooterDepot").onTrue(Commands.runOnce(() -> {
-            shooter.setFlywheelVelocity(45);
-            shooter.setHoodAngle(65.0);
-        }, shooter));
-
-        new EventTrigger("Shoot").onTrue(transfer.shootCommand())
-            .onFalse(Commands.runOnce(() -> transfer.runMotors(0.0, 0.0), transfer));
-
-        new EventTrigger("RunIntake").whileTrue(intake.runIntake());
-        new EventTrigger("PartialRetract").onTrue((intake.partialRetract()));
-
         configureBindings();
 
         faceAngle.HeadingController.setPID(SwerveConstants.aimKp, SwerveConstants.aimKi, SwerveConstants.aimKd);
@@ -184,6 +168,27 @@ public class RobotContainer {
         // driver.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
 
         drivetrain.registerTelemetry(logger::telemeterize);
+    }
+
+    public void configureEventTrigger() {
+
+        new EventTrigger("AdjustShooterRight").onTrue(Commands.runOnce(() -> {
+            shooter.setFlywheelVelocity(45);
+            shooter.setHoodAngle(54.96);
+        }, shooter));
+
+        new EventTrigger("AdjustShooterDepot").onTrue(Commands.runOnce(() -> {
+            shooter.setFlywheelVelocity(45);
+            shooter.setHoodAngle(65.0);
+        }, shooter));
+
+        new EventTrigger("Shoot").onTrue(transfer.shootCommand())
+            .onFalse(Commands.runOnce(() -> transfer.runMotors(0.0, 0.0), transfer));
+
+        new EventTrigger("RunIntake").whileTrue(intake.runIntake());
+        new EventTrigger("PartialRetract").onTrue((intake.partialRetract()));
+
+        new EventTrigger("AimSwerve").whileTrue(new AimSwerve(drivetrain, faceAngle, driver));
     }
 
     public Command getAutonomousCommand() {

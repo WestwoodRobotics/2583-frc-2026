@@ -59,9 +59,9 @@ public class Constants {
         public static final double alignMaxOmega = 1.5;
         public static final double alignMaxAlpha = 2;
 
-        public static final double bluePassX = 2.5;
+        public static final double bluePassX = allianceZoneWidth;
         public static final double redPassX = fieldWidth - bluePassX;
-        public static final double lowerPassY = 1.5;
+        public static final double lowerPassY = 2.0;
         public static final double upperPassY = fieldLength - lowerPassY;
 
         public static final double aimKp = 11.0;
@@ -154,17 +154,10 @@ public class Constants {
 
         static {
             kDistanceToShotParam.put(0.0, new ShotParam(90.0, 40.83051602354075));
-            kDistanceToShotParam.put(1.054, new ShotParam(76.22284289276809, 40.83051602354075));
-            kDistanceToShotParam.put(1.359, new ShotParam(72.3465004156276, 40.83051602354075));
-            kDistanceToShotParam.put(1.664, new ShotParam(68.15218620116376, 40.83051602354075));
-            kDistanceToShotParam.put(1.969, new ShotParam(63.81223607647548, 40.83051602354075));
-            kDistanceToShotParam.put(2.273, new ShotParam(58.87275145469659, 40.83051602354075));
-            kDistanceToShotParam.put(2.578, new ShotParam(54.263374896093104, 40.83051602354075));
-            kDistanceToShotParam.put(2.883, new ShotParam(55.21486284289277, 40.83051602354075));
-            kDistanceToShotParam.put(3.188, new ShotParam(54.61532834580216, 43.33051602354075));
-            kDistanceToShotParam.put(2.273, new ShotParam(54.61532834580216, 45.83051602354075));
-            kDistanceToShotParam.put(2.273, new ShotParam(54.61532834580216, 45.83051602354075));
-            kDistanceToShotParam.put(2.273, new ShotParam(54.61532834580216, 48.33051602354075));
+            kDistanceToShotParam.put(0.8275831632982238, new ShotParam(82.88528678304239, 43.33051602354075));
+            kDistanceToShotParam.put(1.1512575323111562, new ShotParam(90.0, 40.83051602354075));
+            kDistanceToShotParam.put(0.0, new ShotParam(90.0, 40.83051602354075));
+            kDistanceToShotParam.put(0.0, new ShotParam(90.0, 40.83051602354075));
             kDistanceToShotParam.put(20.0, new ShotParam(54.61532834580216, 48.33051602354075));
 
             kDistanceToTOF.put(0.0, 0.0);
@@ -203,8 +196,8 @@ public class Constants {
             configs.Slot0.kV = 0.0;
             configs.Slot0.kA = 0.2;
 
-            configs.CurrentLimits.StatorCurrentLimit = 0.60;
-            configs.CurrentLimits.SupplyCurrentLimit = 0.40;
+            configs.CurrentLimits.StatorCurrentLimit = 60.0;
+            configs.CurrentLimits.SupplyCurrentLimit = 40.0;
 
             configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
@@ -269,7 +262,7 @@ public class Constants {
         public static final double kFloorIntakeVel = 0.0;
         public static final double kTransferDefaultVel = 0.0;
         public static final double kTransferShootVel = 28.5714285714;
-        public static final double kFloorShootVel = 10.0;
+        public static final double kFloorShootVel = 15.0;
 
         public static TalonFXConfiguration getFloorMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();

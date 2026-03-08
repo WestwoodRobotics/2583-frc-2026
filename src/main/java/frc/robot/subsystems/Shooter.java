@@ -87,7 +87,7 @@ public class Shooter extends SubsystemBase {
     private final BooleanPublisher m_isManualPub = m_table.getBooleanTopic("IsManual").publish();
 
     private double m_desiredAngle = ShooterConstants.kMinAngle;
-    private boolean m_autoAimEnabled = true;
+    private boolean m_autoAimEnabled = false;
 
     public Shooter() {
         // Apply configurations directly from constants to keep constructor clean of variables

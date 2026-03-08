@@ -22,11 +22,6 @@ public class AimSwerve extends Command {
 
     private final SwerveRequest.FieldCentricFacingAngle driveRequest;
 
-    private final DoublePublisher distancePub = NetworkTableInstance.getDefault()
-        .getTable("Shooter")
-        .getDoubleTopic("Aim/DistanceToTarget")
-        .publish();
-
     public AimSwerve(CommandSwerveDrivetrain drivetrain, SwerveRequest.FieldCentricFacingAngle request, CommandXboxController controller) {
         this.drivetrain = drivetrain;
         this.controller = controller;
@@ -42,10 +37,16 @@ public class AimSwerve extends Command {
 
         Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose, drivetrain.getState().Speeds);
 
-        double[] drives = CommandSwerveDrivetrain.joyStickPolar(controller, 2);
+        double[] drives;
+        if (DriverStation.isTeleop()) {
+            drives = CommandSwerveDrivetrain.joyStickPolar(controller, 2);
+        } else {
+            drives = new double[] {0, 0};
+        }
+
+        
 
         if (targetLocation == null) {
-            distancePub.set(0);
             drivetrain.setControl(driveRequest
                 .withVelocityX(drives[0])
                 .withVelocityY(drives[1])
@@ -54,7 +55,6 @@ public class AimSwerve extends Command {
         }
 
         double distance = shooterPose.getTranslation().getDistance(targetLocation);
-        distancePub.set(distance);
 
         Rotation2d targetHeading = targetLocation.minus(shooterPose.getTranslation())
             .getAngle()
