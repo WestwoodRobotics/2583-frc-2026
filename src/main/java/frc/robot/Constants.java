@@ -74,15 +74,15 @@ public class Constants {
         public static final int kRollerMotorId = 21;
         public static final CANBus kCANBus = new CANBus("SwerveCAN");
 
-        public static final double kPivotOffset = 0.330810546875;
+        public static final double kPivotOffset = 0.2958984375;
 
-        public static final double pivotIn = 0.330810546875;
+        public static final double pivotIn = 0.2958984375;
         public static final double pivotPartial = 0.00;
         public static final double pivotOut = -0.17;
 
         public static final double rollerNeutralVel = 0.0;
-        public static final double rollerIntakingVel = 35.0;
-        public static final double rollerShootingVel = 25.0;
+        public static final double rollerIntakingVel = 28.0;
+        public static final double rollerShootingVel = 20.0;
 
         public static TalonFXConfiguration getPivotConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
@@ -139,9 +139,9 @@ public class Constants {
 
         public static final double kMaxFlywheelRPS = 80.0;
 
-        public static final double kPosAtMinAngle = 0.091552734375;
+        public static final double kPosAtMinAngle = 7.048828125;
         public static final double kPosAtMaxAngle = 0.0;
-        public static final double kMinAngle = 54.96;
+        public static final double kMinAngle = 54.0;
         public static final double kMaxAngle = 90.0;
         public static final double kPerDegree = (kPosAtMaxAngle - kPosAtMinAngle) / (kMaxAngle - kMinAngle);
 
@@ -153,18 +153,19 @@ public class Constants {
         public static final InterpolatingDoubleTreeMap kDistanceToTOF = new InterpolatingDoubleTreeMap();
 
         static {
-            kDistanceToShotParam.put(0.0, new ShotParam(90.0, 55.0));
-            kDistanceToShotParam.put(0.8763, new ShotParam(83.0, 55.0));
-            kDistanceToShotParam.put(1.0287, new ShotParam(78.0, 45.0));
-            kDistanceToShotParam.put(1.1811, new ShotParam(75.44, 45.0));
-            kDistanceToShotParam.put(1.4351, new ShotParam(70.689, 45.0));
-            kDistanceToShotParam.put(1.6891, new ShotParam(65.55, 45.0));
-            kDistanceToShotParam.put(1.9431, new ShotParam(63.99, 45.0));
-            kDistanceToShotParam.put(2.4003, new ShotParam(54.96, 45.0));
-            kDistanceToShotParam.put(2.9083, new ShotParam(54.96, 50.0));
-            kDistanceToShotParam.put(3.4163, new ShotParam(54.96, 52.5));
-            kDistanceToShotParam.put(3.9243, new ShotParam(54.96, 57.5));
-            kDistanceToShotParam.put(20.0, new ShotParam(54.96, kMaxFlywheelRPS));
+            kDistanceToShotParam.put(0.0, new ShotParam(90.0, 40.83051602354075));
+            kDistanceToShotParam.put(1.054, new ShotParam(76.22284289276809, 40.83051602354075));
+            kDistanceToShotParam.put(1.359, new ShotParam(72.3465004156276, 40.83051602354075));
+            kDistanceToShotParam.put(1.664, new ShotParam(68.15218620116376, 40.83051602354075));
+            kDistanceToShotParam.put(1.969, new ShotParam(63.81223607647548, 40.83051602354075));
+            kDistanceToShotParam.put(2.273, new ShotParam(58.87275145469659, 40.83051602354075));
+            kDistanceToShotParam.put(2.578, new ShotParam(54.263374896093104, 40.83051602354075));
+            kDistanceToShotParam.put(2.883, new ShotParam(55.21486284289277, 40.83051602354075));
+            kDistanceToShotParam.put(3.188, new ShotParam(54.61532834580216, 43.33051602354075));
+            kDistanceToShotParam.put(2.273, new ShotParam(54.61532834580216, 45.83051602354075));
+            kDistanceToShotParam.put(2.273, new ShotParam(54.61532834580216, 45.83051602354075));
+            kDistanceToShotParam.put(2.273, new ShotParam(54.61532834580216, 48.33051602354075));
+            kDistanceToShotParam.put(20.0, new ShotParam(54.61532834580216, 48.33051602354075));
 
             kDistanceToTOF.put(0.0, 0.0);
             kDistanceToTOF.put(999.0, 0.0);
@@ -173,19 +174,18 @@ public class Constants {
         public static TalonFXConfiguration getHoodMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
-            configs.Slot0.kP = 0.0;
+            configs.Slot0.kP = 10.0;
             configs.Slot0.kI = 0.0;
-            configs.Slot0.kD = 0.0;
-            configs.Slot0.kS = 0.0;
+            configs.Slot0.kD = 0.4;
+            configs.Slot0.kS = 3.0;
             configs.Slot0.kV = 0.0;
-            configs.Slot0.kA = 0.0;
+            configs.Slot0.kA = 0.2;
             configs.Slot0.kG = 0.0;
 
-            // configs.CurrentLimits.StatorCurrentLimit = 0.0;
-            // configs.CurrentLimits.SupplyCurrentLimit = 0.0;
+            configs.CurrentLimits.StatorCurrentLimit = 40.0;
+            configs.CurrentLimits.SupplyCurrentLimit = 30.0;
 
-            configs.Feedback.SensorToMechanismRatio = (52.0 / 11.0) * (110.0 / 7.0);
-            
+            // configs.Feedback.SensorToMechanismRatio = (52.0 / 11.0) * (110.0 / 7.0);
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
             configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -196,15 +196,15 @@ public class Constants {
         public static TalonFXConfiguration getFlywheelMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
-            configs.Slot0.kP = 10.0;
+            configs.Slot0.kP = 100.0;
             configs.Slot0.kI = 0.0;
             configs.Slot0.kD = 0.0;
             configs.Slot0.kS = 2.0;
             configs.Slot0.kV = 0.0;
             configs.Slot0.kA = 0.2;
 
-            // configs.CurrentLimits.StatorCurrentLimit = 0.0;
-            // configs.CurrentLimits.SupplyCurrentLimit = 0.0;
+            configs.CurrentLimits.StatorCurrentLimit = 0.60;
+            configs.CurrentLimits.SupplyCurrentLimit = 0.40;
 
             configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
@@ -222,8 +222,8 @@ public class Constants {
         public static final String[] cameraNames = {
             "frontLeft",
             "frontRight",
-            "backLeft",
-            "backRight"
+            // "backLeft",
+            // "backRight"
         };
 
         public static final Transform3d[] robotToCamTransforms = {
@@ -235,14 +235,14 @@ public class Constants {
                 new Translation3d(0.26430478, -0.3150616, 0.1874266),
                 new Rotation3d(0.0, Math.toRadians(20), Math.toRadians(-41.641))
             ),
-            new Transform3d(
-                new Translation3d(-0.129286, 0.352552, 0.240792),
-                new Rotation3d(0.0, Math.toRadians(27.08), Math.toRadians(180 - 48.36))
-            ),
-            new Transform3d(
-                new Translation3d(-0.129286, -0.352552, 0.240792),
-                new Rotation3d(0.0, Math.toRadians(20), Math.toRadians(180 + 48.36))
-            )
+            // new Transform3d(
+            //     new Translation3d(-0.129286, 0.352552, 0.240792),
+            //     new Rotation3d(0.0, Math.toRadians(27.08), Math.toRadians(180 - 48.36))
+            // ),
+            // new Transform3d(
+            //     new Translation3d(-0.129286, -0.352552, 0.240792),
+            //     new Rotation3d(0.0, Math.toRadians(20), Math.toRadians(180 + 48.36))
+            // )
         };
 
         public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
@@ -269,7 +269,7 @@ public class Constants {
         public static final double kFloorIntakeVel = 0.0;
         public static final double kTransferDefaultVel = 0.0;
         public static final double kTransferShootVel = 28.5714285714;
-        public static final double kFloorShootVel = 5.0;
+        public static final double kFloorShootVel = 10.0;
 
         public static TalonFXConfiguration getFloorMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
@@ -295,12 +295,14 @@ public class Constants {
         public static TalonFXConfiguration getTransferMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
-            configs.Slot0.kP = 40.0;
+            configs.Slot0.kP = 50.0;
             configs.Slot0.kI = 0.0;
             configs.Slot0.kD = 0.0;
             configs.Slot0.kS = 11.751;
             configs.Slot0.kV = 0.0;
             configs.Slot0.kA = 0.20257;
+
+            configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
             // configs.CurrentLimits.StatorCurrentLimit = 0.0;
             // configs.CurrentLimits.SupplyCurrentLimit = 0.0;

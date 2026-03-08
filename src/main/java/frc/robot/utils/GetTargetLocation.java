@@ -47,7 +47,8 @@ public class GetTargetLocation {
         if (inZone) {
             // Lock to appropriate hub
             Translation2d realTargetPos = isBlue ? SwerveConstants.blueHub : SwerveConstants.redHub;
-            targetLocation = adjustMovingTarget(robotPose.getTranslation(), currentSpeeds, realTargetPos);
+            targetLocation = realTargetPos;
+            // targetLocation = adjustMovingTarget(robotPose.getTranslation(), currentSpeeds, realTargetPos);
         } else {
             // Lock to alliance corner
             boolean isTop = robotPose.getY() >= (SwerveConstants.fieldLength / 2.0);

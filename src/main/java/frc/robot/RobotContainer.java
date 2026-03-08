@@ -77,8 +77,8 @@ public class RobotContainer {
             shooter.setHoodAngle(65.0);
         }, shooter));
 
-        new EventTrigger("Shoot").whileTrue(transfer.shootCommand());
-        new EventTrigger("StopShooting").onTrue(Commands.runOnce(() -> transfer.runMotors(0.0, 0.0), transfer));
+        new EventTrigger("Shoot").onTrue(transfer.shootCommand())
+            .onFalse(Commands.runOnce(() -> transfer.runMotors(0.0, 0.0), transfer));
 
         new EventTrigger("RunIntake").whileTrue(intake.runIntake());
         new EventTrigger("PartialRetract").onTrue((intake.partialRetract()));
@@ -107,7 +107,7 @@ public class RobotContainer {
 
         intake.setDefaultCommand(intake.intakeDefault());
         transfer.setDefaultCommand(transfer.defaultCommand());
-        // shooter.setDefaultCommand(new AdjustShooter(shooter, drivetrain));
+        shooter.setDefaultCommand(new AdjustShooter(shooter, drivetrain));
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
@@ -136,6 +136,11 @@ public class RobotContainer {
         driver.y().whileTrue(new AlignCornerShot(drivetrain));
         driver.b().whileTrue(drivetrain.applyRequest(() -> brake));
 
+        driver.rightBumper().onTrue(Commands.runOnce(() -> {
+            shooter.setFlywheelVelocity(40.83051602354075);
+            shooter.setHoodAngle(75.62573566084788);
+        }));
+
         driver.rightTrigger().whileTrue(transfer.shootCommand()
             .alongWith(Commands.run(() -> intake.setRollerVelocity(IntakeConstants.rollerShootingVel), intake)));
 
@@ -146,7 +151,6 @@ public class RobotContainer {
             .andThen(Commands.runOnce(() -> shooter.setFlywheelVelocity(0.0), shooter)));
         operator.y().onTrue(intake.fullRetract());
         operator.b().onTrue(intake.partialRetract());
-        operator.a().onTrue(transfer.reverseCommand());
         
         operator.rightTrigger().whileTrue(Commands.startEnd(
             () -> shooter.setHoodVoltage(ShooterConstants.kManualHoodVolts),

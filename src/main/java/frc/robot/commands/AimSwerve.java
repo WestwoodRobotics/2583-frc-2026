@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -36,7 +38,7 @@ public class AimSwerve extends Command {
     public void execute() {
 
         Pose2d robotPose = drivetrain.getState().Pose;
-        Pose2d shooterPose = robotPose.transformBy(SwerveConstants.robotToShooter);
+        Pose2d shooterPose = robotPose.plus(SwerveConstants.robotToShooter);
 
         Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose, drivetrain.getState().Speeds);
 
@@ -57,6 +59,10 @@ public class AimSwerve extends Command {
         Rotation2d targetHeading = targetLocation.minus(shooterPose.getTranslation())
             .getAngle()
             .minus(SwerveConstants.robotToShooter.getRotation());
+
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+            targetHeading = targetHeading.minus(new Rotation2d(Math.toRadians(180.0)));
+        }
 
         drivetrain.setControl(driveRequest
             .withVelocityX(drives[0])

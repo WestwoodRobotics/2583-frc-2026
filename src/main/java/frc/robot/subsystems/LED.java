@@ -111,7 +111,7 @@ public class LED extends SubsystemBase {
         Translation2d target = GetTargetLocation.getTargetLocation(robotPose, drivetrain.getState().Speeds);
         if (target == null) return false;
 
-        Pose2d shooterPose = robotPose.transformBy(SwerveConstants.robotToShooter);
+        Pose2d shooterPose = robotPose.plus(SwerveConstants.robotToShooter);
         Rotation2d angleToTarget = target.minus(shooterPose.getTranslation()).getAngle();
         Rotation2d requiredRobotRotation = angleToTarget.minus(SwerveConstants.robotToShooter.getRotation());
         

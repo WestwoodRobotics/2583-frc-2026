@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.TransferConstants;
@@ -79,21 +80,12 @@ public class Transfer extends SubsystemBase {
 
     public Command defaultCommand() {
         // Default: Floor spins at default speed, Transfer is stopped (default speed is 0.0 in constants)
-        return run(() -> runMotors(TransferConstants.kFloorDefaultVel, TransferConstants.kTransferDefaultVel));
-    }
-
-    public Command intakeCommand() {
-        // Left Trigger: Floor spins at intake speed, Transfer remains at default (stopped)
-        return run(() -> runMotors(TransferConstants.kFloorIntakeVel, TransferConstants.kTransferDefaultVel));
+        return Commands.run(() -> runMotors(TransferConstants.kFloorDefaultVel, TransferConstants.kTransferDefaultVel), this);
     }
 
     public Command shootCommand() {
         // Right Trigger: Both motors spin at their respective shooting velocities
-        return run(() -> runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel));
-    }
-
-    public Command reverseCommand() {
-        return run(() -> runMotors(0.0, -TransferConstants.kTransferShootVel));
+        return Commands.run(() -> runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel), this);
     }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
