@@ -36,7 +36,6 @@ public class AdjustShooter extends Command {
     @Override
     public void execute() {
         
-
         Pose2d robotPose = m_drivetrain.getState().Pose;
         Pose2d shooterPose = robotPose.plus(SwerveConstants.robotToShooter);
         Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose, m_drivetrain.getState().Speeds);

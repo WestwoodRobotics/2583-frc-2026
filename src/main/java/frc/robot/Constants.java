@@ -137,7 +137,7 @@ public class Constants {
         public static final int kBottomRightFlywheelId = 26;
         public static final CANBus kCANBus = new CANBus("SwerveCAN");
 
-        public static final double kMaxFlywheelRPS = 80.0;
+        public static final double kMaxFlywheelRPS = 70.0;
 
         public static final double kPosAtMinAngle = 7.048828125;
         public static final double kPosAtMaxAngle = 0.0;
@@ -158,7 +158,7 @@ public class Constants {
             kDistanceToShotParam.put(1.1512575323111562, new ShotParam(90.0, 40.83051602354075));
             kDistanceToShotParam.put(0.0, new ShotParam(90.0, 40.83051602354075));
             kDistanceToShotParam.put(0.0, new ShotParam(90.0, 40.83051602354075));
-            kDistanceToShotParam.put(20.0, new ShotParam(54.61532834580216, 48.33051602354075));
+            kDistanceToShotParam.put(20.0, new ShotParam(54.61532834580216, kMaxFlywheelRPS));
 
             kDistanceToTOF.put(0.0, 0.0);
             kDistanceToTOF.put(999.0, 0.0);

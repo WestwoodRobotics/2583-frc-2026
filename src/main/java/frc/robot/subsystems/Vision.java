@@ -41,8 +41,8 @@ public class Vision extends SubsystemBase {
     private final IntegerPublisher[] numTagsPubs;
     private final DoublePublisher[] totalAreaPubs;
     private final DoublePublisher[] ambiguityPubs;
-    private final BooleanPublisher[] landingPubs;
-    private final BooleanPublisher[] onBumpPubs;
+    private final BooleanPublisher landingPub = visionTable.getBooleanTopic("Bump/Landing").publish();;
+    private final BooleanPublisher onBumpPub = visionTable.getBooleanTopic("Bump/OnBump").publish();
 
     private boolean wasOnBump = false;
     private double landingStartTime = 0.0;
@@ -66,8 +66,6 @@ public class Vision extends SubsystemBase {
         numTagsPubs = new IntegerPublisher[cameraNames.length];
         totalAreaPubs = new DoublePublisher[cameraNames.length];
         ambiguityPubs = new DoublePublisher[cameraNames.length];
-        landingPubs = new BooleanPublisher[cameraNames.length];
-        onBumpPubs = new BooleanPublisher[cameraNames.length];
 
         for (int i = 0; i < cameraNames.length; i++) {
             cameras[i] = new PhotonCamera(cameraNames[i]);
@@ -85,8 +83,6 @@ public class Vision extends SubsystemBase {
             numTagsPubs[i] = camTable.getIntegerTopic("Tag/numTags").publish();
             totalAreaPubs[i] = camTable.getDoubleTopic("Tag/TotalArea").publish();
             ambiguityPubs[i] = camTable.getDoubleTopic("Tag/ambiguity").publish();
-            landingPubs[i] = camTable.getBooleanTopic("Bump/Landing").publish();
-            onBumpPubs[i] = camTable.getBooleanTopic("Bump/OnBump").publish();
         }
     }
 
@@ -112,9 +108,10 @@ public class Vision extends SubsystemBase {
 
         boolean isLanding = (Timer.getFPGATimestamp() - landingStartTime) < VisionConstants.landingTimeSeconds;
 
+        onBumpPub.set(isOnBump);
+        landingPub.set(isLanding);
+
         for (int i = 0; i < cameras.length; i++) {
-            onBumpPubs[i].set(isOnBump);
-            landingPubs[i].set(isLanding);
 
             for (PhotonPipelineResult result : cameras[i].getAllUnreadResults()) {
                 Optional<EstimatedRobotPose> poseOptional = poseEstimators[i].estimateCoprocMultiTagPose(result);
@@ -128,7 +125,7 @@ public class Vision extends SubsystemBase {
                     if (isLanding) {
                         stdDevs = VecBuilder.fill(VisionConstants.landingStdDev, VisionConstants.landingStdDev, Double.MAX_VALUE);
                     } else {
-                        stdDevs = getEstimationStdDevs(pose, pitch, roll, yawRate);
+                        stdDevs = getEstimationStdDevs(pose, pitch, roll, yawRate, i);
                     }
 
                     visionXPubs[i].set(pose.estimatedPose.getX());
@@ -136,15 +133,6 @@ public class Vision extends SubsystemBase {
                     visionRotPubs[i].set(pose.estimatedPose.getRotation().getAngle());
                     xyStdDevPubs[i].set(stdDevs.get(0, 0));
                     rotStdDevPubs[i].set(stdDevs.get(2, 0));
-
-                    int numTags = pose.targetsUsed.size();
-                    double totalArea = 0;
-                    for (var target : pose.targetsUsed) totalArea += target.getArea();
-                    double ambiguity = (numTags == 1) ? pose.targetsUsed.get(0).getPoseAmbiguity() : 0;
-
-                    numTagsPubs[i].set(numTags);
-                    totalAreaPubs[i].set(totalArea);
-                    ambiguityPubs[i].set(ambiguity);
 
                     drivetrain.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, stdDevs);
                 }
@@ -155,7 +143,7 @@ public class Vision extends SubsystemBase {
         }
     }
 
-    private Matrix<N3, N1> getEstimationStdDevs(EstimatedRobotPose estimatedPose, double pitch, double roll, double yawRate) {
+    private Matrix<N3, N1> getEstimationStdDevs(EstimatedRobotPose estimatedPose, double pitch, double roll, double yawRate, int i) {
         Matrix<N3, N1> infiniteStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
 
         // Rejection Criteria
@@ -179,6 +167,10 @@ public class Vision extends SubsystemBase {
         double k = (numTags > 1) ? VisionConstants.multiTagK : VisionConstants.singleTagK;
         double sigma_xy = (k / totalArea) + VisionConstants.baseSigma;
         double sigma_theta = (numTags > 1) ? VisionConstants.multiTagThetaSigma : Double.MAX_VALUE;
+
+        numTagsPubs[i].set(numTags);
+        totalAreaPubs[i].set(totalArea);
+        ambiguityPubs[i].set((numTags == 1) ? estimatedPose.targetsUsed.get(0).getPoseAmbiguity() : 0);
 
         return VecBuilder.fill(sigma_xy, sigma_xy, sigma_theta);
     }

@@ -23,7 +23,13 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
+          "data": {
+            "pathName": "BlueRightPath3"
+          }
+        },
+        {
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -33,7 +39,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.5
+                        "waitTime": 1.0
                       }
                     },
                     {
@@ -49,6 +55,12 @@
                 "type": "named",
                 "data": {
                   "name": "AimSwerve"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 10.0
                 }
               }
             ]

@@ -13,6 +13,7 @@ import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -46,6 +47,8 @@ public class RobotContainer {
         .withDeadband(0).withRotationalDeadband(0)
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+
+    private double[] driverInputs = new double[3];
 
     private final CommandXboxController driver = new CommandXboxController(0);
     private final CommandXboxController operator = new CommandXboxController(1);
@@ -81,11 +84,11 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
-                    double[] drives = CommandSwerveDrivetrain.joyStickPolar(driver, 2);
+                    CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver, 2);
 
-                    return drive.withVelocityX(drives[0]) // Drive forward with negative Y (forward)
-                        .withVelocityY(drives[1]) // Drive left with negative X (left)
-                        .withRotationalRate(drives[2]); // Drive counterclockwise with negative X (left)
+                    return drive.withVelocityX(driverInputs[0]) // Drive forward with negative Y (forward)
+                        .withVelocityY(driverInputs[1]) // Drive left with negative X (left)
+                        .withRotationalRate(driverInputs[2]); // Drive counterclockwise with negative X (left)
                 })
         );
 
@@ -103,15 +106,15 @@ public class RobotContainer {
         driver.a().whileTrue(new AimSwerve(drivetrain, faceAngle, driver));
 
         driver.x().whileTrue(drivetrain.applyRequest(() -> {
-            double[] drives = CommandSwerveDrivetrain.joyStickPolar(driver, 2);
+            CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver, 2);
 
             Rotation2d currentRot = drivetrain.getState().Pose.getRotation();
             double currentDeg = currentRot.getDegrees();
             double closestDiagonalDeg = Math.round((currentDeg - 45) / 90.0) * 90.0 + 45;
 
             return faceAngle
-                .withVelocityX(drives[0])
-                .withVelocityY(drives[1])
+                .withVelocityX(driverInputs[0])
+                .withVelocityY(driverInputs[1])
                 .withTargetDirection(Rotation2d.fromDegrees(closestDiagonalDeg));
 
         }).alongWith(intake.partialRetract()))
@@ -120,10 +123,11 @@ public class RobotContainer {
         driver.y().whileTrue(new AlignCornerShot(drivetrain));
         driver.b().whileTrue(drivetrain.applyRequest(() -> brake));
 
-        driver.rightBumper().onTrue(Commands.runOnce(() -> {
-            shooter.setFlywheelVelocity(40.83051602354075);
-            shooter.setHoodAngle(75.62573566084788);
-        }));
+        driver.rightBumper().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter)
+            .andThen(Commands.runOnce(() -> {
+                shooter.setFlywheelVelocity(40.83051602354075);
+                shooter.setHoodAngle(75.62573566084788);
+        })));
 
         driver.rightTrigger().whileTrue(transfer.shootCommand()
             .alongWith(Commands.run(() -> intake.setRollerVelocity(IntakeConstants.rollerShootingVel), intake)));
@@ -135,6 +139,9 @@ public class RobotContainer {
             .andThen(Commands.runOnce(() -> shooter.setFlywheelVelocity(0.0), shooter)));
         operator.y().onTrue(intake.fullRetract());
         operator.b().onTrue(intake.partialRetract());
+        operator.a().onTrue(Commands.runOnce(() -> 
+            drivetrain.getPigeon2().setYaw(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ? 0 : 180.0)
+        ));
         
         operator.rightTrigger().whileTrue(Commands.startEnd(
             () -> shooter.setHoodVoltage(ShooterConstants.kManualHoodVolts),
@@ -182,8 +189,13 @@ public class RobotContainer {
             shooter.setHoodAngle(65.0);
         }, shooter));
 
-        new EventTrigger("Shoot").onTrue(transfer.shootCommand())
-            .onFalse(Commands.runOnce(() -> transfer.runMotors(0.0, 0.0), transfer));
+        new EventTrigger("AdjustShooterPreload").onTrue(Commands.runOnce(() -> {
+            shooter.setFlywheelVelocity(40);
+            shooter.setHoodAngle(58.0);
+        }, shooter));
+
+        new EventTrigger("Shoot").onTrue(transfer.shootCommand()
+            .alongWith(Commands.run(() -> intake.setRollerVelocity(IntakeConstants.rollerShootingVel), intake)));
 
         new EventTrigger("RunIntake").whileTrue(intake.runIntake());
         new EventTrigger("PartialRetract").onTrue((intake.partialRetract()));

@@ -3,8 +3,6 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,6 +19,7 @@ public class AimSwerve extends Command {
     private final CommandXboxController controller;
 
     private final SwerveRequest.FieldCentricFacingAngle driveRequest;
+    private final double[] driverInputs = new double[3];
 
     public AimSwerve(CommandSwerveDrivetrain drivetrain, SwerveRequest.FieldCentricFacingAngle request, CommandXboxController controller) {
         this.drivetrain = drivetrain;
@@ -37,24 +36,21 @@ public class AimSwerve extends Command {
 
         Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose, drivetrain.getState().Speeds);
 
-        double[] drives;
         if (DriverStation.isTeleop()) {
-            drives = CommandSwerveDrivetrain.joyStickPolar(controller, 2);
+            CommandSwerveDrivetrain.joyStickPolar(driverInputs, controller, 2);
         } else {
-            drives = new double[] {0, 0};
+            driverInputs[0] = 0;
+            driverInputs[1] = 0;
+            driverInputs[2] = 0;
         }
-
-        
 
         if (targetLocation == null) {
             drivetrain.setControl(driveRequest
-                .withVelocityX(drives[0])
-                .withVelocityY(drives[1])
+                .withVelocityX(driverInputs[0])
+                .withVelocityY(driverInputs[1])
                 .withTargetDirection(robotPose.getRotation()));
             return;
         }
-
-        double distance = shooterPose.getTranslation().getDistance(targetLocation);
 
         Rotation2d targetHeading = targetLocation.minus(shooterPose.getTranslation())
             .getAngle()
@@ -65,8 +61,8 @@ public class AimSwerve extends Command {
         }
 
         drivetrain.setControl(driveRequest
-            .withVelocityX(drives[0])
-            .withVelocityY(drives[1])
+            .withVelocityX(driverInputs[0])
+            .withVelocityY(driverInputs[1])
             .withTargetDirection(targetHeading));
     }
 }
