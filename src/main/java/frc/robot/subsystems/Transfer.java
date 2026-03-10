@@ -18,7 +18,6 @@ import frc.robot.Constants.TransferConstants;
 
 public class Transfer extends SubsystemBase {
     private final TalonFX m_floorMotor1 = new TalonFX(TransferConstants.kFloorId1, new CANBus(TransferConstants.kCANBus));
-    private final TalonFX m_floorMotor2 = new TalonFX(TransferConstants.kFloorId2, new CANBus(TransferConstants.kCANBus));
     private final TalonFX m_transferMotor1 = new TalonFX(TransferConstants.kTransferId1, new CANBus(TransferConstants.kCANBus));
     private final TalonFX m_transferMotor2 = new TalonFX(TransferConstants.kTransferId2, new CANBus(TransferConstants.kCANBus));
 
@@ -27,7 +26,6 @@ public class Transfer extends SubsystemBase {
 
     private final VoltageOut m_voltReq = new VoltageOut(0.0);
 
-    private final Follower m_floorInvertedFollower = new Follower(TransferConstants.kFloorId1, MotorAlignmentValue.Opposed);
     private final Follower m_transferInvertedFollower = new Follower(TransferConstants.kTransferId1, MotorAlignmentValue.Opposed);
 
     private final SysIdRoutine m_floorSysIdRoutine = new SysIdRoutine(
@@ -40,7 +38,6 @@ public class Transfer extends SubsystemBase {
         new SysIdRoutine.Mechanism(
             (volts) -> {
                 m_floorMotor1.setControl(m_voltReq.withOutput(volts.in(Volts)));
-                m_floorMotor2.setControl(m_voltReq.withOutput(-volts.in(Volts)));
             }, 
             null, 
             this)
@@ -66,14 +63,12 @@ public class Transfer extends SubsystemBase {
 
     public Transfer() {
         m_floorMotor1.getConfigurator().apply(TransferConstants.getFloorMotorConfigs());
-        m_floorMotor2.getConfigurator().apply(TransferConstants.getFloorMotorConfigs());
         m_transferMotor1.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
         m_transferMotor2.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
     }
 
     public void runMotors(double floorVel, double transferVel) {
         m_floorMotor1.setControl(m_floorRequest.withVelocity(floorVel));
-        m_floorMotor2.setControl(m_floorInvertedFollower);
         m_transferMotor1.setControl(m_transferRequest.withVelocity(transferVel));
         m_transferMotor2.setControl(m_transferInvertedFollower);
     }
