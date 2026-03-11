@@ -3,9 +3,9 @@
   "robotLength": 0.831,
   "holonomicMode": true,
   "pathFolders": [
-    "BluePreloadPath",
-    "BlueRightPath",
-    "BlueDepotPath"
+    "DepotPaths",
+    "PreloadPaths",
+    "RightPaths"
   ],
   "autoFolders": [],
   "defaultMaxVel": 2.0,

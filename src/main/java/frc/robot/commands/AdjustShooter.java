@@ -48,7 +48,7 @@ public class AdjustShooter extends Command {
         double distance = shooterPose.getTranslation().getDistance(targetLocation);
         distancePub.set(distance);
 
-        if (DriverStation.isAutonomousEnabled() || !m_shooter.isAutoAimEnabled()) {
+        if (!m_shooter.isAutoAimEnabled()) {
             return;
         }
         ShotParam shotParam = getShotParam(distance);

@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.175891583452211,
-        "y": 5.477660485021398
+        "x": 1.5376972925533314,
+        "y": 5.550893906846335
       },
       "isLocked": false,
       "linkedName": "BlueDepotPoint4"
     },
     {
       "anchor": {
-        "x": 2.602,
-        "y": 4.021328
+        "x": 1.9947503566333804,
+        "y": 5.322396576319543
       },
       "prevControl": {
-        "x": 2.240395652860997,
-        "y": 4.9083594864479325
+        "x": 1.726950537114789,
+        "y": 5.448668602654199
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -26.452041896577324
   },
   "reversed": false,
-  "folder": "BlueDepotPath",
+  "folder": "DepotPaths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

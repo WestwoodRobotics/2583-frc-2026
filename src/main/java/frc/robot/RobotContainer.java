@@ -53,8 +53,8 @@ public class RobotContainer {
     private final CommandXboxController driver = new CommandXboxController(0);
     private final CommandXboxController operator = new CommandXboxController(1);
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();  
+      
     private final Telemetry logger = new Telemetry(CommandSwerveDrivetrain.MaxSpeed, drivetrain.getPigeon2());
 
     public final Intake intake = new Intake();
@@ -178,21 +178,6 @@ public class RobotContainer {
     }
 
     public void configureEventTrigger() {
-
-        new EventTrigger("AdjustShooterRight").onTrue(Commands.runOnce(() -> {
-            shooter.setFlywheelVelocity(45);
-            shooter.setHoodAngle(54.96);
-        }, shooter));
-
-        new EventTrigger("AdjustShooterDepot").onTrue(Commands.runOnce(() -> {
-            shooter.setFlywheelVelocity(45);
-            shooter.setHoodAngle(65.0);
-        }, shooter));
-
-        new EventTrigger("AdjustShooterPreload").onTrue(Commands.runOnce(() -> {
-            shooter.setFlywheelVelocity(40);
-            shooter.setHoodAngle(58.0);
-        }, shooter));
 
         new EventTrigger("Shoot").onTrue(transfer.shootCommand()
             .alongWith(Commands.run(() -> intake.setRollerVelocity(IntakeConstants.rollerShootingVel), intake)));

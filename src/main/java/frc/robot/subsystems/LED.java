@@ -32,7 +32,7 @@ import frc.robot.utils.GetTargetLocation;
 
 public class LED extends SubsystemBase {
 
-    private CANdle candle;
+    // private CANdle candle;
     private final CommandSwerveDrivetrain drivetrain;
     private final CommandXboxController driver;
     private final CommandXboxController operator;
@@ -51,13 +51,13 @@ public class LED extends SubsystemBase {
         this.drivetrain = drivetrain;
         this.driver = driver;
         this.operator = operator;
-        candle = new CANdle(LEDConstants.candleId, LEDConstants.canBus);
+        // candle = new CANdle(LEDConstants.candleId, LEDConstants.canBus);
 
         CANdleConfiguration cfg = new CANdleConfiguration();
         cfg.LED.BrightnessScalar = 1.0;
         cfg.LED.LossOfSignalBehavior = LossOfSignalBehaviorValue.DisableLEDs;
 
-        candle.getConfigurator().apply(cfg);
+        // candle.getConfigurator().apply(cfg);
 
         wasHubActive = GetHubStatus.isHubActive();
     }
@@ -84,27 +84,27 @@ public class LED extends SubsystemBase {
         }
         wasHubActive = isHubActive;
 
-        if (!isHubActive) {
-            setSolidColor(Color.kRed);
-            return;
-        }
+        // if (!isHubActive) {
+        //     setSolidColor(Color.kRed);
+        //     return;
+        // }
 
-        Pose2d robotPose = drivetrain.getState().Pose;
+        Pose2d shooterPose = drivetrain.getState().Pose.plus(SwerveConstants.robotToShooter);
 
-        boolean isAligned = isAligned(robotPose);
+        boolean isAligned = isAligned(shooterPose);
         m_canShootPub.set(isAligned);
 
-        if (isAligned) {
-            setSolidColor(Color.kGreen);
-            return;
-        }
+        // if (isAligned) {
+        //     setSolidColor(Color.kGreen);
+        //     return;
+        // }
 
-        if (isSwerveCommandRunning() && isInAllianceZone(robotPose)) {
-            setSolidColor(Color.kYellow);
-            return;
-        }
+        // if (isSwerveCommandRunning() && isInAllianceZone(robotPose)) {
+        //     setSolidColor(Color.kYellow);
+        //     return;
+        // }
 
-        setSolidColor(Color.kOrange);
+        // setSolidColor(Color.kOrange);
     }
 
     private boolean isAligned(Pose2d robotPose) {
@@ -135,21 +135,21 @@ public class LED extends SubsystemBase {
         }
     }
 
-    public void setSolidColor(Color color, double brightness){
-        candle.setControl(new SolidColor(0, LEDConstants.endIndex).withColor(new RGBWColor(color).scaleBrightness(brightness)));
-    }
+    // public void setSolidColor(Color color, double brightness){
+    //     candle.setControl(new SolidColor(0, LEDConstants.endIndex).withColor(new RGBWColor(color).scaleBrightness(brightness)));
+    // }
 
-    public void setSolidColor(Color color){
-        this.setSolidColor(color, 1);
-    }
+    // public void setSolidColor(Color color){
+    //     this.setSolidColor(color, 1);
+    // }
     
-    public void clearColor(){
-        candle.setControl(new SolidColor(0, LEDConstants.endIndex).withColor(new RGBWColor(new Color(0,0,0)).scaleBrightness(1)));
-    }
+    // public void clearColor(){
+    //     candle.setControl(new SolidColor(0, LEDConstants.endIndex).withColor(new RGBWColor(new Color(0,0,0)).scaleBrightness(1)));
+    // }
     
-    public void startFireAnimation(){
-        FireAnimation FIRE = new FireAnimation(0, LEDConstants.endIndex).withBrightness(1).withCooling(0.3);
-        candle.setControl(FIRE);   
-    }
+    // public void startFireAnimation(){
+    //     FireAnimation FIRE = new FireAnimation(0, LEDConstants.endIndex).withBrightness(1).withCooling(0.3);
+    //     candle.setControl(FIRE);   
+    // }
 
 }

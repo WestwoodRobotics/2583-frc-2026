@@ -13,19 +13,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "BlueRightPath1"
+            "pathName": "RightPath1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BlueRightPath2"
+            "pathName": "RightPath2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BlueRightPath3"
+            "pathName": "RightPath3"
           }
         },
         {

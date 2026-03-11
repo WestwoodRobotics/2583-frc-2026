@@ -52,7 +52,7 @@
     "rotation": -90.0
   },
   "reversed": false,
-  "folder": "BlueRightPath",
+  "folder": "RightPaths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -90.0

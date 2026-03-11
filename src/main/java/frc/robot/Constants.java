@@ -66,7 +66,7 @@ public class Constants {
 
         public static final double aimKp = 11.0;
         public static final double aimKi = 0.0;
-        public static final double aimKd = 0.;
+        public static final double aimKd = 0.5;
     }
 
     public static final class IntakeConstants {
@@ -154,10 +154,14 @@ public class Constants {
 
         static {
             kDistanceToShotParam.put(0.0, new ShotParam(90.0, 40.83051602354075));
-            kDistanceToShotParam.put(0.8275831632982238, new ShotParam(82.88528678304239, 43.33051602354075));
-            kDistanceToShotParam.put(1.1512575323111562, new ShotParam(90.0, 40.83051602354075));
-            kDistanceToShotParam.put(0.0, new ShotParam(90.0, 40.83051602354075));
-            kDistanceToShotParam.put(0.0, new ShotParam(90.0, 40.83051602354075));
+            kDistanceToShotParam.put(0.8613044801194663, new ShotParam(79.48129675810473, 41.09694538230624));
+            kDistanceToShotParam.put(1.1166334383917385, new ShotParam(72.48877805486285, 38.59694538230624));
+            kDistanceToShotParam.put(1.3475077105060949, new ShotParam(68.18204488778055, 36.12782894843723));
+            kDistanceToShotParam.put(1.9054904272389583, new ShotParam(59.90274314214464, 38.62782894843723));
+            kDistanceToShotParam.put(2.1371883921918853, new ShotParam(58.416458852867834, 39.029620727549606));
+            kDistanceToShotParam.put(2.9556838674451433, new ShotParam(58.81795511221945, 42.948446673120074));
+            kDistanceToShotParam.put(3.3300660570256118, new ShotParam(53.937655860349125, 43.59694538230624));
+            kDistanceToShotParam.put(3.909376930744798, new ShotParam(53.83291770573566,46.09694538230624));
             kDistanceToShotParam.put(20.0, new ShotParam(54.61532834580216, kMaxFlywheelRPS));
 
             kDistanceToTOF.put(0.0, 0.0);
@@ -177,8 +181,6 @@ public class Constants {
 
             configs.CurrentLimits.StatorCurrentLimit = 40.0;
             configs.CurrentLimits.SupplyCurrentLimit = 30.0;
-
-            // configs.Feedback.SensorToMechanismRatio = (52.0 / 11.0) * (110.0 / 7.0);
             
             configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
             configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -196,8 +198,8 @@ public class Constants {
             configs.Slot0.kV = 0.0;
             configs.Slot0.kA = 0.2;
 
-            configs.CurrentLimits.StatorCurrentLimit = 60.0;
-            configs.CurrentLimits.SupplyCurrentLimit = 40.0;
+            // configs.CurrentLimits.StatorCurrentLimit = 60.0;
+            // configs.CurrentLimits.SupplyCurrentLimit = 40.0;
 
             configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
@@ -261,7 +263,7 @@ public class Constants {
         public static final double kFloorIntakeVel = 0.0;
         public static final double kTransferDefaultVel = 0.0;
         public static final double kTransferShootVel = 40.0;
-        public static final double kFloorShootVel = 25.0;
+        public static final double kFloorShootVel = 15.0;
 
         public static TalonFXConfiguration getFloorMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();

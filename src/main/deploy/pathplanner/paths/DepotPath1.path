@@ -3,36 +3,36 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.6,
-        "y": 4.072308139267305
+        "x": 3.606140914351852,
+        "y": 6.002331814236111
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.493030306516937,
-        "y": 4.974173704436671
+        "x": 3.0607861689844227,
+        "y": 6.10127249710333
       },
       "isLocked": false,
-      "linkedName": "BlueDepotPoint3"
+      "linkedName": "BlueDepotPoint1"
     },
     {
       "anchor": {
-        "x": 1.0,
-        "y": 5.7162665109536075
+        "x": 1.008,
+        "y": 6.240169994212963
       },
       "prevControl": {
-        "x": 1.9742962871087495,
-        "y": 5.7162665109536075
+        "x": 1.6398950376157408,
+        "y": 6.19496433738426
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BlueDepotPoint4"
+      "linkedName": "BlueDepotPoint2"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8493551587301585,
+      "minWaypointRelativePos": 0.85,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.0,
@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "RunIntake",
-      "waypointRelativePos": 0.596952331852792,
+      "waypointRelativePos": 0.42403781228899395,
       "endWaypointRelativePos": 1.0,
       "command": null
     }
@@ -66,7 +66,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "BlueDepotPath",
+  "folder": "DepotPaths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
