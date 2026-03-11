@@ -139,9 +139,7 @@ public class RobotContainer {
             .andThen(Commands.runOnce(() -> shooter.setFlywheelVelocity(0.0), shooter)));
         operator.y().onTrue(intake.fullRetract());
         operator.b().onTrue(intake.partialRetract());
-        operator.a().onTrue(Commands.runOnce(() -> 
-            drivetrain.getPigeon2().setYaw(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ? 0 : 180.0)
-        ));
+        operator.a().whileTrue(transfer.reverseCommand());
         
         operator.rightTrigger().whileTrue(Commands.startEnd(
             () -> shooter.setHoodVoltage(ShooterConstants.kManualHoodVolts),
@@ -161,8 +159,9 @@ public class RobotContainer {
         operator.povRight().onTrue(Commands.runOnce(intake::resetPivot, intake));
         operator.povLeft().onTrue(Commands.runOnce(GetHubStatus::togglePracticeMode));
 
-        operator.start().onTrue(Commands.runOnce(() -> GetHubStatus.changeWhoWon(true)));
-        operator.back().onTrue(Commands.runOnce(() -> GetHubStatus.changeWhoWon(false)));
+        operator.rightStick().onTrue(Commands.runOnce(() -> 
+            drivetrain.getPigeon2().setYaw(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ? 0 : 180.0)
+        ));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

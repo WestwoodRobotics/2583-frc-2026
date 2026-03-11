@@ -6,6 +6,7 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -81,6 +82,24 @@ public class Transfer extends SubsystemBase {
     public Command shootCommand() {
         // Right Trigger: Both motors spin at their respective shooting velocities
         return Commands.run(() -> runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel), this);
+    }
+
+    public Command reverseCommand() {
+        return Commands.run(() -> runMotors(-TransferConstants.kFloorShootVel, -TransferConstants.kTransferShootVel), this)
+            .beforeStarting(() -> {
+                var config = new TorqueCurrentConfigs();
+                config.PeakReverseTorqueCurrent = -800.0;
+                config.PeakForwardTorqueCurrent = 0.0;
+                m_transferMotor1.getConfigurator().apply(config);
+                m_transferMotor2.getConfigurator().apply(config);
+            })
+            .finallyDo((interrupted) -> {
+                var config = new TorqueCurrentConfigs();
+                config.PeakReverseTorqueCurrent = 0.0;
+                config.PeakForwardTorqueCurrent = 800.0;
+                m_transferMotor1.getConfigurator().apply(config);
+                m_transferMotor2.getConfigurator().apply(config);
+            });
     }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

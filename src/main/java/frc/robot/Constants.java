@@ -191,15 +191,14 @@ public class Constants {
         public static TalonFXConfiguration getFlywheelMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
-            configs.Slot0.kP = 100.0;
+            configs.Slot0.kP = 5.0;
             configs.Slot0.kI = 0.0;
             configs.Slot0.kD = 0.0;
             configs.Slot0.kS = 2.0;
             configs.Slot0.kV = 0.0;
             configs.Slot0.kA = 0.2;
 
-            // configs.CurrentLimits.StatorCurrentLimit = 60.0;
-            // configs.CurrentLimits.SupplyCurrentLimit = 40.0;
+            configs.CurrentLimits.StatorCurrentLimit = 40.0;
 
             configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
