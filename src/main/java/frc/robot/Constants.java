@@ -146,23 +146,27 @@ public class Constants {
         public static final double kPerDegree = (kPosAtMaxAngle - kPosAtMinAngle) / (kMaxAngle - kMinAngle);
 
         public static final double kManualHoodVolts = 1.0;
-        public static final double kManualFlywheelInc = 2.5;
+        public static final double kManualFlywheelInc = 1.0;
 
         public static final TreeMap<Double, ShotParam> kDistanceToShotParam = new TreeMap<>();
 
         public static final InterpolatingDoubleTreeMap kDistanceToTOF = new InterpolatingDoubleTreeMap();
 
         static {
-            kDistanceToShotParam.put(0.0, new ShotParam(90.0, 40.83051602354075));
-            kDistanceToShotParam.put(0.8613044801194663, new ShotParam(79.48129675810473, 41.09694538230624));
-            kDistanceToShotParam.put(1.1166334383917385, new ShotParam(72.48877805486285, 38.59694538230624));
-            kDistanceToShotParam.put(1.3475077105060949, new ShotParam(68.18204488778055, 36.12782894843723));
-            kDistanceToShotParam.put(1.9054904272389583, new ShotParam(59.90274314214464, 38.62782894843723));
-            kDistanceToShotParam.put(2.1371883921918853, new ShotParam(58.416458852867834, 39.029620727549606));
-            kDistanceToShotParam.put(2.9556838674451433, new ShotParam(58.81795511221945, 42.948446673120074));
-            kDistanceToShotParam.put(3.3300660570256118, new ShotParam(53.937655860349125, 43.59694538230624));
-            kDistanceToShotParam.put(3.909376930744798, new ShotParam(53.83291770573566,46.09694538230624));
+            kDistanceToShotParam.put(0.0, new ShotParam(90.0, 42.89518492140559));
+            kDistanceToShotParam.put(3.3300660570256118, new ShotParam(53.937655860349125, 47.23629288970057));
+            kDistanceToShotParam.put(3.122054251971471, new ShotParam(60.204488778054866,47.23629288970057));
             kDistanceToShotParam.put(20.0, new ShotParam(54.61532834580216, kMaxFlywheelRPS));
+            kDistanceToShotParam.put(2.4222653738038153, new ShotParam(55.43640897755611, 42.89518492140559));
+            kDistanceToShotParam.put(1.0264647912083584, new ShotParam(71.15211970074813,39.479756897617726));
+            kDistanceToShotParam.put(0.8573516665381802, new ShotParam(74.81795511221945,41.033560356574846));
+            kDistanceToShotParam.put(1.178746466841953, new ShotParam(64.00503740648379,40.43880109318974));
+            kDistanceToShotParam.put(1.5174186249342343, new ShotParam(57.48628428927681,40.43880109318974));
+            kDistanceToShotParam.put(1.8774186249342343, new ShotParam(56.723192019950126,42.93880109318974));
+            kDistanceToShotParam.put(1.9859927899645144, new ShotParam(55.52369077306733,41.26808332176154));
+            kDistanceToShotParam.put(2.0986322962872097, new ShotParam(56.593516209476306,42.91862054667378));
+            kDistanceToShotParam.put(2.2494403074332383, new ShotParam(56.55860349127182,43.91862054667378));;
+            kDistanceToShotParam.put(2.6003618518219382, new ShotParam(55.83042394014963,44.91292192907958));
 
             kDistanceToTOF.put(0.0, 0.0);
             kDistanceToTOF.put(999.0, 0.0);
@@ -191,7 +195,7 @@ public class Constants {
         public static TalonFXConfiguration getFlywheelMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
-            configs.Slot0.kP = 5.0;
+            configs.Slot0.kP = 10.0;
             configs.Slot0.kI = 0.0;
             configs.Slot0.kD = 0.0;
             configs.Slot0.kS = 2.0;
@@ -261,8 +265,8 @@ public class Constants {
         public static final double kFloorDefaultVel = 0.0;
         public static final double kFloorIntakeVel = 0.0;
         public static final double kTransferDefaultVel = 0.0;
-        public static final double kTransferShootVel = 40.0;
-        public static final double kFloorShootVel = 15.0;
+        public static final double kTransferShootVel = 20.0;
+        public static final double kFloorShootVel = 10.0;
 
         public static TalonFXConfiguration getFloorMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
@@ -288,7 +292,7 @@ public class Constants {
         public static TalonFXConfiguration getTransferMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
-            configs.Slot0.kP = 50.0;
+            configs.Slot0.kP = 20.0;
             configs.Slot0.kI = 0.0;
             configs.Slot0.kD = 0.0;
             configs.Slot0.kS = 11.751;
