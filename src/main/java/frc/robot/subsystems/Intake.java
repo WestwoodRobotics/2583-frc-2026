@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -123,6 +124,27 @@ public class Intake extends SubsystemBase {
 
     public Command partialRetract() {
         return Commands.runOnce(() -> setPivotPosition(IntakeConstants.pivotPartial), this);
+    }
+
+    public Command shootCommand() {
+        return Commands.run(() -> {
+            setPivotPosition(IntakeConstants.pivotIn);
+            setRollerVelocity(IntakeConstants.rollerShootingVel);
+        }, this)
+            .beforeStarting(() -> {
+                Slot0Configs configs = new Slot0Configs();
+                configs.kP = 40.0;
+                configs.kI = 0.0;
+                configs.kD = 0.0;
+                configs.kS = 5.0;    
+                configs.kV = 0.0;
+                configs.kA = 0.2;
+                configs.kG = 17.0;
+                m_pivotMotor.getConfigurator().apply(configs);
+            })
+            .finallyDo((interrupted) -> {
+                m_pivotMotor.getConfigurator().apply(IntakeConstants.getPivotConfigs());
+            });
     }
 
     public Command resetPivot() {

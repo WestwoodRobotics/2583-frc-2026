@@ -87,14 +87,14 @@ public class Transfer extends SubsystemBase {
     public Command reverseCommand() {
         return Commands.run(() -> runMotors(-TransferConstants.kFloorShootVel, -TransferConstants.kTransferShootVel), this)
             .beforeStarting(() -> {
-                var config = new TorqueCurrentConfigs();
+                TorqueCurrentConfigs config = new TorqueCurrentConfigs();
                 config.PeakReverseTorqueCurrent = -800.0;
                 config.PeakForwardTorqueCurrent = 0.0;
                 m_transferMotor1.getConfigurator().apply(config);
                 m_transferMotor2.getConfigurator().apply(config);
             })
             .finallyDo((interrupted) -> {
-                var config = new TorqueCurrentConfigs();
+                TorqueCurrentConfigs config = new TorqueCurrentConfigs();
                 config.PeakReverseTorqueCurrent = 0.0;
                 config.PeakForwardTorqueCurrent = 800.0;
                 m_transferMotor1.getConfigurator().apply(config);

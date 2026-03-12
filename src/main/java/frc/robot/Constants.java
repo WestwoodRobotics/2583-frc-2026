@@ -82,7 +82,7 @@ public class Constants {
 
         public static final double rollerNeutralVel = 0.0;
         public static final double rollerIntakingVel = 28.0;
-        public static final double rollerShootingVel = 20.0;
+        public static final double rollerShootingVel = 10.0;
 
         public static TalonFXConfiguration getPivotConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
@@ -182,6 +182,9 @@ public class Constants {
             configs.Slot0.kV = 0.0;
             configs.Slot0.kA = 0.2;
             configs.Slot0.kG = 0.0;
+
+            configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 7.0;
+            configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
 
             configs.CurrentLimits.StatorCurrentLimit = 40.0;
             configs.CurrentLimits.SupplyCurrentLimit = 30.0;

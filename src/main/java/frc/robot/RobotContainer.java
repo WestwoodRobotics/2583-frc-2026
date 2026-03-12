@@ -130,7 +130,7 @@ public class RobotContainer {
         })));
 
         driver.rightTrigger().whileTrue(transfer.shootCommand()
-            .alongWith(Commands.run(() -> intake.setRollerVelocity(IntakeConstants.rollerShootingVel), intake)));
+            .alongWith(intake.shootCommand()));
 
         // Run intake while holding left trigger
         driver.leftTrigger().whileTrue(intake.runIntake());
