@@ -74,6 +74,8 @@ public class Intake extends SubsystemBase {
         m_pivotMotor.setPosition(IntakeConstants.kPivotOffset);
 
         m_pivotMotor.setControl(m_pivotRequest.withPosition(IntakeConstants.pivotIn));
+        SignalLogger.start();
+
     }
 
     @Override
@@ -85,6 +87,10 @@ public class Intake extends SubsystemBase {
         m_pivotActualPub.set(pivotActual);
         m_rollerDesiredPub.set(m_rollerRequest.Velocity);
         m_rollerActualPub.set(rollerActual);
+
+        SignalLogger.writeDouble("Intake pivot current", this.m_pivotMotor.getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Intake roller current", this.m_rollerMotor.getSupplyCurrent().getValueAsDouble());
+
     }
 
     /**
@@ -111,10 +117,11 @@ public class Intake extends SubsystemBase {
     }
 
     // Set position to out and velocity to intaking
-    public Command runIntake() {
+    public Command runIntake(boolean fullSpeed) {
+        double velocity = fullSpeed ? 35.0 : IntakeConstants.rollerIntakingVel;
         return Commands.run(() -> {
             setPivotPosition(IntakeConstants.pivotOut);
-            setRollerVelocity(IntakeConstants.rollerIntakingVel);
+            setRollerVelocity(velocity);
         }, this);
     }
 
@@ -127,28 +134,16 @@ public class Intake extends SubsystemBase {
     }
 
     public Command shootCommand() {
-        return Commands.run(() -> {
-            setPivotPosition(IntakeConstants.pivotIn);
+        return Commands.startEnd(() ->{
+            setPivotPosition(0.08);
             setRollerVelocity(IntakeConstants.rollerShootingVel);
-        }, this)
-            .beforeStarting(() -> {
-                Slot0Configs configs = new Slot0Configs();
-                configs.kP = 40.0;
-                configs.kI = 0.0;
-                configs.kD = 0.0;
-                configs.kS = 5.0;    
-                configs.kV = 0.0;
-                configs.kA = 0.2;
-                configs.kG = 17.0;
-                m_pivotMotor.getConfigurator().apply(configs);
-            })
-            .finallyDo((interrupted) -> {
-                m_pivotMotor.getConfigurator().apply(IntakeConstants.getPivotConfigs());
-            });
+        },
+        () -> setPivotPosition(IntakeConstants.pivotOut),
+        this);
     }
 
-    public Command resetPivot() {
-        return Commands.runOnce(() -> m_pivotMotor.setPosition(IntakeConstants.pivotOut + 0.1), this);
+    public void resetPivot() {
+        m_pivotMotor.setPosition(-0.085205078125);
     }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

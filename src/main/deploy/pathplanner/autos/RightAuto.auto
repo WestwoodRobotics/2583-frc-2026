@@ -29,7 +29,7 @@
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -55,12 +55,6 @@
                 "type": "named",
                 "data": {
                   "name": "AimSwerve"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 10.0
                 }
               }
             ]

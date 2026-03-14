@@ -78,11 +78,11 @@ public class Constants {
 
         public static final double pivotIn = 0.2958984375;
         public static final double pivotPartial = 0.00;
-        public static final double pivotOut = -0.17;
+        public static final double pivotOut = -0.14;
 
         public static final double rollerNeutralVel = 0.0;
-        public static final double rollerIntakingVel = 28.0;
-        public static final double rollerShootingVel = 10.0;
+        public static final double rollerIntakingVel = 23.0;
+        public static final double rollerShootingVel = 5.0;
 
         public static TalonFXConfiguration getPivotConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
@@ -96,8 +96,8 @@ public class Constants {
             configs.Slot0.kG = 17.0;
             configs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
             
-            configs.MotionMagic.MotionMagicAcceleration = 7;
-            configs.MotionMagic.MotionMagicCruiseVelocity = 2;
+            configs.MotionMagic.MotionMagicAcceleration = 7.0;
+            configs.MotionMagic.MotionMagicCruiseVelocity = 2.0;
 
             // configs.CurrentLimits.StatorCurrentLimit = 80.0;
             // configs.CurrentLimits.SupplyCurrentLimit = 60.0;
@@ -121,7 +121,7 @@ public class Constants {
             configs.Slot0.kA = 0.16294;
 
             // configs.CurrentLimits.StatorCurrentLimit = 80.0;
-            // configs.CurrentLimits.SupplyCurrentLimit = 60.0;
+            // configs.CurrentLimits.SupplyCurrentLimit = 50.0;
 
             configs.Feedback.SensorToMechanismRatio = (2.0/1.0 * 30.0/24.0);
 
@@ -145,6 +145,8 @@ public class Constants {
         public static final double kMaxAngle = 90.0;
         public static final double kPerDegree = (kPosAtMaxAngle - kPosAtMinAngle) / (kMaxAngle - kMinAngle);
 
+        public static final double kTrueMinAngle = 6.12890625;
+
         public static final double kManualHoodVolts = 1.0;
         public static final double kManualFlywheelInc = 1.0;
 
@@ -165,8 +167,13 @@ public class Constants {
             kDistanceToShotParam.put(1.8774186249342343, new ShotParam(56.723192019950126,42.93880109318974));
             kDistanceToShotParam.put(1.9859927899645144, new ShotParam(55.52369077306733,41.26808332176154));
             kDistanceToShotParam.put(2.0986322962872097, new ShotParam(56.593516209476306,42.91862054667378));
-            kDistanceToShotParam.put(2.2494403074332383, new ShotParam(56.55860349127182,43.91862054667378));;
+            kDistanceToShotParam.put(2.2494403074332383, new ShotParam(56.55860349127182,43.91862054667378));
             kDistanceToShotParam.put(2.6003618518219382, new ShotParam(55.83042394014963,44.91292192907958));
+            kDistanceToShotParam.put(3.2407349541380075, new ShotParam(66.35411471321696,55.83051602354075));
+            kDistanceToShotParam.put(11.0, new ShotParam(55.83042394014963, kMaxFlywheelRPS));
+
+            kDistanceToShotParam.put(2.5691115830316966, new ShotParam(58.65336658354115,46.55503599455011));
+            kDistanceToShotParam.put(1.596343114508182, new ShotParam(63.53865336658354,42.55503599455011));
 
             kDistanceToTOF.put(0.0, 0.0);
             kDistanceToTOF.put(999.0, 0.0);
@@ -175,7 +182,7 @@ public class Constants {
         public static TalonFXConfiguration getHoodMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
-            configs.Slot0.kP = 10.0;
+            configs.Slot0.kP = 20.0;
             configs.Slot0.kI = 0.0;
             configs.Slot0.kD = 0.4;
             configs.Slot0.kS = 3.0;
@@ -183,7 +190,7 @@ public class Constants {
             configs.Slot0.kA = 0.2;
             configs.Slot0.kG = 0.0;
 
-            configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 7.0;
+            configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 6.5;
             configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
 
             configs.CurrentLimits.StatorCurrentLimit = 40.0;
@@ -198,7 +205,7 @@ public class Constants {
         public static TalonFXConfiguration getFlywheelMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();
             
-            configs.Slot0.kP = 10.0;
+            configs.Slot0.kP = 5.0;
             configs.Slot0.kI = 0.0;
             configs.Slot0.kD = 0.0;
             configs.Slot0.kS = 2.0;
@@ -248,15 +255,15 @@ public class Constants {
 
         public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
 
-        public static final double bumpThresholdDegrees = 8.0;
-        public static final double landingTimeSeconds = 0.25;
-        public static final double landingStdDev = 0.1;
+        public static final double bumpThresholdDegrees = 10.0;
+        public static final double landingTimeSeconds = 0.4;
+        public static final double landingStdDev = 0.2;
         public static final double maxYawRateDegreesPerSec = 360.0;
         public static final double maxPoseAmbiguity = 0.2;
         public static final double multiTagK = 0.2;
         public static final double singleTagK = 0.8;
-        public static final double baseSigma = 0.05;
-        public static final double multiTagThetaSigma = 2.0;
+        public static final double baseSigma = 0.2;
+        public static final double multiTagThetaSigma = Double.MAX_VALUE;
     }
 
     public static final class TransferConstants {
@@ -268,8 +275,8 @@ public class Constants {
         public static final double kFloorDefaultVel = 0.0;
         public static final double kFloorIntakeVel = 0.0;
         public static final double kTransferDefaultVel = 0.0;
-        public static final double kTransferShootVel = 20.0;
-        public static final double kFloorShootVel = 10.0;
+        public static final double kTransferShootVel = 30.0;
+        public static final double kFloorShootVel = 5.0;
 
         public static TalonFXConfiguration getFloorMotorConfigs() {
             TalonFXConfiguration configs = new TalonFXConfiguration();

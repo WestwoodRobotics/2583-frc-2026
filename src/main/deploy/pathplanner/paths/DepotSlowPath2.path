@@ -1,0 +1,77 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.4993580599144076,
+        "y": 4.934236804564907
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.7229648576643886,
+        "y": 4.822433405689922
+      },
+      "isLocked": false,
+      "linkedName": "BlueDepotPoint5"
+    },
+    {
+      "anchor": {
+        "x": 2.5073916011672273,
+        "y": 4.947451626643824
+      },
+      "prevControl": {
+        "x": 2.7236556103161442,
+        "y": 4.822032814869684
+      },
+      "nextControl": {
+        "x": 2.2911275920183103,
+        "y": 5.072870438417964
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.4993580599144076,
+        "y": 4.934236804564907
+      },
+      "prevControl": {
+        "x": 2.297174038838612,
+        "y": 5.081279728983671
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "BlueDepotPoint5"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": 2.0,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 0.1,
+    "maxAcceleration": 0.1,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -22.46902076953454
+  },
+  "reversed": false,
+  "folder": "DepotPaths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -22.46902076953454
+  },
+  "useDefaultConstraints": false
+}

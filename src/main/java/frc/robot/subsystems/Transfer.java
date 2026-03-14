@@ -66,12 +66,21 @@ public class Transfer extends SubsystemBase {
         m_floorMotor1.getConfigurator().apply(TransferConstants.getFloorMotorConfigs());
         m_transferMotor1.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
         m_transferMotor2.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
+        SignalLogger.start();
     }
 
     public void runMotors(double floorVel, double transferVel) {
         m_floorMotor1.setControl(m_floorRequest.withVelocity(floorVel));
         m_transferMotor1.setControl(m_transferRequest.withVelocity(transferVel));
         m_transferMotor2.setControl(m_transferInvertedFollower);
+    }
+
+    @Override
+    public void periodic(){
+        SignalLogger.writeDouble("Transfer floor current", this.m_floorMotor1.getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Transfer 1 current", this.m_transferMotor1.getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Transfer 2 current", this.m_transferMotor2.getSupplyCurrent().getValueAsDouble());
+
     }
 
     public Command defaultCommand() {

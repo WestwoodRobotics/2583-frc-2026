@@ -12,8 +12,10 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.events.EventTrigger;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -70,6 +72,8 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
 
+        configureEventTrigger();
+
         configureBindings();
 
         faceAngle.HeadingController.setPID(SwerveConstants.aimKp, SwerveConstants.aimKi, SwerveConstants.aimKd);
@@ -109,6 +113,10 @@ public class RobotContainer {
             CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver, 2);
 
             Rotation2d currentRot = drivetrain.getState().Pose.getRotation();
+
+            if (DriverStation.getAlliance().get() == Alliance.Red) {
+                currentRot = currentRot.plus(new Rotation2d(Math.PI));
+            }
             double currentDeg = currentRot.getDegrees();
             double closestDiagonalDeg = Math.round((currentDeg - 45) / 90.0) * 90.0 + 45;
 
@@ -121,19 +129,20 @@ public class RobotContainer {
             .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.pivotOut)));
         
         driver.y().whileTrue(new AlignCornerShot(drivetrain));
-        driver.b().whileTrue(drivetrain.applyRequest(() -> brake));
+        driver.b().whileTrue(intake.shootCommand());
 
         driver.rightBumper().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter)
             .andThen(Commands.runOnce(() -> {
                 shooter.setFlywheelVelocity(40.83051602354075);
-                shooter.setHoodAngle(75.62573566084788);
+                shooter.setHoodAngle(57.0);
         })));
 
-        driver.rightTrigger().whileTrue(transfer.shootCommand()
-            .alongWith(intake.shootCommand()));
+        driver.rightTrigger().whileTrue(transfer.shootCommand());
 
         // Run intake while holding left trigger
-        driver.leftTrigger().whileTrue(intake.runIntake());
+        driver.leftTrigger().whileTrue(intake.runIntake(false));
+
+        driver.leftBumper().whileTrue(intake.runIntake(true));
 
         operator.x().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter)
             .andThen(Commands.runOnce(() -> shooter.setFlywheelVelocity(0.0), shooter)));
@@ -155,13 +164,14 @@ public class RobotContainer {
         operator.leftBumper().onTrue(Commands.runOnce(
             () -> shooter.changeFlywheelVelocity(-ShooterConstants.kManualFlywheelInc), shooter));
 
-        operator.povDown().onTrue(Commands.runOnce(shooter::resetHoodPosition, shooter));
-        operator.povRight().onTrue(Commands.runOnce(intake::resetPivot, intake));
+        operator.povDown().onTrue(Commands.runOnce(shooter::resetHoodPosition, shooter).ignoringDisable(true));
+        operator.povRight().onTrue(Commands.runOnce(intake::resetPivot, intake).ignoringDisable(true));
         operator.povLeft().onTrue(Commands.runOnce(GetHubStatus::togglePracticeMode));
 
-        operator.rightStick().onTrue(Commands.runOnce(() -> 
-            drivetrain.getPigeon2().setYaw(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ? 0 : 180.0)
-        ));
+        operator.rightStick().onTrue(Commands.runOnce(() -> {
+            Pose2d pose = DriverStation.getAlliance().get() == Alliance.Blue ? new Pose2d(3.560, 4.029, new Rotation2d(0.0)) : new Pose2d(SwerveConstants.fieldWidth - 3.560, 4.029, new Rotation2d(Math.PI));
+            drivetrain.resetPose(pose);
+        }));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -178,13 +188,12 @@ public class RobotContainer {
 
     public void configureEventTrigger() {
 
-        new EventTrigger("Shoot").onTrue(transfer.shootCommand()
-            .alongWith(Commands.run(() -> intake.setRollerVelocity(IntakeConstants.rollerShootingVel), intake)));
+        new EventTrigger("Shoot").whileTrue(transfer.shootCommand().alongWith(intake.shootCommand()));
 
-        new EventTrigger("RunIntake").whileTrue(intake.runIntake());
+        new EventTrigger("RunIntake").whileTrue(intake.runIntake(false));
         new EventTrigger("PartialRetract").onTrue((intake.partialRetract()));
 
-        new EventTrigger("AimSwerve").whileTrue(new AimSwerve(drivetrain, faceAngle, driver));
+//        new EventTrigger("AimSwerve").onTrue(Commands.deadline(new AimSwerve(drivetrain, faceAngle, driver), new WaitCommand(2.0)));
     }
 
     public Command getAutonomousCommand() {

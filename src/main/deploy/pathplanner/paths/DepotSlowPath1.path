@@ -8,54 +8,56 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4610630395342388,
-        "y": 5.787381261729518
+        "x": 2.3530203315013556,
+        "y": 5.416386023932816
       },
       "isLocked": false,
       "linkedName": "BlueDepotPoint3"
     },
     {
       "anchor": {
-        "x": 0.714,
-        "y": 5.697617689015692
+        "x": 2.1430548782359753,
+        "y": 5.551365871670955
       },
       "prevControl": {
-        "x": 1.1278305844907413,
-        "y": 5.683711638131529
+        "x": 2.3533485602319275,
+        "y": 5.416175016534281
+      },
+      "nextControl": {
+        "x": 1.932761196240023,
+        "y": 5.686556726807629
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.1370756062767473,
+        "y": 5.542353780313838
+      },
+      "prevControl": {
+        "x": 1.9370756062767467,
+        "y": 5.692353780313837
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BlueDepotPoint4"
+      "linkedName": "BlueDepotPoint3"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.2835921674544226,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 1.0,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "RunIntake",
-      "waypointRelativePos": 0.19716407832545732,
-      "endWaypointRelativePos": 1.0,
+      "name": "Shoot",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 2.0,
       "command": null
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 0.2,
+    "maxAcceleration": 0.2,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -63,7 +65,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -31.57419075028533
   },
   "reversed": false,
   "folder": "DepotPaths",
@@ -71,5 +73,5 @@
     "velocity": 0,
     "rotation": -31.57419075028533
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

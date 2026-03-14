@@ -84,10 +84,10 @@ public class Shooter extends SubsystemBase {
     private final DoublePublisher m_hoodDesiredAngle = m_table.getDoubleTopic("Hood/DesiredAngle").publish();
     private final DoublePublisher m_hoodActualAngle = m_table.getDoubleTopic("Hood/ActualAngle").publish();
     private final BooleanPublisher m_autoAimEnabledPub = m_table.getBooleanTopic("AutoAimEnabled").publish();
-    private final BooleanPublisher m_isManualPub = m_table.getBooleanTopic("IsManual").publish();
+    private final BooleanPublisher m_isManualPub = m_table.getBooleanTopic("FlywheelOn").publish();
 
     private double m_desiredAngle = ShooterConstants.kMinAngle;
-    private boolean m_autoAimEnabled = false;
+    private boolean m_autoAimEnabled = true;
 
     public Shooter() {
         // Apply configurations directly from constants to keep constructor clean of variables
@@ -96,6 +96,9 @@ public class Shooter extends SubsystemBase {
         m_bottomRightFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
         m_topLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
         m_topRightFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
+
+        SignalLogger.start();
+
     }
 
     @Override
@@ -114,6 +117,11 @@ public class Shooter extends SubsystemBase {
         m_hoodActualAngle.set(actualAngle);
         m_autoAimEnabledPub.set(m_autoAimEnabled);
         m_isManualPub.set(!m_autoAimEnabled);
+
+        SignalLogger.writeDouble("Shooter BL current", this.m_bottomLeftFlywheel.getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Shooter BR current", this.m_bottomRightFlywheel.getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Shooter TL current", this.m_topLeftFlywheel.getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Shooter TR current", this.m_topRightFlywheel.getSupplyCurrent().getValueAsDouble());
     }
 
     public void setHoodPosition(double position) {
@@ -123,7 +131,7 @@ public class Shooter extends SubsystemBase {
     public void setHoodAngle(double angle) {
         m_desiredAngle = MathUtil.clamp(angle, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
         double angleDelta = m_desiredAngle - ShooterConstants.kMinAngle;
-        double position = ShooterConstants.kPosAtMinAngle + angleDelta * ShooterConstants.kPerDegree;
+        double position = Math.max(ShooterConstants.kPosAtMinAngle + angleDelta * ShooterConstants.kPerDegree, ShooterConstants.kTrueMinAngle);
 
         setHoodPosition(position);
     }
@@ -144,7 +152,7 @@ public class Shooter extends SubsystemBase {
     public void changeFlywheelVelocity(double delta) {
         m_autoAimEnabled = false;
         double newVel = m_flywheelRequest.Velocity + delta;
-        newVel = MathUtil.clamp(newVel, 0, ShooterConstants.kMaxFlywheelRPS);
+        newVel = MathUtil.clamp(newVel, 0.0, ShooterConstants.kMaxFlywheelRPS);
         setFlywheelVelocity(newVel);
     }
 

@@ -84,6 +84,9 @@ public class GetHubStatus {
     public static double getHubCountdown() {
         return countdown;
     }
+    public static double getEndgameCountdown() {
+        return DriverStation.getMatchTime() - 30;
+    }
 
     public static void changeWhoWon(boolean won) {
         didWin = won;

@@ -144,6 +144,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        SignalLogger.start();
+
         configureAutoBuilder();
     }
 
@@ -285,6 +287,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+        
+        SignalLogger.writeDouble("Drive current 0", this.getModule(0).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Steer current 0", this.getModule(0).getSteerMotor().getSupplyCurrent().getValueAsDouble());
+    
+        SignalLogger.writeDouble("Drive current 1", this.getModule(1).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Steer current 1", this.getModule(1).getSteerMotor().getSupplyCurrent().getValueAsDouble());
+        
+        SignalLogger.writeDouble("Drive current 2", this.getModule(2).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Steer current 2", this.getModule(2).getSteerMotor().getSupplyCurrent().getValueAsDouble());
+        
+        SignalLogger.writeDouble("Drive current 3", this.getModule(3).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Steer current 3", this.getModule(3).getSteerMotor().getSupplyCurrent().getValueAsDouble());
+
     }
 
     private void startSimThread() {

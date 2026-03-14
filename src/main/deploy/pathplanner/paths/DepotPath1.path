@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 1.008,
-        "y": 6.240169994212963
+        "x": 0.714,
+        "y": 6.266918687589158
       },
       "prevControl": {
-        "x": 1.6398950376157408,
-        "y": 6.19496433738426
+        "x": 1.3458950376157408,
+        "y": 6.221713030760454
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,6 +46,12 @@
   ],
   "pointTowardsZones": [],
   "eventMarkers": [
+    {
+      "name": "RunIntake",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.1,
+      "command": null
+    },
     {
       "name": "RunIntake",
       "waypointRelativePos": 0.42403781228899395,

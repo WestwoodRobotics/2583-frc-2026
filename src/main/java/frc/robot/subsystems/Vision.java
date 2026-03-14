@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import java.util.Optional;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
@@ -111,6 +114,8 @@ public class Vision extends SubsystemBase {
         onBumpPub.set(isOnBump);
         landingPub.set(isLanding);
 
+        List<VisionMeasurement> measurements = new ArrayList<>();
+
         for (int i = 0; i < cameras.length; i++) {
 
             for (PhotonPipelineResult result : cameras[i].getAllUnreadResults()) {
@@ -134,12 +139,18 @@ public class Vision extends SubsystemBase {
                     xyStdDevPubs[i].set(stdDevs.get(0, 0));
                     rotStdDevPubs[i].set(stdDevs.get(2, 0));
 
-                    drivetrain.addVisionMeasurement(pose.estimatedPose.toPose2d(), pose.timestampSeconds, stdDevs);
+                    measurements.add(new VisionMeasurement(pose, stdDevs));
                 }
                 else {
                     numTagsPubs[i].set(0);
                 }
             }
+        }
+
+        measurements.sort(Comparator.comparingDouble(m -> m.stdDevs.get(0, 0)));
+        for (int i = 0; i < Math.min(measurements.size(), 2); i++) {
+            VisionMeasurement m = measurements.get(i);
+            drivetrain.addVisionMeasurement(m.estimation.estimatedPose.toPose2d(), m.estimation.timestampSeconds, m.stdDevs);
         }
     }
 
@@ -174,4 +185,6 @@ public class Vision extends SubsystemBase {
 
         return VecBuilder.fill(sigma_xy, sigma_xy, sigma_theta);
     }
+
+    private record VisionMeasurement(EstimatedRobotPose estimation, Matrix<N3, N1> stdDevs) {}
 }
