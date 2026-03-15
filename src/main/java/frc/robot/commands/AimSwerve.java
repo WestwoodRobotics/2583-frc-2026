@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import frc.robot.Constants.SwerveConstants;
+import frc.robot.constants.SwerveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.utils.GetTargetLocation;
 

@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.utility.LinearPath;
-import frc.robot.Constants.SwerveConstants;
+import frc.robot.constants.SwerveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 /**

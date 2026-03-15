@@ -6,8 +6,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Constants.ShooterConstants;
-import frc.robot.Constants.SwerveConstants;
+import frc.robot.constants.ShooterConstants;
+import frc.robot.constants.SwerveConstants;
 
 public class GetTargetLocation {
 

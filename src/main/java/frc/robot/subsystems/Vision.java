@@ -20,7 +20,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.VisionConstants;
+import frc.robot.constants.VisionConstants;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -148,7 +148,7 @@ public class Vision extends SubsystemBase {
         }
 
         measurements.sort(Comparator.comparingDouble(m -> m.stdDevs.get(0, 0)));
-        for (int i = 0; i < Math.min(measurements.size(), 2); i++) {
+        for (int i = 0; i < Math.min(measurements.size(), VisionConstants.maxMeasurementsToApply); i++) {
             VisionMeasurement m = measurements.get(i);
             drivetrain.addVisionMeasurement(m.estimation.estimatedPose.toPose2d(), m.estimation.timestampSeconds, m.stdDevs);
         }

@@ -25,8 +25,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.LEDConstants;
-import frc.robot.Constants.SwerveConstants;
+import frc.robot.constants.LEDConstants;
+import frc.robot.constants.SwerveConstants;
 import frc.robot.utils.GetHubStatus;
 import frc.robot.utils.GetTargetLocation;
 
@@ -75,14 +75,14 @@ public class LED extends SubsystemBase {
             CommandScheduler.getInstance().schedule(
                 Commands.startEnd(
                 () -> {
-                    driver.getHID().setRumble(RumbleType.kBothRumble, 0.7);
-                    operator.getHID().setRumble(RumbleType.kBothRumble, 0.7);
+                    driver.getHID().setRumble(RumbleType.kBothRumble, LEDConstants.kRumbleIntensity);
+                    operator.getHID().setRumble(RumbleType.kBothRumble, LEDConstants.kRumbleIntensity);
                 },
                 () -> {
                     driver.getHID().setRumble(RumbleType.kBothRumble, 0);
                     operator.getHID().setRumble(RumbleType.kBothRumble, 0);
                 }
-            ).withTimeout(0.2));
+            ).withTimeout(LEDConstants.kRumbleTimeout));
         }
         wasHubActive = isHubActive;
 

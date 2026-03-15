@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.1370756062767473,
-        "y": 5.542353780313838
+        "x": 2.018234809027778,
+        "y": 5.6548584346064805
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4610630395342388,
-        "y": 5.787381261729518
+        "x": 1.1325528806116711,
+        "y": 5.6923901885608625
       },
       "isLocked": false,
-      "linkedName": "BlueDepotPoint3"
+      "linkedName": "DepotPoint3"
     },
     {
       "anchor": {
@@ -20,12 +20,12 @@
         "y": 5.697617689015692
       },
       "prevControl": {
-        "x": 1.1278305844907413,
-        "y": 5.683711638131529
+        "x": 1.0995483682918807,
+        "y": 5.68900223801432
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BlueDepotPoint4"
+      "linkedName": "DepotPoint4"
     }
   ],
   "rotationTargets": [],
@@ -69,7 +69,7 @@
   "folder": "DepotPaths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -31.57419075028533
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

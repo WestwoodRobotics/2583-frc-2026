@@ -12,36 +12,36 @@
         "y": 5.780043330439814
       },
       "isLocked": false,
-      "linkedName": "BlueLeftPoint2"
+      "linkedName": "RightPoint2"
     },
     {
       "anchor": {
-        "x": 5.720243489583334,
-        "y": 2.4591662326388892
+        "x": 5.765449146412037,
+        "y": 2.5770027488425935
       },
       "prevControl": {
-        "x": 6.792388393342255,
-        "y": 2.5042359088649073
+        "x": 6.837594050170958,
+        "y": 2.6220724250686116
       },
       "nextControl": {
-        "x": 4.648098585824413,
-        "y": 2.414096556412871
+        "x": 4.693304242653117,
+        "y": 2.5319330726165754
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.093066550925926,
-        "y": 2.4591662326388892
+        "x": 3.031851924189815,
+        "y": 2.5770027488425935
       },
       "prevControl": {
-        "x": 4.40064786005984,
-        "y": 2.3610303156083217
+        "x": 4.339433233323728,
+        "y": 2.478866831812026
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BlueLeftPoint3"
+      "linkedName": "RightPoint3"
     }
   ],
   "rotationTargets": [
@@ -79,14 +79,14 @@
     },
     {
       "name": "PartialRetract",
-      "waypointRelativePos": 0.9048859126984131,
+      "waypointRelativePos": 0.800545634920635,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
       "name": "RunIntake",
-      "waypointRelativePos": 2.0,
-      "endWaypointRelativePos": 1.9676587301587303,
+      "waypointRelativePos": 1.8928819444444445,
+      "endWaypointRelativePos": 1.8456349206349207,
       "command": null
     }
   ],
@@ -100,7 +100,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 45.0
+    "rotation": 40.76234821326444
   },
   "reversed": false,
   "folder": "RightPaths",

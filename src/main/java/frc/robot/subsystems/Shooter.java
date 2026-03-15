@@ -20,7 +20,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants.ShooterConstants;
+import frc.robot.constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
 
@@ -111,7 +111,7 @@ public class Shooter extends SubsystemBase {
         m_hoodDesiredPos.set(m_hoodRequest.Position);
         m_hoodActualPos.set(hoodPos);
         m_hoodDesiredAngle.set(m_desiredAngle);
-        m_atDesiredRPS.set(Math.abs(flywheelVel - m_flywheelRequest.Velocity) < 2.5);
+        m_atDesiredRPS.set(Math.abs(flywheelVel - m_flywheelRequest.Velocity) < ShooterConstants.kFlywheelToleranceRPS);
 
         double actualAngle = (hoodPos - ShooterConstants.kPosAtMinAngle) / ShooterConstants.kPerDegree + ShooterConstants.kMinAngle;
         m_hoodActualAngle.set(actualAngle);

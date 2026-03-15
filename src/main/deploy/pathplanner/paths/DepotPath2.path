@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8544763807370628,
-        "y": 5.66632596742955
+        "x": 1.7839243829155984,
+        "y": 5.812947394155254
       },
       "isLocked": false,
-      "linkedName": "BlueDepotPoint2"
+      "linkedName": "DepotPoint2"
     },
     {
       "anchor": {
-        "x": 2.1370756062767473,
-        "y": 5.542353780313838
+        "x": 2.018234809027778,
+        "y": 5.6548584346064805
       },
       "prevControl": {
-        "x": 1.9030962080320648,
-        "y": 5.63040854280319
+        "x": 1.7728104489764995,
+        "y": 5.702470234545364
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BlueDepotPoint3"
+      "linkedName": "DepotPoint3"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -31.57419075028533
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "DepotPaths",

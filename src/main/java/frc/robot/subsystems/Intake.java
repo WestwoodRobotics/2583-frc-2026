@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -17,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Constants.IntakeConstants;
+import frc.robot.constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
 
@@ -73,7 +72,7 @@ public class Intake extends SubsystemBase {
         // Apply pivot offset
         m_pivotMotor.setPosition(IntakeConstants.kPivotOffset);
 
-        m_pivotMotor.setControl(m_pivotRequest.withPosition(IntakeConstants.pivotIn));
+        m_pivotMotor.setControl(m_pivotRequest.withPosition(IntakeConstants.kPivotIn));
         SignalLogger.start();
 
     }
@@ -111,39 +110,39 @@ public class Intake extends SubsystemBase {
 
     public Command intakeDefault() {
         return Commands.run(
-            () -> setRollerVelocity(IntakeConstants.rollerNeutralVel),
+            () -> setRollerVelocity(IntakeConstants.kRollerNeutralVel),
             this
         );
     }
 
     // Set position to out and velocity to intaking
     public Command runIntake(boolean fullSpeed) {
-        double velocity = fullSpeed ? 35.0 : IntakeConstants.rollerIntakingVel;
+        double velocity = fullSpeed ? IntakeConstants.kRollerFastIntakingVel : IntakeConstants.kRollerIntakingVel;
         return Commands.run(() -> {
-            setPivotPosition(IntakeConstants.pivotOut);
+            setPivotPosition(IntakeConstants.kPivotOut);
             setRollerVelocity(velocity);
         }, this);
     }
 
     public Command fullRetract() {
-        return Commands.runOnce(() -> setPivotPosition(IntakeConstants.pivotIn), this);
+        return Commands.runOnce(() -> setPivotPosition(IntakeConstants.kPivotIn), this);
     }
 
     public Command partialRetract() {
-        return Commands.runOnce(() -> setPivotPosition(IntakeConstants.pivotPartial), this);
+        return Commands.runOnce(() -> setPivotPosition(IntakeConstants.kPivotPartial), this);
     }
 
     public Command shootCommand() {
         return Commands.startEnd(() ->{
-            setPivotPosition(0.08);
-            setRollerVelocity(IntakeConstants.rollerShootingVel);
+            setPivotPosition(IntakeConstants.kPivotShoot);
+            setRollerVelocity(IntakeConstants.kRollerShootingVel);
         },
-        () -> setPivotPosition(IntakeConstants.pivotOut),
+        () -> setPivotPosition(IntakeConstants.kPivotOut),
         this);
     }
 
     public void resetPivot() {
-        m_pivotMotor.setPosition(-0.085205078125);
+        m_pivotMotor.setPosition(IntakeConstants.kResetPivotPos);
     }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

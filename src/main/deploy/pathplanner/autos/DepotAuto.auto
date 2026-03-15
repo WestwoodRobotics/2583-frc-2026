@@ -29,9 +29,16 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "DepotSlowPath2"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
+                }
+              }
+            ]
           }
         }
       ]

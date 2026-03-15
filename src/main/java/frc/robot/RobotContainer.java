@@ -9,6 +9,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.events.EventTrigger;
 
@@ -21,12 +22,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Constants.SwerveConstants;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.ShooterConstants;
+import frc.robot.constants.SwerveConstants;
+import frc.robot.constants.IntakeConstants;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.commands.AimSwerve;
 import frc.robot.commands.AdjustShooter;
 import frc.robot.commands.AlignCornerShot;
@@ -48,7 +50,6 @@ public class RobotContainer {
     private final SwerveRequest.FieldCentricFacingAngle faceAngle = new SwerveRequest.FieldCentricFacingAngle()
         .withDeadband(0).withRotationalDeadband(0)
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
     private double[] driverInputs = new double[3];
 
@@ -126,15 +127,15 @@ public class RobotContainer {
                 .withTargetDirection(Rotation2d.fromDegrees(closestDiagonalDeg));
 
         }).alongWith(intake.partialRetract()))
-            .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.pivotOut)));
+            .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
         
         driver.y().whileTrue(new AlignCornerShot(drivetrain));
         driver.b().whileTrue(intake.shootCommand());
 
         driver.rightBumper().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter)
             .andThen(Commands.runOnce(() -> {
-                shooter.setFlywheelVelocity(40.83051602354075);
-                shooter.setHoodAngle(57.0);
+                shooter.setFlywheelVelocity(ShooterConstants.kAutoBumperFlywheelVel);
+                shooter.setHoodAngle(ShooterConstants.kAutoBumperHoodAngle);
         })));
 
         driver.rightTrigger().whileTrue(transfer.shootCommand());
@@ -148,7 +149,8 @@ public class RobotContainer {
             .andThen(Commands.runOnce(() -> shooter.setFlywheelVelocity(0.0), shooter)));
         operator.y().onTrue(intake.fullRetract());
         operator.b().onTrue(intake.partialRetract());
-        operator.a().whileTrue(transfer.reverseCommand());
+        operator.a().whileTrue(transfer.reverseCommand())
+            .onFalse(transfer.shootCommand().until(() -> !driver.rightTrigger().getAsBoolean()));
         
         operator.rightTrigger().whileTrue(Commands.startEnd(
             () -> shooter.setHoodVoltage(ShooterConstants.kManualHoodVolts),
@@ -169,7 +171,9 @@ public class RobotContainer {
         operator.povLeft().onTrue(Commands.runOnce(GetHubStatus::togglePracticeMode));
 
         operator.rightStick().onTrue(Commands.runOnce(() -> {
-            Pose2d pose = DriverStation.getAlliance().get() == Alliance.Blue ? new Pose2d(3.560, 4.029, new Rotation2d(0.0)) : new Pose2d(SwerveConstants.fieldWidth - 3.560, 4.029, new Rotation2d(Math.PI));
+            Pose2d pose = DriverStation.getAlliance().get() == Alliance.Blue
+            ? new Pose2d(SwerveConstants.kResetX, SwerveConstants.kResetY, new Rotation2d(0.0))
+            : new Pose2d(SwerveConstants.fieldWidth - SwerveConstants.kResetX, SwerveConstants.kResetY, new Rotation2d(Math.PI));
             drivetrain.resetPose(pose);
         }));
 
@@ -188,12 +192,14 @@ public class RobotContainer {
 
     public void configureEventTrigger() {
 
-        new EventTrigger("Shoot").whileTrue(transfer.shootCommand().alongWith(intake.shootCommand()));
+        NamedCommands.registerCommand("Shoot",
+            new WaitCommand(1.0)
+            .andThen(transfer.shootCommand().alongWith(intake.shootCommand())));
 
         new EventTrigger("RunIntake").whileTrue(intake.runIntake(false));
         new EventTrigger("PartialRetract").onTrue((intake.partialRetract()));
 
-//        new EventTrigger("AimSwerve").onTrue(Commands.deadline(new AimSwerve(drivetrain, faceAngle, driver), new WaitCommand(2.0)));
+        NamedCommands.registerCommand("AimSwerve", new AimSwerve(drivetrain, faceAngle, driver));
     }
 
     public Command getAutonomousCommand() {
