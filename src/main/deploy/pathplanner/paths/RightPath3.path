@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 7.76814503761574,
-        "y": 3.9303512008101853
+        "y": 3.93
       },
       "prevControl": null,
       "nextControl": {
         "x": 7.186310836226852,
-        "y": 5.780043330439814
+        "y": 5.779692129629629
       },
       "isLocked": false,
       "linkedName": "RightPoint2"

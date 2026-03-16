@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -109,16 +110,25 @@ public class Transfer extends SubsystemBase {
             ()-> {
                 double transferMotor1Vel = Math.abs(this.m_transferMotor1.getVelocity().getValueAsDouble());
                 double transferMotor2Vel = Math.abs(this.m_transferMotor2.getVelocity().getValueAsDouble());
+
+                SmartDashboard.putNumber("transfer motor 1", transferMotor1Vel);
+                SmartDashboard.putNumber("transfer motor 2", transferMotor2Vel);
                 boolean jammed = (TransferConstants.kTransferShootVel - transferMotor1Vel > TransferConstants.kVelThreshold)
                 || (TransferConstants.kTransferShootVel - transferMotor2Vel > TransferConstants.kVelThreshold);
+                
+                SmartDashboard.putBoolean("jammed", jammed);
+                SmartDashboard.putNumber("debounce Timer", debounceTimer.get());
+                SmartDashboard.putNumber("reverse Timer", reverseTimer.get());
+
                 //not jammed, run normally
-                if(!jammed){
+                if(!jammed && !reverseTimer.isRunning()){
                     debounceTimer.reset();
                     reverseTimer.reset();
                     runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel);
                 }
                 //jammed, start the debounce timer
                 else {
+                    runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel);
                     debounceTimer.start();
 
                     if(debounceTimer.get() >= TransferConstants.kJamDebounceTime){
@@ -135,6 +145,7 @@ public class Transfer extends SubsystemBase {
                             runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel);
                         }
                     }
+               
                 }
             }
         

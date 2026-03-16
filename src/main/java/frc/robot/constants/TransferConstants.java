@@ -16,10 +16,10 @@ public class TransferConstants {
     public static final double kTransferShootVel = 30.0;
     public static final double kFloorShootVel = 5.0;
 
-    public static final double kJamDebounceTime =1.0;
-    public static final double kJamReverseTime =1.0;
+    public static final double kJamDebounceTime =0.5;
+    public static final double kJamReverseTime =0.2;
 
-    public static final double kVelThreshold = 1.0;
+    public static final double kVelThreshold = 5.0;
 
     public static TalonFXConfiguration getFloorMotorConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();

@@ -58,6 +58,18 @@
               }
             ]
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of RightPath1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightPath2"
+          }
         }
       ]
     }
