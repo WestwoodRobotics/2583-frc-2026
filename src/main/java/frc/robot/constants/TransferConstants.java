@@ -12,9 +12,13 @@ public class TransferConstants {
 
     public static final double kFloorDefaultVel = 0.0;
     public static final double kFloorIntakeVel = 0.0;
-    public static final double kTransferDefaultVel = 0.0;
+    public static final double kTransferDefaultVel = -5.0;
     public static final double kTransferShootVel = 30.0;
     public static final double kFloorShootVel = 5.0;
+
+    public static final double kJamThreshold = 0.5;
+    public static final double kJamTimeSecs = 0.25;
+    public static final double kReverseTimeSecs = 0.5;
 
     public static TalonFXConfiguration getFloorMotorConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
@@ -40,14 +44,12 @@ public class TransferConstants {
     public static TalonFXConfiguration getTransferMotorConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 20.0;
+        configs.Slot0.kP = 10.0;
         configs.Slot0.kI = 0.0;
         configs.Slot0.kD = 0.0;
         configs.Slot0.kS = 11.751;
         configs.Slot0.kV = 0.0;
         configs.Slot0.kA = 0.20257;
-
-        configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
         // configs.CurrentLimits.StatorCurrentLimit = 0.0;
         // configs.CurrentLimits.SupplyCurrentLimit = 0.0;

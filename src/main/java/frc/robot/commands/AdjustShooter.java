@@ -14,7 +14,6 @@ import frc.robot.constants.SwerveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utils.GetTargetLocation;
-import frc.robot.utils.ShotParam;
 
 public class AdjustShooter extends Command {
 
@@ -50,30 +49,12 @@ public class AdjustShooter extends Command {
         if (!m_shooter.isAutoAimEnabled()) {
             return;
         }
-        ShotParam shotParam = getShotParam(distance);
-        m_shooter.setHoodAngle(shotParam.angle);
-        m_shooter.setFlywheelVelocity(shotParam.velocity);
-    }
 
-    public ShotParam getShotParam(double distance) {
-        TreeMap<Double, ShotParam> map = ShooterConstants.kDistanceToShotParam;
-        Map.Entry<Double, ShotParam> floor = map.floorEntry(distance);
-        Map.Entry<Double, ShotParam> ceil = map.ceilingEntry(distance);
-
-        if (floor == null && ceil == null) return new ShotParam(ShooterConstants.kMinAngle, 0);
-        if (floor == null) return ceil.getValue();
-        if (ceil == null) return floor.getValue();
-
-        ShotParam floorVal = floor.getValue();
-        ShotParam ceilVal = ceil.getValue();
-
-        if (floor.getKey().equals(ceil.getKey())) return floorVal;
-
-        double t = (distance - floor.getKey()) / (ceil.getKey() - floor.getKey());
-        double angle = floorVal.angle + t * (ceilVal.angle - floorVal.angle);
-        double velocity = floorVal.velocity + t * (ceilVal.velocity - floorVal.velocity);
-
-        angle = MathUtil.clamp(angle, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
-        return new ShotParam(angle, velocity);
+        try {
+            double flywheelRPS = ShooterConstants.kDistanceToRPS.get(distance);
+            m_shooter.setFlywheelVelocity(flywheelRPS);
+        } catch (Exception e) {
+            m_shooter.setFlywheelVelocity(0.0);
+        }
     }
 }

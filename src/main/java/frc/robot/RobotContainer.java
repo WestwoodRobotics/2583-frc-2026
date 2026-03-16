@@ -32,6 +32,7 @@ import frc.robot.constants.ShooterConstants;
 import frc.robot.commands.AimSwerve;
 import frc.robot.commands.AdjustShooter;
 import frc.robot.commands.AlignCornerShot;
+import frc.robot.commands.Shoot;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
@@ -135,10 +136,9 @@ public class RobotContainer {
         driver.rightBumper().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter)
             .andThen(Commands.runOnce(() -> {
                 shooter.setFlywheelVelocity(ShooterConstants.kAutoBumperFlywheelVel);
-                shooter.setHoodAngle(ShooterConstants.kAutoBumperHoodAngle);
         })));
 
-        driver.rightTrigger().whileTrue(transfer.shootCommand());
+        driver.rightTrigger().whileTrue(new Shoot(transfer).alongWith(intake.shootCommand()));
 
         // Run intake while holding left trigger
         driver.leftTrigger().whileTrue(intake.runIntake(false));
@@ -150,23 +150,13 @@ public class RobotContainer {
         operator.y().onTrue(intake.fullRetract());
         operator.b().onTrue(intake.partialRetract());
         operator.a().whileTrue(transfer.reverseCommand())
-            .onFalse(transfer.shootCommand().until(() -> !driver.rightTrigger().getAsBoolean()));
-        
-        operator.rightTrigger().whileTrue(Commands.startEnd(
-            () -> shooter.setHoodVoltage(ShooterConstants.kManualHoodVolts),
-            () -> shooter.setHoodVoltage(0),
-            shooter));
-        operator.leftTrigger().whileTrue(Commands.startEnd(
-            () -> shooter.setHoodVoltage(-ShooterConstants.kManualHoodVolts),
-            () -> shooter.setHoodVoltage(0),
-            shooter));
+            .onFalse(new Shoot(transfer).until(() -> !driver.rightTrigger().getAsBoolean()));
 
         operator.rightBumper().onTrue(Commands.runOnce(
             () -> shooter.changeFlywheelVelocity(ShooterConstants.kManualFlywheelInc), shooter));
         operator.leftBumper().onTrue(Commands.runOnce(
             () -> shooter.changeFlywheelVelocity(-ShooterConstants.kManualFlywheelInc), shooter));
 
-        operator.povDown().onTrue(Commands.runOnce(shooter::resetHoodPosition, shooter).ignoringDisable(true));
         operator.povRight().onTrue(Commands.runOnce(intake::resetPivot, intake).ignoringDisable(true));
         operator.povLeft().onTrue(Commands.runOnce(GetHubStatus::togglePracticeMode));
 
@@ -194,7 +184,7 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("Shoot",
             new WaitCommand(1.0)
-            .andThen(transfer.shootCommand().alongWith(intake.shootCommand())));
+            .andThen(new Shoot(transfer).alongWith(intake.shootCommand())));
 
         new EventTrigger("RunIntake").whileTrue(intake.runIntake(false));
         new EventTrigger("PartialRetract").onTrue((intake.partialRetract()));
