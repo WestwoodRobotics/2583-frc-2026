@@ -17,7 +17,7 @@ public class TransferConstants {
     public static final double kFloorShootVel = 5.0;
 
     public static final double kJamDebounceTime =1.0;
-    public static final double kJamReverseTime =3.0;
+    public static final double kJamReverseTime =1.0;
 
     public static final double kVelThreshold = 1.0;
 
