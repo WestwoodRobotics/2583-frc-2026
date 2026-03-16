@@ -11,8 +11,10 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.TransferConstants;
@@ -29,6 +31,7 @@ public class Transfer extends SubsystemBase {
 
     private final Follower m_transferInvertedFollower = new Follower(TransferConstants.kTransferId1, MotorAlignmentValue.Opposed);
 
+    private double jamTimeStart = 0.0;
     private final SysIdRoutine m_floorSysIdRoutine = new SysIdRoutine(
         new SysIdRoutine.Config(
             null,
@@ -91,7 +94,42 @@ public class Transfer extends SubsystemBase {
     public Command shootCommand() {
         // Right Trigger: Both motors spin at their respective shooting velocities
         return Commands.run(() -> runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel), this);
+
     }
+
+    public Command jamDetection() {
+
+        return Commands.run( 
+            ()-> {
+                double transferMotor1Vel = Math.abs(this.m_transferMotor1.getVelocity().getValueAsDouble());
+                double transferMotor2Vel = Math.abs(this.m_transferMotor2.getVelocity().getValueAsDouble());
+                double now = Timer.getFPGATimestamp();
+                boolean jammed = (TransferConstants.kTransferShootVel - transferMotor1Vel > TransferConstants.kVelThreshold)
+                || (TransferConstants.kTransferShootVel - transferMotor2Vel > TransferConstants.kVelThreshold);
+
+                if(jammed && jamTimeStart == 0.0){
+                    jamTimeStart = now;
+                } 
+
+                if(!jammed){
+                    jamTimeStart = 0.0;
+                }
+
+                if(now - jamTimeStart < TransferConstants.kJamReverseTime){
+                    runMotors(TransferConstants.kFloorShootVel,-TransferConstants.kTransferShootVel);
+                }
+
+                else{
+                    jamTimeStart=0.0;
+                    runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel);
+                }
+            }
+        
+            );
+        }
+
+        
+    
 
     public Command reverseCommand() {
         return Commands.run(() -> runMotors(-TransferConstants.kFloorShootVel, -TransferConstants.kTransferShootVel), this)

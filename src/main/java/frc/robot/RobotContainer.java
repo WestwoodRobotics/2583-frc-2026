@@ -138,7 +138,7 @@ public class RobotContainer {
                 shooter.setHoodAngle(ShooterConstants.kAutoBumperHoodAngle);
         })));
 
-        driver.rightTrigger().whileTrue(transfer.shootCommand());
+        driver.rightTrigger().whileTrue(transfer.jamDetection());
 
         // Run intake while holding left trigger
         driver.leftTrigger().whileTrue(intake.runIntake(false));
