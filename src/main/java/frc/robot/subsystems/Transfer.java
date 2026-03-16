@@ -32,6 +32,12 @@ public class Transfer extends SubsystemBase {
     private final Follower m_transferInvertedFollower = new Follower(TransferConstants.kTransferId1, MotorAlignmentValue.Opposed);
 
     private double jamTimeStart = 0.0;
+    private double reverseTimeStart = 0.0;
+
+    private Timer  debounceTimer = new Timer();
+    private Timer  reverseTimer = new Timer();
+
+
     private final SysIdRoutine m_floorSysIdRoutine = new SysIdRoutine(
         new SysIdRoutine.Config(
             null,
@@ -103,25 +109,32 @@ public class Transfer extends SubsystemBase {
             ()-> {
                 double transferMotor1Vel = Math.abs(this.m_transferMotor1.getVelocity().getValueAsDouble());
                 double transferMotor2Vel = Math.abs(this.m_transferMotor2.getVelocity().getValueAsDouble());
-                double now = Timer.getFPGATimestamp();
                 boolean jammed = (TransferConstants.kTransferShootVel - transferMotor1Vel > TransferConstants.kVelThreshold)
                 || (TransferConstants.kTransferShootVel - transferMotor2Vel > TransferConstants.kVelThreshold);
-
-                if(jammed && jamTimeStart == 0.0){
-                    jamTimeStart = now;
-                } 
-
+                //not jammed, run normally
                 if(!jammed){
-                    jamTimeStart = 0.0;
-                }
-
-                if(now - jamTimeStart < TransferConstants.kJamReverseTime){
-                    runMotors(TransferConstants.kFloorShootVel,-TransferConstants.kTransferShootVel);
-                }
-
-                else{
-                    jamTimeStart=0.0;
+                    debounceTimer.reset();
+                    reverseTimer.reset();
                     runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel);
+                }
+                //jammed, start the debounce timer
+                else {
+                    debounceTimer.start();
+
+                    if(debounceTimer.get() >= TransferConstants.kJamDebounceTime){
+                        //reverse transfer if we have met the jam time requirements
+                        runMotors(TransferConstants.kFloorShootVel,-TransferConstants.kTransferShootVel);
+                        reverseTimer.start();
+                        
+                        if(reverseTimer.get() >= TransferConstants.kJamReverseTime){
+                            //go back to normal if we have reversed for long enough
+                            debounceTimer.reset();
+                            reverseTimer.reset();
+                            reverseTimer.stop();
+                            debounceTimer.stop();
+                            runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel);
+                        }
+                    }
                 }
             }
         
