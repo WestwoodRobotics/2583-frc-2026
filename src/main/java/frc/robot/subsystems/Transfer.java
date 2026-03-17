@@ -32,11 +32,10 @@ public class Transfer extends SubsystemBase {
 
     private final Follower m_transferInvertedFollower = new Follower(TransferConstants.kTransferId1, MotorAlignmentValue.Opposed);
 
-    private double jamTimeStart = 0.0;
-    private double reverseTimeStart = 0.0;
 
     private Timer  debounceTimer = new Timer();
     private Timer  reverseTimer = new Timer();
+    private Timer  velTimer = new Timer();
 
 
     private final SysIdRoutine m_floorSysIdRoutine = new SysIdRoutine(
@@ -108,6 +107,8 @@ public class Transfer extends SubsystemBase {
 
         return Commands.run( 
             ()-> {
+                velTimer.reset();
+                velTimer.start();
                 double transferMotor1Vel = Math.abs(this.m_transferMotor1.getVelocity().getValueAsDouble());
                 double transferMotor2Vel = Math.abs(this.m_transferMotor2.getVelocity().getValueAsDouble());
 
@@ -120,6 +121,9 @@ public class Transfer extends SubsystemBase {
                 SmartDashboard.putNumber("debounce Timer", debounceTimer.get());
                 SmartDashboard.putNumber("reverse Timer", reverseTimer.get());
 
+                if(velTimer.get() < 1.0){
+                    jammed = false;
+                }
                 //not jammed, run normally
                 if(!jammed && !reverseTimer.isRunning()){
                     debounceTimer.reset();

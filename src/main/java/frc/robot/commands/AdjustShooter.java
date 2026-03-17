@@ -27,7 +27,7 @@ public class AdjustShooter extends Command {
         .publish();
 
     public AdjustShooter(Shooter shooter, CommandSwerveDrivetrain drivetrain) {
-        m_shooter = shooter;
+        m_shooter = shooter;    
         m_drivetrain = drivetrain;
         addRequirements(m_shooter);
     }
@@ -51,7 +51,6 @@ public class AdjustShooter extends Command {
             return;
         }
         ShotParam shotParam = getShotParam(distance);
-        m_shooter.setHoodAngle(shotParam.angle);
         m_shooter.setFlywheelVelocity(shotParam.velocity);
     }
 
@@ -70,9 +69,8 @@ public class AdjustShooter extends Command {
         if (floor.getKey().equals(ceil.getKey())) return floorVal;
 
         double t = (distance - floor.getKey()) / (ceil.getKey() - floor.getKey());
-        double angle = floorVal.angle + t * (ceilVal.angle - floorVal.angle);
-        double velocity = floorVal.velocity + t * (ceilVal.velocity - floorVal.velocity);
-
+        double angle = 56;
+        double velocity = 4.988573*distance + 33.30531;
         angle = MathUtil.clamp(angle, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
         return new ShotParam(angle, velocity);
     }

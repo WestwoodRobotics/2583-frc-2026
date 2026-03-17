@@ -36,8 +36,8 @@ public class IntakeConstants {
         configs.Slot0.kG = 17.0;
         configs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
         
-        configs.MotionMagic.MotionMagicAcceleration = 7.0;
-        configs.MotionMagic.MotionMagicCruiseVelocity = 2.0;
+        configs.MotionMagic.MotionMagicAcceleration = 3.0;
+        configs.MotionMagic.MotionMagicCruiseVelocity = 1.0;
 
         // configs.CurrentLimits.StatorCurrentLimit = 80.0;
         // configs.CurrentLimits.SupplyCurrentLimit = 60.0;

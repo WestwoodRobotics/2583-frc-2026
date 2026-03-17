@@ -66,6 +66,7 @@ public class RobotContainer {
     public final Shooter shooter = new Shooter();
     public final LED led = new LED(drivetrain, driver, operator);
 
+
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
@@ -135,8 +136,8 @@ public class RobotContainer {
         driver.rightBumper().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter)
             .andThen(Commands.runOnce(() -> {
                 shooter.setFlywheelVelocity(ShooterConstants.kAutoBumperFlywheelVel);
-                shooter.setHoodAngle(ShooterConstants.kAutoBumperHoodAngle);
-        })));
+/*                 shooter.setHoodAngle(ShooterConstants.kAutoBumperHoodAngle);
+ */        })));
 
         driver.rightTrigger().whileTrue(transfer.jamDetection());
 
@@ -152,22 +153,22 @@ public class RobotContainer {
         operator.a().whileTrue(transfer.reverseCommand())
             .onFalse(transfer.shootCommand().until(() -> !driver.rightTrigger().getAsBoolean()));
         
-        operator.rightTrigger().whileTrue(Commands.startEnd(
+       /*  operator.rightTrigger().whileTrue(Commands.startEnd(
             () -> shooter.setHoodVoltage(ShooterConstants.kManualHoodVolts),
             () -> shooter.setHoodVoltage(0),
             shooter));
         operator.leftTrigger().whileTrue(Commands.startEnd(
             () -> shooter.setHoodVoltage(-ShooterConstants.kManualHoodVolts),
             () -> shooter.setHoodVoltage(0),
-            shooter));
+            shooter)); */
 
         operator.rightBumper().onTrue(Commands.runOnce(
             () -> shooter.changeFlywheelVelocity(ShooterConstants.kManualFlywheelInc), shooter));
         operator.leftBumper().onTrue(Commands.runOnce(
             () -> shooter.changeFlywheelVelocity(-ShooterConstants.kManualFlywheelInc), shooter));
 
-        operator.povDown().onTrue(Commands.runOnce(shooter::resetHoodPosition, shooter).ignoringDisable(true));
-        operator.povRight().onTrue(Commands.runOnce(intake::resetPivot, intake).ignoringDisable(true));
+/*         operator.povDown().onTrue(Commands.runOnce(shooter::resetHoodPosition, shooter).ignoringDisable(true));
+ */     operator.povRight().onTrue(Commands.runOnce(intake::resetPivot, intake).ignoringDisable(true));
         operator.povLeft().onTrue(Commands.runOnce(GetHubStatus::togglePracticeMode));
 
         operator.rightStick().onTrue(Commands.runOnce(() -> {

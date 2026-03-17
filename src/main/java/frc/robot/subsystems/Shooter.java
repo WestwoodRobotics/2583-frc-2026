@@ -25,8 +25,8 @@ import frc.robot.constants.ShooterConstants;
 public class Shooter extends SubsystemBase {
 
     private final CANBus canBus = ShooterConstants.kCANBus;
-    private final TalonFX m_hoodMotor = new TalonFX(ShooterConstants.kHoodMotorId, canBus);
-    private final TalonFX m_bottomLeftFlywheel = new TalonFX(ShooterConstants.kBottomLeftFlywheelId, canBus);
+/*     private final TalonFX m_hoodMotor = new TalonFX(ShooterConstants.kHoodMotorId, canBus);
+ */    private final TalonFX m_bottomLeftFlywheel = new TalonFX(ShooterConstants.kBottomLeftFlywheelId, canBus);
     private final TalonFX m_bottomRightFlywheel = new TalonFX(ShooterConstants.kBottomRightFlywheelId, canBus);
     private final TalonFX m_topLeftFlywheel = new TalonFX(ShooterConstants.kTopLeftFlywheelId, canBus);
     private final TalonFX m_topRightFlywheel = new TalonFX(ShooterConstants.kTopRightFlywheelId, canBus);
@@ -35,7 +35,7 @@ public class Shooter extends SubsystemBase {
     private final VelocityTorqueCurrentFOC m_flywheelRequest = new VelocityTorqueCurrentFOC(0.0);
 
     private final VoltageOut m_voltReq = new VoltageOut(0.0);
-    private SysIdRoutine m_hoodSysIdRoutine = new SysIdRoutine(
+    /* private SysIdRoutine m_hoodSysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
                 Volts.of(0.25).per(Second),
                 Volts.of(1),
@@ -48,7 +48,7 @@ public class Shooter extends SubsystemBase {
                 null,
                 this
             )
-        );
+        ); */
 
     private SysIdRoutine m_flywheelSysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
@@ -91,8 +91,8 @@ public class Shooter extends SubsystemBase {
 
     public Shooter() {
         // Apply configurations directly from constants to keep constructor clean of variables
-        m_hoodMotor.getConfigurator().apply(ShooterConstants.getHoodMotorConfigs());
-        m_bottomLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
+/*         m_hoodMotor.getConfigurator().apply(ShooterConstants.getHoodMotorConfigs());
+ */        m_bottomLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
         m_bottomRightFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
         m_topLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
         m_topRightFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
@@ -103,18 +103,18 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        double hoodPos = m_hoodMotor.getPosition().getValueAsDouble();
-        double flywheelVel = m_topRightFlywheel.getVelocity().getValueAsDouble();
+/*         double hoodPos = m_hoodMotor.getPosition().getValueAsDouble();
+ */        double flywheelVel = m_topRightFlywheel.getVelocity().getValueAsDouble();
 
         m_flywheelDesiredRPS.set(m_flywheelRequest.Velocity);
         m_flywheelActualRPS.set(flywheelVel);
-        m_hoodDesiredPos.set(m_hoodRequest.Position);
-        m_hoodActualPos.set(hoodPos);
-        m_hoodDesiredAngle.set(m_desiredAngle);
+/*         m_hoodDesiredPos.set(m_hoodRequest.Position);
+ *//*         m_hoodActualPos.set(hoodPos);
+ */        m_hoodDesiredAngle.set(m_desiredAngle);
         m_atDesiredRPS.set(Math.abs(flywheelVel - m_flywheelRequest.Velocity) < ShooterConstants.kFlywheelToleranceRPS);
 
-        double actualAngle = (hoodPos - ShooterConstants.kPosAtMinAngle) / ShooterConstants.kPerDegree + ShooterConstants.kMinAngle;
-        m_hoodActualAngle.set(actualAngle);
+        /* double actualAngle = (hoodPos - ShooterConstants.kPosAtMinAngle) / ShooterConstants.kPerDegree + ShooterConstants.kMinAngle;
+        m_hoodActualAngle.set(actualAngle); */
         m_autoAimEnabledPub.set(m_autoAimEnabled);
         m_isManualPub.set(!m_autoAimEnabled);
 
@@ -124,17 +124,17 @@ public class Shooter extends SubsystemBase {
         SignalLogger.writeDouble("Shooter TR current", this.m_topRightFlywheel.getSupplyCurrent().getValueAsDouble());
     }
 
-    public void setHoodPosition(double position) {
+    /* public void setHoodPosition(double position) {
         m_hoodMotor.setControl(m_hoodRequest.withPosition(position));
-    }
+    } */
 
-    public void setHoodAngle(double angle) {
+    /* public void setHoodAngle(double angle) {
         m_desiredAngle = MathUtil.clamp(angle, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
         double angleDelta = m_desiredAngle - ShooterConstants.kMinAngle;
         double position = Math.max(ShooterConstants.kPosAtMinAngle + angleDelta * ShooterConstants.kPerDegree, ShooterConstants.kTrueMinAngle);
 
         setHoodPosition(position);
-    }
+    } */
 
     public void toggleAutoAim() {
         m_autoAimEnabled = !m_autoAimEnabled;
@@ -144,10 +144,10 @@ public class Shooter extends SubsystemBase {
         return m_autoAimEnabled;
     }
 
-    public void setHoodVoltage(double volts) {
+    /* public void setHoodVoltage(double volts) {
         m_autoAimEnabled = false;
         m_hoodMotor.setControl(m_voltReq.withOutput(volts));
-    }
+    } */
 
     public void changeFlywheelVelocity(double delta) {
         m_autoAimEnabled = false;
@@ -156,10 +156,10 @@ public class Shooter extends SubsystemBase {
         setFlywheelVelocity(newVel);
     }
 
-    public void resetHoodPosition() {
+    /* public void resetHoodPosition() {
         m_hoodMotor.setPosition(0.0);
     }
-
+ */
     public void setFlywheelVelocity(double velocity) {
         m_topRightFlywheel.setControl(m_flywheelRequest.withVelocity(velocity));
         m_bottomRightFlywheel.setControl(m_alignedFollower);

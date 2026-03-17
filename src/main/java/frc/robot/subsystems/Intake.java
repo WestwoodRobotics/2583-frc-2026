@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,6 +29,7 @@ public class Intake extends SubsystemBase {
 
     private final VoltageOut m_voltReq = new VoltageOut(0.0);
 
+    private Timer intakeTimer = new Timer();
     private final SysIdRoutine m_pivotSysIdRoutine = 
             new SysIdRoutine(
                 new SysIdRoutine.Config(
@@ -131,6 +133,13 @@ public class Intake extends SubsystemBase {
     public Command partialRetract() {
         return Commands.runOnce(() -> setPivotPosition(IntakeConstants.kPivotPartial), this);
     }
+
+    public Command continuousRetract() {
+        return Commands.sequence(partialRetract(), fullRetract()).repeatedly();
+    }
+
+
+
 
     public Command shootCommand() {
         return Commands.startEnd(() ->{
