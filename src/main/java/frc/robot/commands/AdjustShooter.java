@@ -51,7 +51,7 @@ public class AdjustShooter extends Command {
         }
 
         try {
-            double flywheelRPS = ShooterConstants.kDistanceToRPS.get(distance);
+            double flywheelRPS = (4.988573 * distance) + 33.30531;
             m_shooter.setFlywheelVelocity(flywheelRPS);
         } catch (Exception e) {
             m_shooter.setFlywheelVelocity(0.0);

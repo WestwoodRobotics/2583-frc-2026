@@ -26,8 +26,9 @@ public class ShooterConstants {
 
     static {
         kDistanceToRPS.put(0.0, 0.0);
-        kDistanceToRPS.put(2.54, 51.84);
-        kDistanceToRPS.put(5.842, 69.86);
+        kDistanceToRPS.put(2.8495574858539423, 48.0);
+        kDistanceToRPS.put(3.3511767297182086, 49.301428184820104);
+        kDistanceToRPS.put(4.344944015230539, 55.2223994327685);
         kDistanceToRPS.put(Double.MAX_VALUE, kMaxFlywheelRPS);
 
         kDistanceToTOF.put(0.0, 0.0);
