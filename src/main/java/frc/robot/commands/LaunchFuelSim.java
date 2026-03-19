@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.util.FuelSim;
+import frc.robot.utils.FuelSim;
 
 public class LaunchFuelSim extends Command{
     private double velocity;
@@ -36,6 +36,7 @@ public class LaunchFuelSim extends Command{
         this.drivetrain = drivetrain;
         this.launchheight = launchheight;
     }
+    
     @Override
     public void initialize() {
         shootTimer.restart();

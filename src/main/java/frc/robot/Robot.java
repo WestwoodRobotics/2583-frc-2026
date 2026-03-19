@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.util.FuelSim;
+import frc.robot.utils.FuelSim;
 
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;

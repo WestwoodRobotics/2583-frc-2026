@@ -1,9 +1,12 @@
 package frc.robot.subsystems;
 
+
 import static edu.wpi.first.units.Units.*;
+
 
 import java.util.Optional;
 import java.util.function.Supplier;
+
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
@@ -11,10 +14,12 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
@@ -34,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
+
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
  * Subsystem so it can easily be used in command-based projects.
@@ -46,6 +52,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
 
+
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
     /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -53,16 +60,20 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
+
     /** Swerve request to apply during robot-centric path following */
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
+
 
     /* Swerve requests to apply during SysId characterization */
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
+
     public static final double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     public static final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -80,6 +91,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         )
     );
 
+
     /* SysId routine for characterizing steer. This is used to find PID gains for the steer motors. */
     private final SysIdRoutine m_sysIdRoutineSteer = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -95,6 +107,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             this
         )
     );
+
 
     /*
      * SysId routine for characterizing rotation.
@@ -123,8 +136,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         )
     );
 
+
     /* The SysId routine to test */
     private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
+
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -144,8 +159,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+
+
         configureAutoBuilder();
     }
+
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -171,6 +189,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
         configureAutoBuilder();
     }
+
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -205,6 +224,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         configureAutoBuilder();
     }
 
+
     private void configureAutoBuilder() {
         try {
             var config = RobotConfig.fromGUISettings();
@@ -234,6 +254,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     }
 
+
     /**
      * Returns a command that applies the specified control request to this swerve drivetrain.
      *
@@ -243,6 +264,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public Command applyRequest(Supplier<SwerveRequest> request) {
         return run(() -> this.setControl(request.get()));
     }
+
 
     /**
      * Runs the SysId Quasistatic test in the given direction for the routine
@@ -255,6 +277,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return m_sysIdRoutineToApply.quasistatic(direction);
     }
 
+
     /**
      * Runs the SysId Dynamic test in the given direction for the routine
      * specified by {@link #m_sysIdRoutineToApply}.
@@ -265,6 +288,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return m_sysIdRoutineToApply.dynamic(direction);
     }
+
 
     @Override
     public void periodic() {
@@ -285,10 +309,26 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
+       
+        SignalLogger.writeDouble("Drive/DriveCurrent0", this.getModule(0).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Drive/SteerCurrent0", this.getModule(0).getSteerMotor().getSupplyCurrent().getValueAsDouble());
+   
+        SignalLogger.writeDouble("Drive/DriveCurrent1", this.getModule(1).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Drive/SteerCurrent1", this.getModule(1).getSteerMotor().getSupplyCurrent().getValueAsDouble());
+       
+        SignalLogger.writeDouble("Drive/DriveCurrent2", this.getModule(2).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Drive/SteerCurrent2", this.getModule(2).getSteerMotor().getSupplyCurrent().getValueAsDouble());
+       
+        SignalLogger.writeDouble("Drive/DriveCurrent3", this.getModule(3).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Drive/SteerCurrent3", this.getModule(3).getSteerMotor().getSupplyCurrent().getValueAsDouble());
+
+
     }
+
 
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
+
 
         /* Run simulation at a faster rate so PID gains behave more reasonably */
         m_simNotifier = new Notifier(() -> {
@@ -296,11 +336,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             double deltaTime = currentTime - m_lastSimTime;
             m_lastSimTime = currentTime;
 
+
             /* use the measured time delta, get battery voltage from WPILib */
             updateSimState(deltaTime, RobotController.getBatteryVoltage());
         });
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
+
 
     /**
      * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
@@ -313,6 +355,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds));
     }
+
 
     /**
      * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
@@ -336,6 +379,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         super.addVisionMeasurement(visionRobotPoseMeters, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
     }
 
+
     /**
      * Return the pose at a given timestamp, if the buffer is not empty.
      *
@@ -347,23 +391,27 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
 
-    public static double [] joyStickPolar(CommandXboxController controller, int power) {
+
+    public static void joyStickPolar(double[] out, CommandXboxController controller, int power) {
+
 
         double x2 = MathUtil.applyDeadband(-controller.getLeftY(), 0.1);
         double y2 = MathUtil.applyDeadband(-controller.getLeftX(), 0.1);
-        double rot2 = MathUtil.applyDeadband(-controller.getHID().getRawAxis(2), 0.1);
+        double rot2 = MathUtil.applyDeadband(-controller.getHID().getRawAxis(4), 0.1);
+
 
         // Clamp magnitude to 1.0 to handle square joystick corners
         double r = Math.min(1.0, Math.hypot(x2, y2));
         double theta = Math.atan2(y2, x2);
 
+
         // Use a simple multiplication for power of 2 for efficiency as the comment suggests
         double rScaled = (power == 2) ? r * r : Math.pow(r, power);
 
-        return new double [] {
-            rScaled * Math.cos(theta) * MaxSpeed,
-            rScaled * Math.sin(theta) * MaxSpeed,
-            rot2 * MaxAngularRate
-        };
+
+        out[0] = rScaled * Math.cos(theta) * MaxSpeed;
+        out[1] = rScaled * Math.sin(theta) * MaxSpeed;
+        out[2] = rot2 * MaxAngularRate;
     }
 }
+

@@ -31,14 +31,14 @@ import com.ctre.phoenix6.SignalLogger;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.SwerveConstants;
- import frc.robot.commands.AimShooter;
+ import frc.robot.commands.AimSwerve;
  import frc.robot.commands.AutoAlign;
 import frc.robot.commands.DriveToObject;
 import frc.robot.commands.LaunchFuelSim;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
-import frc.robot.util.FuelSim;
+import frc.robot.utils.FuelSim;
 
 public class RobotContainer {
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -63,7 +63,7 @@ public class RobotContainer {
     public final Intake intake = new Intake();
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-
+    private final double[] driverInputs = new double[3];
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
@@ -82,7 +82,7 @@ public class RobotContainer {
     public RobotContainer() {
         NamedCommands.registerCommand("runintake",  intake.runIntake());
         NamedCommands.registerCommand("stopintake", Commands.runOnce(() -> {}, intake)); 
-        NamedCommands.registerCommand("faceHub",  new AimShooter(drivetrain, faceAngle, driver).withTimeout(0.8));
+        NamedCommands.registerCommand("faceHub",  new AimSwerve(drivetrain, faceAngle, driver).withTimeout(0.8));
         NamedCommands.registerCommand("shoot", new LaunchFuelSim(drivetrain, 0.762) );
 
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
@@ -122,13 +122,17 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
-                    double[] drives = CommandSwerveDrivetrain.joyStickPolar(driver, 2);
+                    CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver, 3);
 
-                    return drive.withVelocityX(drives[0]) // Drive forward with negative Y (forward)
-                        .withVelocityY(drives[1]) // Drive left with negative X (left)
-                        .withRotationalRate(drives[2]); // Drive counterclockwise with negative X (left)
+
+                    return drive.withVelocityX(driverInputs[0]) // Drive forward with negative Y (forward)
+                        .withVelocityY(driverInputs[1]) // Drive left with negative X (left)
+                        .withRotationalRate(driverInputs[2]); // Drive counterclockwise with negative X (left)
                 })
         );
+
+
+
 
         intake.setDefaultCommand(intake.intakeDefault());
 
@@ -145,7 +149,7 @@ public class RobotContainer {
             point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
         ));
         driver.x().whileTrue(new DriveToObject(drivetrain));
-        driver.y().whileTrue(new AimShooter(drivetrain, faceAngle, driver));
+        driver.y().whileTrue(new AimSwerve(drivetrain, faceAngle, driver));
 
         //intake
         driver.rightTrigger().onTrue(intake.retractIntake());
@@ -200,7 +204,7 @@ public class RobotContainer {
         SmartDashboard.putBoolean("align", driver.x().getAsBoolean());  
 
         // Commanded chassis velocities (same mapping used in default command)
-        double[] drives = CommandSwerveDrivetrain.joyStickPolar(driver, 2);
+        double[] drives = driverInputs;
         SignalLogger.writeDouble("Drivetrain/CmdVx", drives[0]);
         SignalLogger.writeDouble("Drivetrain/CmdVy", drives[1]);
         SignalLogger.writeDouble("Drivetrain/CmdOmega", drives[2]);
