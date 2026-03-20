@@ -90,7 +90,7 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() -> {
-                    CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver, 2);
+                    CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver, 3);
 
                     return drive.withVelocityX(driverInputs[0]) // Drive forward with negative Y (forward)
                         .withVelocityY(driverInputs[1]) // Drive left with negative X (left)
@@ -112,7 +112,7 @@ public class RobotContainer {
         driver.a().whileTrue(new AimSwerve(drivetrain, faceAngle, driver));
 
         driver.x().whileTrue(drivetrain.applyRequest(() -> {
-            CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver, 2);
+            CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver, 3);
 
             Rotation2d currentRot = drivetrain.getState().Pose.getRotation();
 
@@ -131,7 +131,7 @@ public class RobotContainer {
             .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
         
         driver.y().whileTrue(new AlignCornerShot(drivetrain));
-        driver.b().whileTrue(intake.shootCommand());
+        driver.b().whileTrue(intake.partialRetract());
 
         driver.rightBumper().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter)
             .andThen(Commands.runOnce(() -> {
@@ -169,10 +169,10 @@ public class RobotContainer {
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        // driver.x().whileTrue(shooter.sysIdDynamic(Direction.kForward));
-        // driver.y().whileTrue(shooter.sysIdDynamic(Direction.kReverse));
-        // driver.b().whileTrue(shooter.sysIdQuasistatic(Direction.kForward));
-        // driver.a().whileTrue(shooter.sysIdQuasistatic(Direction.kReverse));
+        // driver.x().whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        // driver.y().whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        // driver.b().whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        // driver.a().whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // driver.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
         // driver.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));

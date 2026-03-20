@@ -35,34 +35,36 @@ public class Shoot extends Command {
 
     @Override
     public void execute() {
+        //ARCHIT SAID HE WANTS US TO REMOVE UNJAMMING SO I DID
+
         // Inside autonomous, only allow shooting if the robot is aligned (canShoot is true)
         if (DriverStation.isAutonomous() && !m_canShootSub.get()) {
             m_transfer.runMotors(0.0, 0.0);
             return;
         }
 
-        if (m_isJammed) {
-            // Run in reverse to clear the jam
-            m_transfer.runMotors(-TransferConstants.kFloorShootVel, -TransferConstants.kTransferShootVel);
+        // if (m_isJammed) {
+        //     // Run in reverse to clear the jam
+        //     m_transfer.runMotors(-TransferConstants.kFloorShootVel, -TransferConstants.kTransferShootVel);
             
-            if (m_reverseTimer.hasElapsed(TransferConstants.kReverseTimeSecs)) {
-                m_isJammed = false;
-                m_jamTimer.restart();
-            }
-        } else {
+        //     if (m_reverseTimer.hasElapsed(TransferConstants.kReverseTimeSecs)) {
+        //         m_isJammed = false;
+        //         m_jamTimer.restart();
+        //     }
+        // } else {
             // Normal shooting
             m_transfer.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel);
             
-            // Check if the velocity is below the jam threshold
-            if (Math.abs(m_transfer.getTransferVelocity()) < TransferConstants.kJamThreshold) {
-                if (m_jamTimer.hasElapsed(TransferConstants.kJamTimeSecs)) {
-                    m_isJammed = true;
-                    m_reverseTimer.restart();
-                }
-            } else {
-                m_jamTimer.restart(); // Reset the timer if we are above the threshold
-            }
-        }
+        //     // Check if the velocity is below the jam threshold
+        //     if (Math.abs(m_transfer.getTransferVelocity()) < TransferConstants.kJamThreshold) {
+        //         if (m_jamTimer.hasElapsed(TransferConstants.kJamTimeSecs)) {
+        //             m_isJammed = true;
+        //             m_reverseTimer.restart();
+        //         }
+        //     } else {
+        //         m_jamTimer.restart(); // Reset the timer if we are above the threshold
+        //     }
+        // }
     }
 
     @Override

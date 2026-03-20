@@ -21,6 +21,7 @@ public class VisionConstants {
             new Rotation3d(0.0, Math.toRadians(20), Math.toRadians(41.641))
         ),
         new Transform3d(
+            
             new Translation3d(0.26430478, -0.3150616, 0.1874266),
             new Rotation3d(0.0, Math.toRadians(20), Math.toRadians(-41.641))
         ),
@@ -44,6 +45,6 @@ public class VisionConstants {
     public static final double multiTagK = 0.2;
     public static final double singleTagK = 0.8;
     public static final double baseSigma = 0.1;
-    public static final double multiTagThetaSigma = 10.0;
+    public static final double multiTagThetaSigma = 2.0;
     public static final int maxMeasurementsToApply = 2;
 }

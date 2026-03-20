@@ -36,7 +36,6 @@ public class Telemetry {
     public Telemetry(double maxSpeed, Pigeon2 pigeon) {
         MaxSpeed = maxSpeed;
         m_pigeon = pigeon;
-        SignalLogger.start();
 
         /* Set up the module state Mechanism2d telemetry */
         for (int i = 0; i < 4; ++i) {

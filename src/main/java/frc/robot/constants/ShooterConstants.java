@@ -25,10 +25,10 @@ public class ShooterConstants {
     public static final InterpolatingDoubleTreeMap kDistanceToTOF = new InterpolatingDoubleTreeMap();
 
     static {
-        kDistanceToRPS.put(0.0, 0.0);
-        kDistanceToRPS.put(2.8495574858539423, 48.0);
-        kDistanceToRPS.put(3.3511767297182086, 49.301428184820104);
-        kDistanceToRPS.put(4.344944015230539, 55.2223994327685);
+        kDistanceToRPS.put(0.0, 32.47639);
+
+        kDistanceToRPS.put(7.225356, 70.0);
+       
         kDistanceToRPS.put(Double.MAX_VALUE, kMaxFlywheelRPS);
 
         kDistanceToTOF.put(0.0, 0.0);

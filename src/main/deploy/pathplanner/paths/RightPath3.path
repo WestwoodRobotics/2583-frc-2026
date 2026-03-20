@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.76814503761574,
-        "y": 3.9303512008101853
+        "x": 6.817,
+        "y": 4.261426533523538
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.186310836226852,
-        "y": 5.780043330439814
+        "x": 6.368017118402282,
+        "y": 5.930513552068473
       },
       "isLocked": false,
       "linkedName": "RightPoint2"
@@ -32,11 +32,11 @@
     },
     {
       "anchor": {
-        "x": 3.031851924189815,
+        "x": 2.072382310984308,
         "y": 2.5770027488425935
       },
       "prevControl": {
-        "x": 4.339433233323728,
+        "x": 3.3799636201182217,
         "y": 2.478866831812026
       },
       "nextControl": null,
@@ -85,8 +85,8 @@
     },
     {
       "name": "RunIntake",
-      "waypointRelativePos": 1.8928819444444445,
-      "endWaypointRelativePos": 1.8456349206349207,
+      "waypointRelativePos": 1.6475354490209462,
+      "endWaypointRelativePos": 1.696151249155984,
       "command": null
     }
   ],
@@ -100,7 +100,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 40.76234821326444
+    "rotation": 30.188454453504406
   },
   "reversed": false,
   "folder": "RightPaths",

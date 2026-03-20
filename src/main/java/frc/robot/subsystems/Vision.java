@@ -14,11 +14,15 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.IntegerPublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.VisionConstants;
 
@@ -33,9 +37,17 @@ public class Vision extends SubsystemBase {
     private final Pigeon2 pigeon;
     private final PhotonCamera[] cameras;
     private final PhotonPoseEstimator[] poseEstimators;
+    private final Field2d Visionfield = new Field2d();
+
 
     private final NetworkTable visionTable = NetworkTableInstance.getDefault().getTable("Vision");
-    
+
+    private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    private final NetworkTable table = inst.getTable("Pose");
+    private final DoubleArrayPublisher fieldPub = table.getDoubleArrayTopic("visionPose").publish();
+    private final StringPublisher fieldTypePub = table.getStringTopic(".type").publish();
+
+
     private final DoublePublisher[] visionXPubs;
     private final DoublePublisher[] visionYPubs;
     private final DoublePublisher[] visionRotPubs;
@@ -49,6 +61,8 @@ public class Vision extends SubsystemBase {
 
     private boolean wasOnBump = false;
     private double landingStartTime = 0.0;
+
+    private final double[] m_poseArray = new double[3];
 
     public Vision(CommandSwerveDrivetrain drivetrain) {
         this.drivetrain = drivetrain;
@@ -98,6 +112,18 @@ public class Vision extends SubsystemBase {
         // Gyro Inputs
         double pitch = pigeon.getPitch().getValueAsDouble();
         double roll = pigeon.getRoll().getValueAsDouble();
+        double yaw = pigeon.getYaw().getValueAsDouble();
+        SmartDashboard.putData("VisionField", Visionfield);
+        fieldTypePub.set("Field2d");
+        
+        if(yaw < 0){
+            yaw += 360;
+        }
+
+        if(yaw > 360){
+            yaw = yaw % 360;
+        }
+       
         double yawRate = pigeon.getAngularVelocityZWorld().getValueAsDouble();
 
         // Landing Snap Logic
@@ -125,21 +151,22 @@ public class Vision extends SubsystemBase {
                 }
                 if (poseOptional.isPresent()) {
                     EstimatedRobotPose pose = poseOptional.get();
-                    Matrix<N3, N1> stdDevs;
+                    Optional<Matrix<N3, N1>> stdDevs = Optional.empty();
 
-                    if (isLanding) {
-                        stdDevs = VecBuilder.fill(VisionConstants.landingStdDev, VisionConstants.landingStdDev, Double.MAX_VALUE);
-                    } else {
+                    if (!isLanding) {
                         stdDevs = getEstimationStdDevs(pose, pitch, roll, yawRate, i);
                     }
 
                     visionXPubs[i].set(pose.estimatedPose.getX());
                     visionYPubs[i].set(pose.estimatedPose.getY());
                     visionRotPubs[i].set(pose.estimatedPose.getRotation().getAngle());
-                    xyStdDevPubs[i].set(stdDevs.get(0, 0));
-                    rotStdDevPubs[i].set(stdDevs.get(2, 0));
-
-                    measurements.add(new VisionMeasurement(pose, stdDevs));
+                   
+                    
+                    if (stdDevs.isPresent()) {
+                        xyStdDevPubs[i].set(stdDevs.get().get(0, 0));
+                        rotStdDevPubs[i].set(stdDevs.get().get(2, 0));
+                        measurements.add(new VisionMeasurement(pose, stdDevs.get()));
+                    }
                 }
                 else {
                     numTagsPubs[i].set(0);
@@ -149,13 +176,36 @@ public class Vision extends SubsystemBase {
 
         measurements.sort(Comparator.comparingDouble(m -> m.stdDevs.get(0, 0)));
         for (int i = 0; i < Math.min(measurements.size(), VisionConstants.maxMeasurementsToApply); i++) {
+            
             VisionMeasurement m = measurements.get(i);
+            double apriltagDeg = m.estimation.estimatedPose.toPose2d().getRotation().getDegrees();
+            Visionfield.setRobotPose(m.estimation.estimatedPose.toPose2d());
+
+            m_poseArray[0] = m.estimation.estimatedPose.toPose2d().getX();
+            m_poseArray[1] = m.estimation.estimatedPose.toPose2d().getY();
+            m_poseArray[2] = m.estimation.estimatedPose.toPose2d().getRotation().getDegrees();
+            fieldPub.set(m_poseArray);
+
+            SmartDashboard.putNumber("yaw", yaw);
+            if(apriltagDeg < 0){
+                apriltagDeg += 360;
+            }
+            if(apriltagDeg < 0){
+                apriltagDeg = apriltagDeg % 360;
+            }
+            SmartDashboard.putNumber("apriltag degrees", apriltagDeg);
+
+            // if(Math.abs(yaw - apriltagDeg) > 10 && m.estimation.targetsUsed.size() > 1){
+            //     SmartDashboard.putBoolean("entered tag", false);
+            //     continue;
+            // }
+            SmartDashboard.putBoolean("entered tag", true); 
             drivetrain.addVisionMeasurement(m.estimation.estimatedPose.toPose2d(), m.estimation.timestampSeconds, m.stdDevs);
         }
     }
 
-    private Matrix<N3, N1> getEstimationStdDevs(EstimatedRobotPose estimatedPose, double pitch, double roll, double yawRate, int i) {
-        Matrix<N3, N1> infiniteStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+    private Optional<Matrix<N3, N1>> getEstimationStdDevs(EstimatedRobotPose estimatedPose, double pitch, double roll, double yawRate, int i) {
+        Optional<Matrix<N3, N1>> infiniteStdDevs = Optional.empty();
 
         // Rejection Criteria
         if (Math.abs(pitch) > VisionConstants.bumpThresholdDegrees || Math.abs(roll) > VisionConstants.bumpThresholdDegrees) return infiniteStdDevs;
@@ -177,13 +227,13 @@ public class Vision extends SubsystemBase {
 
         double k = (numTags > 1) ? VisionConstants.multiTagK : VisionConstants.singleTagK;
         double sigma_xy = (k / totalArea) + VisionConstants.baseSigma;
-        double sigma_theta = (numTags > 1) ? VisionConstants.multiTagThetaSigma : Double.MAX_VALUE;
+        double sigma_theta = VisionConstants.multiTagThetaSigma ;
 
         numTagsPubs[i].set(numTags);
         totalAreaPubs[i].set(totalArea);
         ambiguityPubs[i].set((numTags == 1) ? estimatedPose.targetsUsed.get(0).getPoseAmbiguity() : 0);
 
-        return VecBuilder.fill(sigma_xy, sigma_xy, sigma_theta);
+        return Optional.of(VecBuilder.fill(sigma_xy, sigma_xy, sigma_theta));
     }
 
     private record VisionMeasurement(EstimatedRobotPose estimation, Matrix<N3, N1> stdDevs) {}

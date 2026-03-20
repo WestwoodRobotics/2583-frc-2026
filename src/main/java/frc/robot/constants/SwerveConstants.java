@@ -32,14 +32,16 @@ public class SwerveConstants {
     public static final double alignMaxOmega = 1.5;
     public static final double alignMaxAlpha = 2;
 
+    public static final double compensationKp = 1.2;
+
     public static final double bluePassX = allianceZoneWidth;
     public static final double redPassX = fieldWidth - bluePassX;
     public static final double lowerPassY = 2.0;
     public static final double upperPassY = fieldLength - lowerPassY;
 
-    public static final double aimKp = 11.0;
+    public static final double aimKp = 9.8638;
     public static final double aimKi = 0.0;
-    public static final double aimKd = 0.5;
+    public static final double aimKd = 0.23757;
 
     public static final double kResetX = 3.560;
     public static final double kResetY = 4.029;

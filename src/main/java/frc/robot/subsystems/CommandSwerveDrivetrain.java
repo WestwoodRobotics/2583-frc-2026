@@ -124,7 +124,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     );
 
     /* The SysId routine to test */
-    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
+    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineRotation;
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -144,7 +144,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        SignalLogger.start();
 
         configureAutoBuilder();
     }
@@ -288,17 +287,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             });
         }
         
-        SignalLogger.writeDouble("Drive current 0", this.getModule(0).getDriveMotor().getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Steer current 0", this.getModule(0).getSteerMotor().getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Drive/DriveCurrent0", this.getModule(0).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Drive/SteerCurrent0", this.getModule(0).getSteerMotor().getSupplyCurrent().getValueAsDouble());
     
-        SignalLogger.writeDouble("Drive current 1", this.getModule(1).getDriveMotor().getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Steer current 1", this.getModule(1).getSteerMotor().getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Drive/DriveCurrent1", this.getModule(1).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Drive/SteerCurrent1", this.getModule(1).getSteerMotor().getSupplyCurrent().getValueAsDouble());
         
-        SignalLogger.writeDouble("Drive current 2", this.getModule(2).getDriveMotor().getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Steer current 2", this.getModule(2).getSteerMotor().getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Drive/DriveCurrent2", this.getModule(2).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Drive/SteerCurrent2", this.getModule(2).getSteerMotor().getSupplyCurrent().getValueAsDouble());
         
-        SignalLogger.writeDouble("Drive current 3", this.getModule(3).getDriveMotor().getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Steer current 3", this.getModule(3).getSteerMotor().getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Drive/DriveCurrent3", this.getModule(3).getDriveMotor().getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Drive/SteerCurrent3", this.getModule(3).getSteerMotor().getSupplyCurrent().getValueAsDouble());
 
     }
 

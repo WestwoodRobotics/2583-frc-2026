@@ -75,7 +75,6 @@ public class Shooter extends SubsystemBase {
         m_topLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
         m_topRightFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
 
-        SignalLogger.start();
     }
 
     @Override
@@ -88,11 +87,13 @@ public class Shooter extends SubsystemBase {
 
         m_autoAimEnabledPub.set(m_autoAimEnabled);
         m_isManualPub.set(!m_autoAimEnabled);
+        SignalLogger.writeDouble("Shooter/FlywheelActualVel", flywheelVel);
+        SignalLogger.writeDouble("Shooter/FlywheelDesiredVel", m_flywheelRequest.Velocity);
 
-        SignalLogger.writeDouble("Shooter BL current", this.m_bottomLeftFlywheel.getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Shooter BR current", this.m_bottomRightFlywheel.getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Shooter TL current", this.m_topLeftFlywheel.getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Shooter TR current", this.m_topRightFlywheel.getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Shooter/FlywheelBLCurrent", this.m_bottomLeftFlywheel.getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Shooter/FlywheelBRCurrent", this.m_bottomRightFlywheel.getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Shooter/FlywheelTLCurrent", this.m_topLeftFlywheel.getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Shooter/FlywheelTRCurrent", this.m_topRightFlywheel.getSupplyCurrent().getValueAsDouble());
     }
 
     public void toggleAutoAim() {

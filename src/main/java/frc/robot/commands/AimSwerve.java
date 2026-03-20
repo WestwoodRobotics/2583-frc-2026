@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -55,13 +56,19 @@ public class AimSwerve extends Command {
         Rotation2d targetHeading = targetLocation.minus(robotPose.getTranslation())
             .getAngle();
 
+        
+        
+        double HubHeading = targetHeading.getRadians() - (AdjustShooter.headingCorrection * SwerveConstants.compensationKp);
+        
+        Rotation2d correctedHeading = new Rotation2d(HubHeading);
+
         if (DriverStation.getAlliance().get() == Alliance.Red) {
-            targetHeading = targetHeading.minus(new Rotation2d(Math.toRadians(180.0)));
+            correctedHeading = correctedHeading.minus(new Rotation2d(Math.toRadians(180.0)));
         }
 
         drivetrain.setControl(driveRequest
             .withVelocityX(driverInputs[0])
             .withVelocityY(driverInputs[1])
-            .withTargetDirection(targetHeading));
+            .withTargetDirection(correctedHeading));
     }
 }

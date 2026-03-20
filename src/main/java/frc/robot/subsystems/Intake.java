@@ -9,9 +9,11 @@ import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -73,7 +75,6 @@ public class Intake extends SubsystemBase {
         m_pivotMotor.setPosition(IntakeConstants.kPivotOffset);
 
         m_pivotMotor.setControl(m_pivotRequest.withPosition(IntakeConstants.kPivotIn));
-        SignalLogger.start();
 
     }
 
@@ -87,10 +88,12 @@ public class Intake extends SubsystemBase {
         m_rollerDesiredPub.set(m_rollerRequest.Velocity);
         m_rollerActualPub.set(rollerActual);
 
-        SignalLogger.writeDouble("Intake pivot current", this.m_pivotMotor.getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Intake roller current", this.m_rollerMotor.getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Intake/PivotCurrent", this.m_pivotMotor.getSupplyCurrent().getValueAsDouble());
+        SignalLogger.writeDouble("Intake/RollerCurrent", this.m_rollerMotor.getSupplyCurrent().getValueAsDouble());
 
+        SmartDashboard.putNumber("Intake Position", pivotActual);
     }
+
 
     /**
      * Sets the position of the pivot motor using Motion Magic Expo (Torque Current FOC).
@@ -131,6 +134,25 @@ public class Intake extends SubsystemBase {
     public Command partialRetract() {
         return Commands.runOnce(() -> setPivotPosition(IntakeConstants.kPivotPartial), this);
     }
+
+    //fix later
+    /* public Command continuousRetract() {
+        SlewRateLimiter slewLimiter = new SlewRateLimiter(IntakeConstants.kPivotOut / 1.0);
+
+
+        return Commands.sequence(
+        Commands.runOnce(() -> slewLimiter.reset(m_pivotMotor.getPosition().getValueAsDouble())),
+        Commands.run(() -> setPivotPosition(slewLimiter.calculate(IntakeConstants.kPivotShoot)), this)
+            .until(() -> Math.abs(m_pivotMotor.getPosition().getValueAsDouble() - IntakeConstants.kPivotPartial) < 0.06),
+
+        Commands.runOnce(() -> slewLimiter.reset(m_pivotMotor.getPosition().getValueAsDouble())),
+        Commands.run(() -> setPivotPosition(slewLimiter.calculate(IntakeConstants.kPivotOut)), this)
+            .until(() -> Math.abs(m_pivotMotor.getPosition().getValueAsDouble() - IntakeConstants.kPivotOut) < 0.06)
+        );
+
+    }
+     */
+    
 
     public Command shootCommand() {
         return Commands.startEnd(() ->{
