@@ -41,6 +41,7 @@ public class Telemetry {
         for (int i = 0; i < 4; ++i) {
             SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
         }
+        SmartDashboard.putData("Field", m_field);
     }
 
     /* What to publish over networktables for telemetry */
@@ -112,7 +113,6 @@ public class Telemetry {
         gyroRoll.set(m_pigeon.getRoll().getValueAsDouble());
         gyroYaw.set(state.Pose.getRotation().getDegrees());
         gyroYawRate.set(m_pigeon.getAngularVelocityZWorld().getValueAsDouble());
-        SmartDashboard.putData("Field", m_field);
 
         /* Also write to log file */
         SignalLogger.writeStruct("DriveState/Pose", Pose2d.struct, state.Pose);

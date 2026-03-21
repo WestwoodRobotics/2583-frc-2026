@@ -90,10 +90,8 @@ public class LED extends SubsystemBase {
         //     setSolidColor(Color.kRed);
         //     return;
         // }
-
-        Pose2d shooterPose = drivetrain.getState().Pose.plus(SwerveConstants.robotToShooter);
-
-        boolean isAligned = isAligned(shooterPose);
+        
+        boolean isAligned = isAligned(drivetrain.getState().Pose);
         m_canShootPub.set(isAligned);
 
         // if (isAligned) {
@@ -130,7 +128,7 @@ public class LED extends SubsystemBase {
         var alliance = DriverStation.getAlliance();
         if (alliance.isEmpty()) return false;
 
-        if (alliance.get() == Alliance.Blue) {
+        if (alliance.orElse(Alliance.Blue) == Alliance.Blue) {
             return robotPose.getX() < SwerveConstants.allianceZoneWidth;
         } else {
             return robotPose.getX() > (SwerveConstants.fieldWidth - SwerveConstants.allianceZoneWidth);

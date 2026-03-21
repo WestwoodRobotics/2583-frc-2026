@@ -42,7 +42,7 @@ public class AlignCornerShot extends Command {
             path = null;
             return;
         }
-        boolean isBlue = allianceOpt.get() == Alliance.Blue;
+        boolean isBlue = allianceOpt.orElse(Alliance.Blue) == Alliance.Blue;
         Pose2d robotPose = m_drivetrain.getState().Pose;
 
         boolean inZone = isBlue ? 

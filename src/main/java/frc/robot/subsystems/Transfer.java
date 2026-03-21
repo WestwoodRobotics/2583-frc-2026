@@ -10,6 +10,9 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
+import edu.wpi.first.networktables.BooleanSubscriber;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,6 +30,11 @@ public class Transfer extends SubsystemBase {
     private final VoltageOut m_voltReq = new VoltageOut(0.0);
 
     private final Follower m_transferInvertedFollower = new Follower(TransferConstants.kTransferId1, MotorAlignmentValue.Opposed);
+
+    private final BooleanSubscriber m_canShootSub = NetworkTableInstance.getDefault()
+        .getTable("Shooter")
+        .getBooleanTopic("CanShoot")
+        .subscribe(true);
 
     private final SysIdRoutine m_floorSysIdRoutine = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -90,12 +98,22 @@ public class Transfer extends SubsystemBase {
     }
 
     public Command defaultCommand() {
-        // Default: Floor spins at default speed, Transfer is stopped (default speed is 0.0 in constants)
+        // Default: Floor spins at default speed
         return Commands.run(() -> runMotors(TransferConstants.kFloorDefaultVel, TransferConstants.kTransferDefaultVel), this);
     }
 
     public Command reverseCommand() {
         return Commands.run(() -> runMotors(-TransferConstants.kFloorShootVel, -TransferConstants.kTransferShootVel), this);
+    }
+
+    public Command shootCommand() {
+        return Commands.run(() -> {
+            if (DriverStation.isAutonomous() && !m_canShootSub.get()) {
+            this.runMotors(0.0, 0.0);
+            return;
+        }
+        this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel);
+        }, this);
     }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

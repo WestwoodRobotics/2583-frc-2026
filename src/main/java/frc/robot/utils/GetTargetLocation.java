@@ -1,17 +1,10 @@
 package frc.robot.utils;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.networktables.DoubleArrayPublisher;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.SwerveConstants;
@@ -27,12 +20,6 @@ public class GetTargetLocation {
     private static double mLastTimestamp = -1.0;
     private static Translation2d mCachedTarget = null;
 
-    private static final NetworkTable m_shooterTable = NetworkTableInstance.getDefault().getTable("Shooter");
-    private static final DoubleArrayPublisher m_virtualHubPub = m_shooterTable.getDoubleArrayTopic("VirtualPose").publish();
-    private static final StringPublisher m_fieldTypePub = m_shooterTable.getStringTopic(".type").publish();
-
-    private static double[] m_poseArray = new double[3];
-
     public static Translation2d getTargetLocation(Pose2d robotPose, ChassisSpeeds currentSpeeds) {
         // Cache result to avoid recalculating multiple times per loop cycle (approx 20ms)
         double currentTimestamp = Timer.getFPGATimestamp();
@@ -44,7 +31,7 @@ public class GetTargetLocation {
         if (allianceOpt.isEmpty()) {
             return null;
         }
-        var alliance = allianceOpt.get();
+        var alliance = allianceOpt.orElse(Alliance.Blue);
         boolean isBlue = (alliance == Alliance.Blue);
 
         Translation2d targetLocation;
