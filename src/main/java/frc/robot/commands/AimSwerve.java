@@ -55,7 +55,7 @@ public class AimSwerve extends Command {
         Rotation2d targetHeading = targetLocation.minus(robotPose.getTranslation())
             .getAngle();
 
-        double HubHeading = targetHeading.getRadians() - (AdjustShooter.headingCorrection * SwerveConstants.kCompensationK);
+        double HubHeading = targetHeading.getRadians() + (AdjustShooter.headingCorrection * SwerveConstants.kCompensationK);
         
         Rotation2d correctedHeading = new Rotation2d(HubHeading);
 

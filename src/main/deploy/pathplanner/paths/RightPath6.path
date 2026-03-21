@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.3274322396576315,
-        "y": 2.514707560627676
+        "x": 7.493680456490727,
+        "y": 2.2429957203994295
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.124981701485826,
-        "y": 2.4851422608490648
+        "x": 7.493680456490727,
+        "y": 3.3779957203994297
       },
       "isLocked": false,
-      "linkedName": "TurnPoint"
+      "linkedName": "RightPoint4"
     },
     {
       "anchor": {
-        "x": 6.290385164051354,
-        "y": 2.514707560627676
+        "x": 7.7265763195435095,
+        "y": 4.6366476462196875
       },
       "prevControl": {
-        "x": 5.97460423957824,
-        "y": 2.5526161159410945
+        "x": 7.7265763195435095,
+        "y": 3.362212824336061
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,20 +33,14 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "FullRetract",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": null
-    },
-    {
       "name": "RunIntake",
-      "waypointRelativePos": 0.9507089804186724,
-      "endWaypointRelativePos": 2.0,
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 1,
       "command": null
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
+    "maxVelocity": 1.25,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -54,14 +48,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": 135.0
+    "velocity": 1.25,
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "RightPaths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 135.0
+    "rotation": 90.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

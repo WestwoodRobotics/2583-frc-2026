@@ -11,12 +11,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "AdjustShooterRight"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "RightPath1"
@@ -32,6 +26,12 @@
           "type": "path",
           "data": {
             "pathName": "RightPath3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightPath4"
           }
         },
         {
@@ -62,7 +62,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RightPath4"
+            "pathName": "RightPath5"
           }
         }
       ]

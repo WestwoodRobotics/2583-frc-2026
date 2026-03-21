@@ -185,7 +185,7 @@ public class RobotContainer {
     public void configureEventTrigger() {
 
         NamedCommands.registerCommand("Shoot",
-            new WaitCommand(1.0)
+            new WaitCommand(0.5)
             .andThen(transfer.shootCommand().alongWith(new IntakeWiggle(intake))));
 
         new EventTrigger("RunIntake").whileTrue(intake.runIntake(false));

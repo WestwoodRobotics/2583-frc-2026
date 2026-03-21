@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.1273808593750005,
+        "x": 2.2923395149786017,
         "y": 4.051533854166666
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8774100357809655,
+        "x": 2.0423686913845667,
         "y": 4.055353193339851
       },
       "isLocked": false,
@@ -49,7 +49,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Shoot",
+      "name": "",
       "waypointRelativePos": 0.0,
       "endWaypointRelativePos": 2.0,
       "command": null

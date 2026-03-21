@@ -35,7 +35,7 @@ public class IntakeWiggle extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        m_intake.setPivotPosition(IntakeConstants.kPivotShoot);
+        m_intake.setPivotPosition(IntakeConstants.kPivotOut);
         m_intervalTimer.stop();
     }
 }

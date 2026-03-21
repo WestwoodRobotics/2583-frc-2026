@@ -32,7 +32,7 @@ public class SwerveConstants {
     public static final double alignMaxOmega = 1.5;
     public static final double alignMaxAlpha = 2;
 
-    public static final double kCompensationK = 1.2;
+    public static final double kCompensationK = 1.0;
 
     public static final double bluePassX = allianceZoneWidth;
     public static final double redPassX = fieldWidth - bluePassX;
