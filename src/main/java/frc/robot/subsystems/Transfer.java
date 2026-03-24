@@ -108,10 +108,10 @@ public class Transfer extends SubsystemBase {
 
     public Command shootCommand() {
         return Commands.run(() -> {
-        //     if (DriverStation.isAutonomous() && !m_canShootSub.get()) {
-        //     this.runMotors(0.0, 0.0);
-        //     return;
-        // }
+            if (DriverStation.isAutonomous() && !m_canShootSub.get()) {
+            this.runMotors(0.0, 0.0);
+            return;
+        }
         this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel);
         }, this);
     }

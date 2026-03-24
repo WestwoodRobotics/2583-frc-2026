@@ -15,6 +15,7 @@ import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -73,10 +74,10 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        autoChooser = AutoBuilder.buildAutoChooser("Tests");
+        // Autonomous configurations
+        configureAutonomousCommands();
+        autoChooser = AutoBuilder.buildAutoChooser("PreloadAuto");
         SmartDashboard.putData("Auto Mode", autoChooser);
-
-        configureEventTrigger();
 
         configureBindings();
 
@@ -182,7 +183,7 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
-    public void configureEventTrigger() {
+    public void configureAutonomousCommands() {
 
         NamedCommands.registerCommand("Shoot",
             new WaitCommand(0.5)
@@ -192,6 +193,12 @@ public class RobotContainer {
         new EventTrigger("PartialRetract").onTrue((intake.partialRetract()));
 
         NamedCommands.registerCommand("AimSwerve", new AimSwerve(drivetrain, faceAngle, driver));
+
+        NamedCommands.registerCommand("BumpPoseReset", Commands.runOnce(() -> {
+            boolean isBlue = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue;
+            Translation2d pose = isBlue ? new Translation2d(5.928, 2.385) : new Translation2d(SwerveConstants.fieldWidth - 5.928, 2.385);
+            drivetrain.resetTranslation(pose);
+        }, drivetrain));
     }
 
     public Command getAutonomousCommand() {

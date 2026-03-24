@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Turn"
+            "pathName": "RightPath1"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "RightPath1"
+            "name": "BumpPoseReset"
           }
         },
         {
