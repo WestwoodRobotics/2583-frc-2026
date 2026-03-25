@@ -50,16 +50,15 @@ public class AdjustShooter extends Command {
         double fieldYVel = xVel * Math.sin(robotHeading) + yVel * Math.cos(robotHeading);
 
         Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose, m_drivetrain.getState().Speeds);
+        if (targetLocation == null) {
+            distancePub.set(0);
+            return;
+        }
 
         double distance = shooterPose.getTranslation().getDistance(targetLocation);
         // double flywheelRPS = (5.193323 * distance) + 32.47639;
         double flywheelRPS = ShooterConstants.kDistanceToRPS.get(distance);
         double flywheelMS = flywheelRPS * (0.0508) * (2* Math.PI);
-
-        if (targetLocation == null) {
-            distancePub.set(0);
-            return;
-        }
 
         //compensations for the robot movement
         double xCompensation = fieldXVel * Math.cos(-robotHeading); 
