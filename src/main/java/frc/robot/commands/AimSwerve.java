@@ -55,8 +55,23 @@ public class AimSwerve extends Command {
         Rotation2d targetHeading = targetLocation.minus(robotPose.getTranslation())
             .getAngle();
 
-        double HubHeading = targetHeading.getRadians() + (AdjustShooter.headingCorrection * SwerveConstants.kCompensationK);
+/*         double HubHeading = targetHeading.getRadians() + (AdjustShooter.headingCorrection);
+ */     
+        //if we are below 0.5 m/s, add our heading correction as normal
+        double HubHeading = targetHeading.getRadians() - (AdjustShooter.headingCorrection);
         
+        //if we are above 0.5 m/s, add our heading correction as normal and an extra compensation
+       /*  if(Math.abs(AdjustShooter.perpendicularVel) > SwerveConstants.kSOTMVel){
+
+            if(AdjustShooter.headingCorrection > 0){
+                HubHeading = targetHeading.getRadians() - (AdjustShooter.headingCorrection) + (SwerveConstants.kCompensationK);
+            } else{
+                HubHeading = targetHeading.getRadians() - (AdjustShooter.headingCorrection) - (SwerveConstants.kCompensationK);
+            }
+
+        }  */
+        
+
         Rotation2d correctedHeading = new Rotation2d(HubHeading);
 
         if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {

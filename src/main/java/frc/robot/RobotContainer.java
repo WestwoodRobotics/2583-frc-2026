@@ -101,6 +101,8 @@ public class RobotContainer {
                 })
         );
 
+        //RobotModeTriggers.autonomous().onTrue(Commands.runOnce(() -> shooter.setAutoAim(false)));
+
         intake.setDefaultCommand(intake.intakeDefault());
         transfer.setDefaultCommand(transfer.defaultCommand());
         shooter.setDefaultCommand(new AdjustShooter(shooter, drivetrain));
@@ -144,9 +146,9 @@ public class RobotContainer {
         driver.rightTrigger().whileTrue(transfer.shootCommand().alongWith(new IntakeWiggle(intake)));
 
         // Run intake while holding left trigger
-        driver.leftTrigger().whileTrue(intake.runIntake(false));
+        driver.leftBumper().whileTrue(intake.runIntake(false));
 
-        driver.leftBumper().whileTrue(intake.runIntake(true));
+        driver.leftTrigger().whileTrue(intake.runIntake(true));
 
         operator.x().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter)
             .andThen(Commands.runOnce(() -> shooter.setFlywheelVelocity(0.0), shooter)));
@@ -172,10 +174,10 @@ public class RobotContainer {
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        // driver.x().whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        // driver.y().whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        // driver.b().whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        // driver.a().whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        // driver.x().whileTrue(shooter.sysIdDynamic(Direction.kForward));
+        // driver.y().whileTrue(shooter.sysIdDynamic(Direction.kReverse));
+        // driver.b().whileTrue(shooter.sysIdQuasistatic(Direction.kForward));
+        // driver.a().whileTrue(shooter.sysIdQuasistatic(Direction.kReverse));
 
         // driver.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
         // driver.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
@@ -199,6 +201,8 @@ public class RobotContainer {
             Translation2d pose = isBlue ? new Translation2d(5.928, 2.385) : new Translation2d(SwerveConstants.fieldWidth - 5.928, 2.385);
             drivetrain.resetTranslation(pose);
         }, drivetrain));
+
+        // NamedCommands.registerCommand("TurnFlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
     }
 
     public Command getAutonomousCommand() {

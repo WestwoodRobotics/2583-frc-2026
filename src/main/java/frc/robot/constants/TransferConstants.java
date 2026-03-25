@@ -14,7 +14,7 @@ public class TransferConstants {
     public static final double kFloorIntakeVel = 0.0;
     public static final double kTransferDefaultVel = -5.0;
     public static final double kTransferShootVel = 30.0;
-    public static final double kFloorShootVel = 5.0;
+    public static final double kFloorShootVel = 18.0;
 
     public static final double kJamThreshold = 0.5;
     public static final double kJamTimeSecs = 0.25;

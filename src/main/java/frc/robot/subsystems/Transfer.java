@@ -99,7 +99,8 @@ public class Transfer extends SubsystemBase {
 
     public Command defaultCommand() {
         // Default: Floor spins at default speed
-        return Commands.run(() -> runMotors(TransferConstants.kFloorDefaultVel, TransferConstants.kTransferDefaultVel), this);
+        double transferSpeed = DriverStation.isAutonomous() ? 0.0 : TransferConstants.kTransferDefaultVel;
+        return Commands.run(() -> runMotors(TransferConstants.kFloorDefaultVel, transferSpeed), this);
     }
 
     public Command reverseCommand() {
