@@ -23,6 +23,8 @@ public class AdjustShooter extends Command {
     private Shooter m_shooter;
     private CommandSwerveDrivetrain m_drivetrain;
     public static double headingCorrection;
+    public static double perpendicularVel;
+
     private final DoublePublisher distancePub = NetworkTableInstance.getDefault()
         .getTable("Shooter")
         .getDoubleTopic("Aim/DistanceToTarget")
@@ -50,7 +52,8 @@ public class AdjustShooter extends Command {
         Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose, m_drivetrain.getState().Speeds);
 
         double distance = shooterPose.getTranslation().getDistance(targetLocation);
-        double flywheelRPS = (5.193323 * distance) + 32.47639;
+        // double flywheelRPS = (5.193323 * distance) + 32.47639;
+        double flywheelRPS = ShooterConstants.kDistanceToRPS.get(distance);
         double flywheelMS = flywheelRPS * (0.0508) * (2* Math.PI);
 
         if (targetLocation == null) {
@@ -85,7 +88,7 @@ public class AdjustShooter extends Command {
         double perpendicularX = -unitGoalDY;
         double perpendicularY = unitGoalDX;
 
-        double perpendicularVel = (perpendicularX * fieldXVel) + (perpendicularY * fieldYVel);
+        perpendicularVel = (perpendicularX * fieldXVel) + (perpendicularY * fieldYVel);
 
         headingCorrection = Math.atan2(perpendicularVel, distance);
        

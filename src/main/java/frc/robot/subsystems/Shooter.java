@@ -98,6 +98,11 @@ public class Shooter extends SubsystemBase {
         m_autoAimEnabled = !m_autoAimEnabled;
     }
 
+    public void setAutoAim(boolean aim) {
+        m_autoAimEnabled = aim;
+        setFlywheelVelocity(0.0);
+    }
+
     public boolean isAutoAimEnabled() {
         return m_autoAimEnabled;
     }
