@@ -187,11 +187,11 @@ public class RobotContainer {
 
     public void configureAutonomousCommands() {
 
-        NamedCommands.registerCommand("Shoot",
-            new WaitCommand(0.5)
-            .andThen(transfer.shootCommand().alongWith(new IntakeWiggle(intake))));
+        NamedCommands.registerCommand("Shoot", transfer.shootCommand());
+            // new WaitCommand(0.5)
+            // .andThen(transfer.shootCommand().alongWith(new IntakeWiggle(intake))));
 
-        new EventTrigger("RunIntake").whileTrue(intake.runIntake(false));
+        new EventTrigger("RunIntake").whileTrue(intake.runIntake(true));
         new EventTrigger("PartialRetract").onTrue((intake.partialRetract()));
 
         NamedCommands.registerCommand("AimSwerve", new AimSwerve(drivetrain, faceAngle, driver));
