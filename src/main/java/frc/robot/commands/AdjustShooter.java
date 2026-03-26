@@ -1,13 +1,8 @@
 package frc.robot.commands;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -56,7 +51,6 @@ public class AdjustShooter extends Command {
         }
 
         double distance = shooterPose.getTranslation().getDistance(targetLocation);
-        // double flywheelRPS = (5.193323 * distance) + 32.47639;
         double flywheelRPS = ShooterConstants.kDistanceToRPS.get(distance);
         double flywheelMS = flywheelRPS * (0.0508) * (2* Math.PI);
 

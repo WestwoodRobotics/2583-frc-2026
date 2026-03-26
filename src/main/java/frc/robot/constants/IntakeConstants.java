@@ -20,7 +20,7 @@ public class IntakeConstants {
     public static final double kResetPivotPos = -0.085205078125;
 
     public static final double kRollerNeutralVel = 0.0;
-    public static final double kRollerIntakingVel = 23.0;
+    public static final double kRollerIntakingVel = 25.0;
     public static final double kRollerFastIntakingVel = 35.0;
     public static final double kRollerShootingVel = 5.0;
 

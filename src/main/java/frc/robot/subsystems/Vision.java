@@ -179,7 +179,7 @@ public class Vision extends SubsystemBase {
 
         double k = (numTags > 1) ? VisionConstants.multiTagK : VisionConstants.singleTagK;
         double sigma_xy = (k / totalArea) + VisionConstants.baseSigma;
-        double sigma_theta = (numTags > 1) ? VisionConstants.multiTagThetaSigma : Double.MAX_VALUE;
+        double sigma_theta = (numTags > 1 && i < 2) ? VisionConstants.multiTagThetaSigma : Double.MAX_VALUE;
 
         numTagsPubs[i].set(numTags);
         totalAreaPubs[i].set(totalArea);

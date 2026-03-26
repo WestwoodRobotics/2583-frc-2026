@@ -101,7 +101,7 @@ public class RobotContainer {
                 })
         );
 
-        //RobotModeTriggers.autonomous().onTrue(Commands.runOnce(() -> shooter.setAutoAim(false)));
+        RobotModeTriggers.autonomous().onTrue(Commands.runOnce(() -> shooter.setAutoAim(false), shooter));
 
         intake.setDefaultCommand(intake.intakeDefault());
         transfer.setDefaultCommand(transfer.defaultCommand());
@@ -188,21 +188,13 @@ public class RobotContainer {
     public void configureAutonomousCommands() {
 
         NamedCommands.registerCommand("Shoot", transfer.shootCommand());
-            // new WaitCommand(0.5)
-            // .andThen(transfer.shootCommand().alongWith(new IntakeWiggle(intake))));
-
+        NamedCommands.registerCommand("IntakeWiggle", new IntakeWiggle(intake));
+        
         new EventTrigger("RunIntake").whileTrue(intake.runIntake(true));
         new EventTrigger("PartialRetract").onTrue((intake.partialRetract()));
 
         NamedCommands.registerCommand("AimSwerve", new AimSwerve(drivetrain, faceAngle, driver));
-
-        NamedCommands.registerCommand("BumpPoseReset", Commands.runOnce(() -> {
-            boolean isBlue = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue;
-            Translation2d pose = isBlue ? new Translation2d(5.928, 2.385) : new Translation2d(SwerveConstants.fieldWidth - 5.928, 2.385);
-            drivetrain.resetTranslation(pose);
-        }, drivetrain));
-
-        // NamedCommands.registerCommand("TurnFlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
+        NamedCommands.registerCommand("TurnFlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
     }
 
     public Command getAutonomousCommand() {

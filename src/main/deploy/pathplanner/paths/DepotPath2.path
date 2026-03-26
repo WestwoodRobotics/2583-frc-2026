@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 0.7655777460770326,
-        "y": 6.3963052781740375
+        "y": 6.32
       },
       "prevControl": null,
       "nextControl": {
         "x": 1.8356790191495498,
-        "y": 5.9423339847401335
+        "y": 5.866028706566096
       },
       "isLocked": false,
       "linkedName": "DepotPoint2"
@@ -36,7 +36,7 @@
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxAngularAcceleration": 277.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
