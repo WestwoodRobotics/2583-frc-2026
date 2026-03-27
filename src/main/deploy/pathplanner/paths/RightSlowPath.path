@@ -1,0 +1,77 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.4864194008559197,
+        "y": 2.6
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.6777707864629314,
+        "y": 2.760887063576525
+      },
+      "isLocked": false,
+      "linkedName": "RightPoint3"
+    },
+    {
+      "anchor": {
+        "x": 2.48596653783542,
+        "y": 2.6005427545744166
+      },
+      "prevControl": {
+        "x": 2.677772064320215,
+        "y": 2.76088813183828
+      },
+      "nextControl": {
+        "x": 2.2941610113506252,
+        "y": 2.4401973773105534
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.4864194008559197,
+        "y": 2.6
+      },
+      "prevControl": {
+        "x": 2.293860380527576,
+        "y": 2.4405602819552525
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "RightPoint3"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "IntakeWiggle",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 2.0,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 0.1,
+    "maxAcceleration": 0.1,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 277.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 35.1083802731778
+  },
+  "reversed": false,
+  "folder": "RightPaths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 35.1083802731778
+  },
+  "useDefaultConstraints": false
+}

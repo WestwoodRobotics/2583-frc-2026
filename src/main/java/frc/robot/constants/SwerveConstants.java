@@ -36,7 +36,7 @@ public class SwerveConstants {
 
     public static final double kSOTMVel = 0.5;
 
-    public static final double bluePassX = allianceZoneWidth;
+    public static final double bluePassX = 3.5;
     public static final double redPassX = fieldWidth - bluePassX;
     public static final double lowerPassY = 2.0;
     public static final double upperPassY = fieldLength - lowerPassY;

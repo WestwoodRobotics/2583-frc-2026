@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5874419126157413,
-        "y": 4.051533854166666
+        "x": 2.4993580599144076,
+        "y": 4.934236804564907
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.907837369116194,
-        "y": 4.0699811537762915
+        "x": 2.269571802409893,
+        "y": 5.0327166292097
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "DepotPoint7"
     },
     {
       "anchor": {
-        "x": 2.5769900142653355,
-        "y": 4.051533854166666
+        "x": 2.4993580599144076,
+        "y": 4.934236804564907
       },
       "prevControl": {
-        "x": 3.3101345427899025,
-        "y": 4.052530347903484
+        "x": 2.2993580599144074,
+        "y": 5.084236804564908
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "PreloadPoint1"
+      "linkedName": "DepotPoint7"
     }
   ],
   "rotationTargets": [],
@@ -33,15 +33,15 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "RunIntake",
-      "waypointRelativePos": 0.028881448412698414,
-      "endWaypointRelativePos": 0.0,
+      "name": "IntakeWiggle",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 1.0,
       "command": null
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 0.1,
+    "maxAcceleration": 0.1,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 277.0,
     "nominalVoltage": 12.0,
@@ -49,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -22.46902076953454
   },
   "reversed": false,
-  "folder": "PreloadPaths",
+  "folder": "DepotPaths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -22.46902076953454
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

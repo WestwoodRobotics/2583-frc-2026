@@ -101,7 +101,7 @@ public class RobotContainer {
                 })
         );
 
-        RobotModeTriggers.autonomous().onTrue(Commands.runOnce(() -> shooter.setAutoAim(false), shooter));
+        // RobotModeTriggers.autonomous().onTrue(Commands.runOnce(() -> shooter.setAutoAim(false), shooter));
 
         intake.setDefaultCommand(intake.intakeDefault());
         transfer.setDefaultCommand(transfer.defaultCommand());
@@ -188,13 +188,16 @@ public class RobotContainer {
     public void configureAutonomousCommands() {
 
         NamedCommands.registerCommand("Shoot", transfer.shootCommand());
-        NamedCommands.registerCommand("IntakeWiggle", new IntakeWiggle(intake));
+        // NamedCommands.registerCommand("IntakeWiggle", new IntakeWiggle(intake));
+        new EventTrigger("IntakeWiggle").whileTrue(new IntakeWiggle(intake));
         
         new EventTrigger("RunIntake").whileTrue(intake.runIntake(true));
         new EventTrigger("PartialRetract").onTrue((intake.partialRetract()));
+        // NamedCommands.registerCommand("RunIntake", intake.runIntake(true));
+        // NamedCommands.registerCommand("PartialRetract", intake.partialRetract());
 
         NamedCommands.registerCommand("AimSwerve", new AimSwerve(drivetrain, faceAngle, driver));
-        NamedCommands.registerCommand("TurnFlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
+        // NamedCommands.registerCommand("TurnFlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
     }
 
     public Command getAutonomousCommand() {

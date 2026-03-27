@@ -8,20 +8,36 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.486419400855922,
-        "y": 2.6
+        "x": 2.9392724679029953,
+        "y": 2.592339514978602
       },
       "isLocked": false,
       "linkedName": "RightPoint3"
     },
     {
       "anchor": {
-        "x": 6.907794126157407,
-        "y": 2.6
+        "x": 6.212753209700427,
+        "y": 2.3594436519258206
       },
       "prevControl": {
-        "x": 6.252476128472222,
-        "y": 2.573131727430556
+        "x": 5.962924194821315,
+        "y": 2.3501990143162503
+      },
+      "nextControl": {
+        "x": 6.4625822245795375,
+        "y": 2.368688289535391
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.212753209700427,
+        "y": 3.8732667617689023
+      },
+      "prevControl": {
+        "x": 6.33375526702126,
+        "y": 3.379452052363899
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,8 +46,16 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.7648814244923858,
-      "rotationDegrees": 45.0
+      "waypointRelativePos": 0.3113006396588456,
+      "rotationDegrees": -135.0
+    },
+    {
+      "waypointRelativePos": 0.7761194029850792,
+      "rotationDegrees": -135.0
+    },
+    {
+      "waypointRelativePos": 1.1940298507462666,
+      "rotationDegrees": -90.0
     }
   ],
   "constraintZones": [],
@@ -39,13 +63,19 @@
   "eventMarkers": [
     {
       "name": "PartialRetract",
-      "waypointRelativePos": 0.23061755952380952,
+      "waypointRelativePos": 0.25928426738690796,
       "endWaypointRelativePos": null,
       "command": null
     },
     {
       "name": "RunIntake",
-      "waypointRelativePos": 0.7468749999999998,
+      "waypointRelativePos": 0.5941931127616493,
+      "endWaypointRelativePos": 2.0,
+      "command": null
+    },
+    {
+      "name": "RunIntake",
+      "waypointRelativePos": 1.5,
       "endWaypointRelativePos": 1.0,
       "command": null
     }
@@ -60,7 +90,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "RightPaths",
