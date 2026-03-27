@@ -24,7 +24,7 @@
         "y": 2.3501990143162503
       },
       "nextControl": {
-        "x": 6.4625822245795375,
+        "x": 6.462582224579539,
         "y": 2.368688289535391
       },
       "isLocked": false,
@@ -62,22 +62,26 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "PartialRetract",
+      "name": "PartialRetractEvent",
       "waypointRelativePos": 0.25928426738690796,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "PartialRetract"
+        }
+      }
     },
     {
-      "name": "RunIntake",
-      "waypointRelativePos": 0.5941931127616493,
+      "name": "RunIntakeEvent",
+      "waypointRelativePos": 0.6483878968253965,
       "endWaypointRelativePos": 2.0,
-      "command": null
-    },
-    {
-      "name": "RunIntake",
-      "waypointRelativePos": 1.5,
-      "endWaypointRelativePos": 1.0,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "RunIntake"
+        }
+      }
     }
   ],
   "globalConstraints": {

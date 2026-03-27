@@ -16,9 +16,10 @@ public class ShooterConstants {
 
     public static final double kMaxFlywheelRPS = 70.0;
 
-    public static final double kManualFlywheelInc = 1.0;
-    
+    public static final double kAutoTrenchFlywheelVel = 55.0;
     public static final double kAutoBumperFlywheelVel = 51.84;
+
+    public static final double kManualFlywheelInc = 1.0;
     public static final double kFlywheelToleranceRPS = 2.5;
 
     public static final InterpolatingDoubleTreeMap kDistanceToRPS = new InterpolatingDoubleTreeMap();

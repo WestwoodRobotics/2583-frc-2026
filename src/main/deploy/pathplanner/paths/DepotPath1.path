@@ -47,16 +47,26 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "RunIntake",
+      "name": "RunIntakeEvent",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": 0.1,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "RunIntake"
+        }
+      }
     },
     {
-      "name": "RunIntake",
+      "name": "RunIntakeEvent",
       "waypointRelativePos": 0.42403781228899395,
       "endWaypointRelativePos": 1.0,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "RunIntake"
+        }
+      }
     }
   ],
   "globalConstraints": {

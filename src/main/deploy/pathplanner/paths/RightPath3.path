@@ -16,15 +16,15 @@
     },
     {
       "anchor": {
-        "x": 6.386059172453704,
+        "x": 6.067651258680557,
         "y": 2.6
       },
       "prevControl": {
-        "x": 6.635505461917856,
+        "x": 6.317097548144709,
         "y": 2.6166297526309448
       },
       "nextControl": {
-        "x": 6.136612882989552,
+        "x": 5.818204969216405,
         "y": 2.5833702473690554
       },
       "isLocked": false,
@@ -47,7 +47,11 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.3027718550106596,
-      "rotationDegrees": 90.0
+      "rotationDegrees": 79.20903864826573
+    },
+    {
+      "waypointRelativePos": 0.8539419416243655,
+      "rotationDegrees": 79.21
     },
     {
       "waypointRelativePos": 1.0,
@@ -66,22 +70,48 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "RunIntake",
+      "name": "RunIntakeEvent",
       "waypointRelativePos": 0,
-      "endWaypointRelativePos": 1.1478670634920636,
-      "command": null
+      "endWaypointRelativePos": 0.9760912698412697,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "RunIntake"
+        }
+      }
     },
     {
-      "name": "PartialRetract",
-      "waypointRelativePos": 1.2,
+      "name": "PartialRetractEvent",
+      "waypointRelativePos": 0.9987847222222224,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "PartialRetract"
+        }
+      }
     },
     {
-      "name": "RunIntake",
+      "name": "FlywheelOnMarker",
+      "waypointRelativePos": 1.4358382936507945,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "TurnFlywheelOn"
+        }
+      }
+    },
+    {
+      "name": "RunIntakeEvent",
       "waypointRelativePos": 1.6543154761904764,
       "endWaypointRelativePos": 1.7,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "RunIntake"
+        }
+      }
     }
   ],
   "globalConstraints": {

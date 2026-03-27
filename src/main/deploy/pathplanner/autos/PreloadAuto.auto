@@ -15,15 +15,21 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "PreloadSlowPath"
+                  "name": "Shoot"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Shoot"
+                  "name": "AimSwerve"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "IntakeWiggle"
                 }
               }
             ]
