@@ -70,6 +70,12 @@
               }
             ]
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DepotPath7"
+          }
         }
       ]
     }

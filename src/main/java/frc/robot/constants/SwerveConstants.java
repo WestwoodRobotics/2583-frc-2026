@@ -32,7 +32,8 @@ public class SwerveConstants {
     public static final double alignMaxOmega = 1.5;
     public static final double alignMaxAlpha = 2;
 
-    public static final double kCompensationK = Math.toRadians(0);
+    public static final double kCompensationP = 1.2;
+    public static final double kCompensationFF = Math.toRadians(5.0);
 
     public static final double kSOTMVel = 0.5;
 

@@ -3,28 +3,28 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.040827389443652,
-        "y": 3.666248216833096
+        "x": 7.817146932952923,
+        "y": 3.7180028530670475
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.979857346647646,
-        "y": 4.869543509272469
+        "x": 6.756176890156917,
+        "y": 4.92129814550642
       },
       "isLocked": false,
       "linkedName": "RightPoint2"
     },
     {
       "anchor": {
-        "x": 6.067651258680557,
+        "x": 6.523281027104137,
         "y": 2.6
       },
       "prevControl": {
-        "x": 6.317097548144709,
+        "x": 6.772727316568289,
         "y": 2.6166297526309448
       },
       "nextControl": {
-        "x": 5.818204969216405,
+        "x": 6.273834737639985,
         "y": 2.5833702473690554
       },
       "isLocked": false,
@@ -72,7 +72,7 @@
     {
       "name": "RunIntakeEvent",
       "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.9760912698412697,
+      "endWaypointRelativePos": 1.139770425388257,
       "command": {
         "type": "named",
         "data": {
@@ -82,23 +82,12 @@
     },
     {
       "name": "PartialRetractEvent",
-      "waypointRelativePos": 0.9987847222222224,
+      "waypointRelativePos": 1.1721809588116168,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "PartialRetract"
-        }
-      }
-    },
-    {
-      "name": "FlywheelOnMarker",
-      "waypointRelativePos": 1.4358382936507945,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "TurnFlywheelOn"
         }
       }
     },

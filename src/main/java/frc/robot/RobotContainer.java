@@ -99,7 +99,7 @@ public class RobotContainer {
                 })
         );
 
-        RobotModeTriggers.autonomous().onTrue(NamedCommands.getCommand("TurnFlywheelOff"));
+        // RobotModeTriggers.autonomous().onTrue(NamedCommands.getCommand("TurnFlywheelOff"));
 
         intake.setDefaultCommand(intake.intakeDefault());
         transfer.setDefaultCommand(transfer.defaultCommand());
@@ -144,15 +144,7 @@ public class RobotContainer {
                 shooter.setFlywheelVelocity(ShooterConstants.kAutoBumperFlywheelVel);
         })));
 
-        driver.rightTrigger().whileTrue(
-            transfer.shootCommand().alongWith(
-                new ConditionalCommand(
-                    intake.runIntake(false),
-                    new IntakeWiggle(intake),
-                    () -> driver.leftTrigger().getAsBoolean()
-                )
-            )
-        );
+        driver.rightTrigger().whileTrue(transfer.shootCommand().alongWith(new IntakeWiggle(intake)));
 
         // Run intake while holding left trigger
         driver.leftBumper().whileTrue(intake.runIntake(false));
@@ -197,12 +189,9 @@ public class RobotContainer {
     public void configureAutonomousCommands() {
 
         NamedCommands.registerCommand("Shoot", transfer.shootCommand());
-        NamedCommands.registerCommand("TurnFlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
-        NamedCommands.registerCommand("TurnFlywheelOff", Commands.runOnce(() -> shooter.setAutoAim(false), shooter));
+        // NamedCommands.registerCommand("TurnFlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
+        // NamedCommands.registerCommand("TurnFlywheelOff", Commands.runOnce(() -> shooter.setAutoAim(false), shooter));
         
-        // new EventTrigger("IntakeWiggle").whileTrue(new IntakeWiggle(intake));
-        // new EventTrigger("RunIntake").whileTrue(intake.runIntake(true));
-        // new EventTrigger("PartialRetract").onTrue((intake.partialRetract()));
         NamedCommands.registerCommand("RunIntake", intake.runIntake(true));
         NamedCommands.registerCommand("PartialRetract", intake.partialRetract());
         NamedCommands.registerCommand("IntakeWiggle", new IntakeWiggle(intake));
