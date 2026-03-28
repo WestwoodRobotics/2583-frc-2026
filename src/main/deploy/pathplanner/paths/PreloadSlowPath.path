@@ -3,45 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.2923395149786017,
+        "x": 2.5769900142653355,
         "y": 4.051533854166666
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0423686913845667,
-        "y": 4.055353193339851
+        "x": 2.3273750116881886,
+        "y": 4.037664806311422
       },
       "isLocked": false,
-      "linkedName": "PreloadPoint2"
+      "linkedName": "PreloadPoint1"
     },
     {
       "anchor": {
-        "x": 3.0721344720532993,
-        "y": 4.054858920022422
-      },
-      "prevControl": {
-        "x": 2.8221352774342194,
-        "y": 4.055493498474128
-      },
-      "nextControl": {
-        "x": 3.322133666672379,
-        "y": 4.054224341570716
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.0169044222539223,
+        "x": 2.5769900142653355,
         "y": 4.051533854166666
       },
       "prevControl": {
-        "x": 3.2668534624848586,
-        "y": 4.056581357275498
+        "x": 2.3275136020433473,
+        "y": 4.035362282046288
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "PreloadPoint1"
     }
   ],
   "rotationTargets": [],
@@ -49,9 +33,9 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "",
-      "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": 2.0,
+      "name": "IntakeWiggle",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 1.0,
       "command": null
     }
   ],
@@ -59,7 +43,7 @@
     "maxVelocity": 0.1,
     "maxAcceleration": 0.1,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxAngularAcceleration": 277.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },

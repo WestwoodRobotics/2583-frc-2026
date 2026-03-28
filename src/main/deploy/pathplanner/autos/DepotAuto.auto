@@ -29,6 +29,18 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "DepotPath5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DepotPath6"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
@@ -47,10 +59,22 @@
               {
                 "type": "named",
                 "data": {
+                  "name": "IntakeWiggle"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
                   "name": "AimSwerve"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DepotPath7"
           }
         }
       ]

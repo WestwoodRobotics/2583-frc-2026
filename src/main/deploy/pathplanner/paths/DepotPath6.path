@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.3958487874465044,
-        "y": 2.5447879774305555
+        "x": 0.727,
+        "y": 6.33
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6449632219597823,
-        "y": 2.5658117382056815
+        "x": 1.7269999999999999,
+        "y": 6.33
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "DepotPoint6"
     },
     {
       "anchor": {
-        "x": 3.3274322396576315,
-        "y": 2.514707560627676
+        "x": 2.4993580599144076,
+        "y": 4.934236804564907
       },
       "prevControl": {
-        "x": 3.07769893343453,
-        "y": 2.5262520728685045
+        "x": 2.2627652633101856,
+        "y": 5.879443287037037
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "TurnPoint"
+      "linkedName": "DepotPoint7"
     }
   ],
   "rotationTargets": [],
@@ -34,18 +34,18 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 2.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxAngularAcceleration": 277.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 135.0
+    "rotation": -22.46902076953454
   },
   "reversed": false,
-  "folder": "RightPaths",
+  "folder": "DepotPaths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

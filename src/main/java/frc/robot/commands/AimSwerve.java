@@ -58,18 +58,17 @@ public class AimSwerve extends Command {
 /*         double HubHeading = targetHeading.getRadians() + (AdjustShooter.headingCorrection);
  */     
         //if we are below 0.5 m/s, add our heading correction as normal
-        double HubHeading = targetHeading.getRadians() - (AdjustShooter.headingCorrection);
+        double HubHeading = targetHeading.getRadians() - (AdjustShooter.headingCorrection * SwerveConstants.kCompensationP);
         
         //if we are above 0.5 m/s, add our heading correction as normal and an extra compensation
-       /*  if(Math.abs(AdjustShooter.perpendicularVel) > SwerveConstants.kSOTMVel){
+        if(Math.abs(AdjustShooter.perpendicularVel) > SwerveConstants.kSOTMVel){
 
             if(AdjustShooter.headingCorrection > 0){
-                HubHeading = targetHeading.getRadians() - (AdjustShooter.headingCorrection) + (SwerveConstants.kCompensationK);
+                HubHeading += (SwerveConstants.kCompensationFF);
             } else{
-                HubHeading = targetHeading.getRadians() - (AdjustShooter.headingCorrection) - (SwerveConstants.kCompensationK);
+                HubHeading -= (SwerveConstants.kCompensationFF);
             }
-
-        }  */
+        }
         
 
         Rotation2d correctedHeading = new Rotation2d(HubHeading);

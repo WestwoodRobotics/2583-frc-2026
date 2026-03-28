@@ -135,25 +135,6 @@ public class Intake extends SubsystemBase {
         return Commands.runOnce(() -> setPivotPosition(IntakeConstants.kPivotPartial), this);
     }
 
-    //fix later
-    /* public Command continuousRetract() {
-        SlewRateLimiter slewLimiter = new SlewRateLimiter(IntakeConstants.kPivotOut / 1.0);
-
-
-        return Commands.sequence(
-        Commands.runOnce(() -> slewLimiter.reset(m_pivotMotor.getPosition().getValueAsDouble())),
-        Commands.run(() -> setPivotPosition(slewLimiter.calculate(IntakeConstants.kPivotShoot)), this)
-            .until(() -> Math.abs(m_pivotMotor.getPosition().getValueAsDouble() - IntakeConstants.kPivotPartial) < 0.06),
-
-        Commands.runOnce(() -> slewLimiter.reset(m_pivotMotor.getPosition().getValueAsDouble())),
-        Commands.run(() -> setPivotPosition(slewLimiter.calculate(IntakeConstants.kPivotOut)), this)
-            .until(() -> Math.abs(m_pivotMotor.getPosition().getValueAsDouble() - IntakeConstants.kPivotOut) < 0.06)
-        );
-
-    }
-     */
-    
-
     public Command shootCommand() {
         return Commands.startEnd(() ->{
             setPivotPosition(IntakeConstants.kPivotShoot);

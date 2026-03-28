@@ -11,11 +11,9 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
-import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -23,7 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -101,7 +99,7 @@ public class RobotContainer {
                 })
         );
 
-        //RobotModeTriggers.autonomous().onTrue(Commands.runOnce(() -> shooter.setAutoAim(false)));
+        // RobotModeTriggers.autonomous().onTrue(NamedCommands.getCommand("TurnFlywheelOff"));
 
         intake.setDefaultCommand(intake.intakeDefault());
         transfer.setDefaultCommand(transfer.defaultCommand());
@@ -135,7 +133,10 @@ public class RobotContainer {
         }).alongWith(intake.partialRetract()))
             .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
         
-        driver.y().whileTrue(new AlignCornerShot(drivetrain));
+        driver.y().whileTrue(new AimSwerve(drivetrain, faceAngle, driver)
+            .alongWith(Commands.run(() -> shooter.setFlywheelVelocity(ShooterConstants.kAutoTrenchFlywheelVel), shooter)))
+            .onFalse(Commands.runOnce(shooter::toggleAutoAim, shooter));
+        
         driver.b().whileTrue(drivetrain.applyRequest(() -> brake));
 
         driver.rightBumper().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter)
@@ -148,7 +149,7 @@ public class RobotContainer {
         // Run intake while holding left trigger
         driver.leftBumper().whileTrue(intake.runIntake(false));
 
-        driver.leftTrigger().whileTrue(intake.runIntake(true));
+        driver.leftTrigger().and(driver.rightTrigger().negate()).whileTrue(intake.runIntake(true));
 
         operator.x().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter)
             .andThen(Commands.runOnce(() -> shooter.setFlywheelVelocity(0.0), shooter)));
@@ -187,22 +188,15 @@ public class RobotContainer {
 
     public void configureAutonomousCommands() {
 
-        NamedCommands.registerCommand("Shoot",
-            new WaitCommand(0.5)
-            .andThen(transfer.shootCommand().alongWith(new IntakeWiggle(intake))));
-
-        new EventTrigger("RunIntake").whileTrue(intake.runIntake(false));
-        new EventTrigger("PartialRetract").onTrue((intake.partialRetract()));
+        NamedCommands.registerCommand("Shoot", transfer.shootCommand());
+        // NamedCommands.registerCommand("TurnFlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
+        // NamedCommands.registerCommand("TurnFlywheelOff", Commands.runOnce(() -> shooter.setAutoAim(false), shooter));
+        
+        NamedCommands.registerCommand("RunIntake", intake.runIntake(true));
+        NamedCommands.registerCommand("PartialRetract", intake.partialRetract());
+        NamedCommands.registerCommand("IntakeWiggle", new IntakeWiggle(intake));
 
         NamedCommands.registerCommand("AimSwerve", new AimSwerve(drivetrain, faceAngle, driver));
-
-        NamedCommands.registerCommand("BumpPoseReset", Commands.runOnce(() -> {
-            boolean isBlue = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue;
-            Translation2d pose = isBlue ? new Translation2d(5.928, 2.385) : new Translation2d(SwerveConstants.fieldWidth - 5.928, 2.385);
-            drivetrain.resetTranslation(pose);
-        }, drivetrain));
-
-        // NamedCommands.registerCommand("TurnFlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
     }
 
     public Command getAutonomousCommand() {
