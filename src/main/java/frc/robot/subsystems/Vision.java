@@ -33,19 +33,19 @@ public class Vision extends SubsystemBase {
     private final Pigeon2 pigeon;
     private final PhotonCamera[] cameras;
     private final PhotonPoseEstimator[] poseEstimators;
+    List<VisionMeasurement> measurements = new ArrayList<>();
 
     private final NetworkTable visionTable = NetworkTableInstance.getDefault().getTable("Vision");
-
-    private final DoublePublisher[] visionXPubs;
-    private final DoublePublisher[] visionYPubs;
-    private final DoublePublisher[] visionRotPubs;
-    private final DoublePublisher[] xyStdDevPubs;
-    private final DoublePublisher[] rotStdDevPubs;
+    // private final DoublePublisher[] visionXPubs;
+    // private final DoublePublisher[] visionYPubs;
+    // private final DoublePublisher[] visionRotPubs;
+    // private final DoublePublisher[] xyStdDevPubs;
+    // private final DoublePublisher[] rotStdDevPubs;
     private final IntegerPublisher[] numTagsPubs;
-    private final DoublePublisher[] totalAreaPubs;
-    private final DoublePublisher[] ambiguityPubs;
-    private final BooleanPublisher landingPub = visionTable.getBooleanTopic("Bump/Landing").publish();;
-    private final BooleanPublisher onBumpPub = visionTable.getBooleanTopic("Bump/OnBump").publish();
+    // private final DoublePublisher[] totalAreaPubs;
+    // private final DoublePublisher[] ambiguityPubs;
+    // private final BooleanPublisher landingPub = visionTable.getBooleanTopic("Bump/Landing").publish();
+    // private final BooleanPublisher onBumpPub = visionTable.getBooleanTopic("Bump/OnBump").publish();
 
     private boolean wasOnBump = false;
     private double landingStartTime = 0.0;
@@ -63,14 +63,14 @@ public class Vision extends SubsystemBase {
         cameras = new PhotonCamera[cameraNames.length];
         poseEstimators = new PhotonPoseEstimator[cameraNames.length];
         
-        visionXPubs = new DoublePublisher[cameraNames.length];
-        visionYPubs = new DoublePublisher[cameraNames.length];
-        visionRotPubs = new DoublePublisher[cameraNames.length];
-        xyStdDevPubs = new DoublePublisher[cameraNames.length];
-        rotStdDevPubs = new DoublePublisher[cameraNames.length];
+        // visionXPubs = new DoublePublisher[cameraNames.length];
+        // visionYPubs = new DoublePublisher[cameraNames.length];
+        // visionRotPubs = new DoublePublisher[cameraNames.length];
+        // xyStdDevPubs = new DoublePublisher[cameraNames.length];
+        // rotStdDevPubs = new DoublePublisher[cameraNames.length];
         numTagsPubs = new IntegerPublisher[cameraNames.length];
-        totalAreaPubs = new DoublePublisher[cameraNames.length];
-        ambiguityPubs = new DoublePublisher[cameraNames.length];
+        // totalAreaPubs = new DoublePublisher[cameraNames.length];
+        // ambiguityPubs = new DoublePublisher[cameraNames.length];
 
         for (int i = 0; i < cameraNames.length; i++) {
             cameras[i] = new PhotonCamera(cameraNames[i]);
@@ -80,14 +80,14 @@ public class Vision extends SubsystemBase {
             );
 
             NetworkTable camTable = visionTable.getSubTable(cameraNames[i]);
-            visionXPubs[i] = camTable.getDoubleTopic("EstimatedPose/X").publish();
-            visionYPubs[i] = camTable.getDoubleTopic("EstimatedPose/Y").publish();
-            visionRotPubs[i] = camTable.getDoubleTopic("EstimatedPose/Rot").publish();
-            xyStdDevPubs[i] = camTable.getDoubleTopic("StdDevs/XY").publish();
-            rotStdDevPubs[i] = camTable.getDoubleTopic("StdDevs/Rot").publish();
+            // visionXPubs[i] = camTable.getDoubleTopic("EstimatedPose/X").publish();
+            // visionYPubs[i] = camTable.getDoubleTopic("EstimatedPose/Y").publish();
+            // visionRotPubs[i] = camTable.getDoubleTopic("EstimatedPose/Rot").publish();
+            // xyStdDevPubs[i] = camTable.getDoubleTopic("StdDevs/XY").publish();
+            // rotStdDevPubs[i] = camTable.getDoubleTopic("StdDevs/Rot").publish();
             numTagsPubs[i] = camTable.getIntegerTopic("Tag/numTags").publish();
-            totalAreaPubs[i] = camTable.getDoubleTopic("Tag/TotalArea").publish();
-            ambiguityPubs[i] = camTable.getDoubleTopic("Tag/ambiguity").publish();
+            // totalAreaPubs[i] = camTable.getDoubleTopic("Tag/TotalArea").publish();
+            // ambiguityPubs[i] = camTable.getDoubleTopic("Tag/ambiguity").publish();
         }
     }
 
@@ -113,10 +113,10 @@ public class Vision extends SubsystemBase {
 
         boolean isLanding = (Timer.getFPGATimestamp() - landingStartTime) < VisionConstants.landingTimeSeconds;
 
-        onBumpPub.set(isOnBump);
-        landingPub.set(isLanding);
+        // onBumpPub.set(isOnBump);
+        // landingPub.set(isLanding);
 
-        List<VisionMeasurement> measurements = new ArrayList<>();
+        measurements.clear();
         frontCamHasTargets = false;
 
         for (int i = 0; i < cameras.length; i++) {
@@ -139,13 +139,13 @@ public class Vision extends SubsystemBase {
                         stdDevs = getEstimationStdDevs(pose, pitch, roll, yawRate, i);
                     } 
 
-                    visionXPubs[i].set(pose.estimatedPose.getX());
-                    visionYPubs[i].set(pose.estimatedPose.getY());
-                    visionRotPubs[i].set(pose.estimatedPose.toPose2d().getRotation().getDegrees());  
+                    // visionXPubs[i].set(pose.estimatedPose.getX());
+                    // visionYPubs[i].set(pose.estimatedPose.getY());
+                    // visionRotPubs[i].set(pose.estimatedPose.toPose2d().getRotation().getDegrees());  
                     
                     if (stdDevs.isPresent()) {
-                        xyStdDevPubs[i].set(stdDevs.get().get(0, 0));
-                        rotStdDevPubs[i].set(stdDevs.get().get(2, 0));
+                        // xyStdDevPubs[i].set(stdDevs.get().get(0, 0));
+                        // rotStdDevPubs[i].set(stdDevs.get().get(2, 0));
                         measurements.add(new VisionMeasurement(pose, stdDevs.get()));
                     }
                 }
@@ -188,8 +188,8 @@ public class Vision extends SubsystemBase {
         double sigma_theta = (numTags > 1 && i < 2) ? VisionConstants.multiTagThetaSigma : Double.MAX_VALUE;
 
         numTagsPubs[i].set(numTags);
-        totalAreaPubs[i].set(totalArea);
-        ambiguityPubs[i].set((numTags == 1) ? estimatedPose.targetsUsed.get(0).getPoseAmbiguity() : 0);
+        // totalAreaPubs[i].set(totalArea);
+        // ambiguityPubs[i].set((numTags == 1) ? estimatedPose.targetsUsed.get(0).getPoseAmbiguity() : 0);
 
         return Optional.of(VecBuilder.fill(sigma_xy, sigma_xy, sigma_theta));
     }

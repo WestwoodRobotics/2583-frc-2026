@@ -23,8 +23,8 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class Telemetry {
-    private final double MaxSpeed;
-    private final Pigeon2 m_pigeon;
+    // private final double MaxSpeed;
+    // private final Pigeon2 m_pigeon;
     private final Field2d m_field = new Field2d();
 
     /**
@@ -34,8 +34,8 @@ public class Telemetry {
      * @param pigeon Pigeon2 reference for gyro telemetry
      */
     public Telemetry(double maxSpeed, Pigeon2 pigeon) {
-        MaxSpeed = maxSpeed;
-        m_pigeon = pigeon;
+        // MaxSpeed = maxSpeed;
+        // m_pigeon = pigeon;
 
         /* Set up the module state Mechanism2d telemetry */
         // for (int i = 0; i < 4; ++i) {

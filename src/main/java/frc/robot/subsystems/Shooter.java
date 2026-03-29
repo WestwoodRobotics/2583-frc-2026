@@ -58,9 +58,9 @@ public class Shooter extends SubsystemBase {
     private final Follower m_opposedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Opposed);
 
     private final NetworkTable m_table = NetworkTableInstance.getDefault().getTable("Shooter");
-    private final DoublePublisher m_flywheelDesiredRPS = m_table.getDoubleTopic("Flywheel/DesiredRPS").publish();
-    private final DoublePublisher m_flywheelActualRPS = m_table.getDoubleTopic("Flywheel/ActualRPS").publish();
-    private final BooleanPublisher m_atDesiredRPS = m_table.getBooleanTopic("Flywheel/AtDesiredRPS").publish();
+    // private final DoublePublisher m_flywheelDesiredRPS = m_table.getDoubleTopic("Flywheel/DesiredRPS").publish();
+    // private final DoublePublisher m_flywheelActualRPS = m_table.getDoubleTopic("Flywheel/ActualRPS").publish();
+    // private final BooleanPublisher m_atDesiredRPS = m_table.getBooleanTopic("Flywheel/AtDesiredRPS").publish();
     private final BooleanPublisher m_autoAimEnabledPub = m_table.getBooleanTopic("AutoAimEnabled").publish();
     private final BooleanPublisher m_isManualPub = m_table.getBooleanTopic("FlywheelOn").publish();
 
@@ -79,9 +79,9 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         double flywheelVel = m_topRightFlywheel.getVelocity().getValueAsDouble();
 
-        m_flywheelDesiredRPS.set(m_flywheelRequest.Velocity);
-        m_flywheelActualRPS.set(flywheelVel);
-        m_atDesiredRPS.set(Math.abs(flywheelVel - m_flywheelRequest.Velocity) < ShooterConstants.kFlywheelToleranceRPS);
+        // m_flywheelDesiredRPS.set(m_flywheelRequest.Velocity);
+        // m_flywheelActualRPS.set(flywheelVel);
+        // m_atDesiredRPS.set(Math.abs(flywheelVel - m_flywheelRequest.Velocity) < ShooterConstants.kFlywheelToleranceRPS);
 
         m_autoAimEnabledPub.set(m_autoAimEnabled);
         m_isManualPub.set(!m_autoAimEnabled);
