@@ -50,6 +50,8 @@ public class Vision extends SubsystemBase {
     private boolean wasOnBump = false;
     private double landingStartTime = 0.0;
 
+    private boolean frontCamHasTargets;
+
     public Vision(CommandSwerveDrivetrain drivetrain) {
         this.drivetrain = drivetrain;
         this.pigeon = drivetrain.getPigeon2();
@@ -115,9 +117,11 @@ public class Vision extends SubsystemBase {
         landingPub.set(isLanding);
 
         List<VisionMeasurement> measurements = new ArrayList<>();
+        frontCamHasTargets = false;
 
         for (int i = 0; i < cameras.length; i++) {
-
+            if (i > 1 && frontCamHasTargets) { continue; }
+            
             for (PhotonPipelineResult result : cameras[i].getAllUnreadResults()) {
                 Optional<EstimatedRobotPose> poseOptional = poseEstimators[i].estimateCoprocMultiTagPose(result);
                 if (poseOptional.isEmpty()) {
@@ -127,11 +131,13 @@ public class Vision extends SubsystemBase {
                     EstimatedRobotPose pose = poseOptional.get();
                     Optional<Matrix<N3, N1>> stdDevs = Optional.empty();
 
+                    if (i < 2) { frontCamHasTargets = true; }
+
                     if (isLanding) {
                         stdDevs = Optional.of(VecBuilder.fill(VisionConstants.landingStdDev, VisionConstants.landingStdDev, Double.MAX_VALUE));
                     } else {
                         stdDevs = getEstimationStdDevs(pose, pitch, roll, yawRate, i);
-                    }
+                    } 
 
                     visionXPubs[i].set(pose.estimatedPose.getX());
                     visionYPubs[i].set(pose.estimatedPose.getY());

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.144336661911555,
-        "y": 0.9750071326676175
+        "x": 7.23490727532097,
+        "y": 0.8068045649072757
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.507950232513408,
-        "y": 0.9542742044268777
+        "x": 7.598520845922823,
+        "y": 0.7860716366665359
       },
       "isLocked": false,
       "linkedName": "RightPoint1"
     },
     {
       "anchor": {
-        "x": 7.817146932952923,
-        "y": 3.7180028530670475
+        "x": 7.713637660485022,
+        "y": 3.7050641940085596
       },
       "prevControl": {
-        "x": 7.885827214927268,
-        "y": 3.477621866156842
+        "x": 7.7823179424593665,
+        "y": 3.464683207098354
       },
       "nextControl": null,
       "isLocked": false,
@@ -40,7 +40,7 @@
     {
       "name": "RunIntakeEvent",
       "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": 2.0,
+      "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
         "data": {

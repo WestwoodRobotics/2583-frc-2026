@@ -7,8 +7,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class GetHubStatus {
 
-    public static final double ktimeOffset = 1.5;
-
     public static boolean didWin = true;
     public static boolean isPractice = false;
     public static double countdown;
@@ -34,7 +32,7 @@ public class GetHubStatus {
         }
 
         // We're teleop enabled, compute.
-        double matchTime = DriverStation.getMatchTime() - ktimeOffset;
+        double matchTime = DriverStation.getMatchTime();
         String gameData = DriverStation.getGameSpecificMessage();
         // If we have no game data, we cannot compute, assume hub is active, as its likely early in teleop.
         if (gameData.isEmpty()) {
@@ -77,7 +75,7 @@ public class GetHubStatus {
             countdown = matchTime - 30;
             return !shift1Active;
         } else {
-            countdown = matchTime + ktimeOffset;
+            countdown = matchTime;
             // End game, hub always active.
             return true;
         }
