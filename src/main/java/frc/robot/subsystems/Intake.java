@@ -60,11 +60,11 @@ public class Intake extends SubsystemBase {
 
     private SysIdRoutine m_sysIdRoutineToApply = m_rollerSysIdRoutine;
 
-    private final NetworkTable m_intakeTable = NetworkTableInstance.getDefault().getTable("Intake");
-    private final DoublePublisher m_pivotDesiredPub = m_intakeTable.getDoubleTopic("Pivot/DesiredPos").publish();
-    private final DoublePublisher m_pivotActualPub = m_intakeTable.getDoubleTopic("Pivot/ActualPos").publish();
-    private final DoublePublisher m_rollerDesiredPub = m_intakeTable.getDoubleTopic("Roller/DesiredVelocityRPS").publish();
-    private final DoublePublisher m_rollerActualPub = m_intakeTable.getDoubleTopic("Roller/ActualVelocityRPS").publish();
+    // private final NetworkTable m_intakeTable = NetworkTableInstance.getDefault().getTable("Intake");
+    // private final DoublePublisher m_pivotDesiredPub = m_intakeTable.getDoubleTopic("Pivot/DesiredPos").publish();
+    // private final DoublePublisher m_pivotActualPub = m_intakeTable.getDoubleTopic("Pivot/ActualPos").publish();
+    // private final DoublePublisher m_rollerDesiredPub = m_intakeTable.getDoubleTopic("Roller/DesiredVelocityRPS").publish();
+    // private final DoublePublisher m_rollerActualPub = m_intakeTable.getDoubleTopic("Roller/ActualVelocityRPS").publish();
 
     public Intake() {
         // Apply configurations directly from constants to keep constructor clean of variables
@@ -80,18 +80,16 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        double pivotActual = m_pivotMotor.getPosition().getValueAsDouble();
-        double rollerActual = m_rollerMotor.getVelocity().getValueAsDouble();
+        // double pivotActual = m_pivotMotor.getPosition().getValueAsDouble();
+        // double rollerActual = m_rollerMotor.getVelocity().getValueAsDouble();
 
-        m_pivotDesiredPub.set(m_pivotRequest.Position);
-        m_pivotActualPub.set(pivotActual);
-        m_rollerDesiredPub.set(m_rollerRequest.Velocity);
-        m_rollerActualPub.set(rollerActual);
+        // m_pivotDesiredPub.set(m_pivotRequest.Position);
+        // m_pivotActualPub.set(pivotActual);
+        // m_rollerDesiredPub.set(m_rollerRequest.Velocity);
+        // m_rollerActualPub.set(rollerActual);
 
         SignalLogger.writeDouble("Intake/PivotCurrent", this.m_pivotMotor.getSupplyCurrent().getValueAsDouble());
         SignalLogger.writeDouble("Intake/RollerCurrent", this.m_rollerMotor.getSupplyCurrent().getValueAsDouble());
-
-        SmartDashboard.putNumber("Intake Position", pivotActual);
     }
 
 
