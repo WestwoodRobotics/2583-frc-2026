@@ -99,8 +99,6 @@ public class RobotContainer {
                 })
         );
 
-        // RobotModeTriggers.autonomous().onTrue(NamedCommands.getCommand("TurnFlywheelOff"));
-
         intake.setDefaultCommand(intake.intakeDefault());
         transfer.setDefaultCommand(transfer.defaultCommand());
         shooter.setDefaultCommand(new AdjustShooter(shooter, drivetrain));
@@ -133,15 +131,13 @@ public class RobotContainer {
         }).alongWith(intake.partialRetract()))
             .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
         
-        driver.y().whileTrue(new AimSwerve(drivetrain, faceAngle, driver)
-            .alongWith(Commands.run(() -> shooter.setFlywheelVelocity(ShooterConstants.kAutoTrenchFlywheelVel), shooter)))
-            .onFalse(Commands.runOnce(shooter::toggleAutoAim, shooter));
+        driver.y().whileTrue(Commands.run(() -> shooter.setFlywheelVelocity(ShooterConstants.kTrenchFlywheelVel), shooter));
         
         driver.b().whileTrue(drivetrain.applyRequest(() -> brake));
 
         driver.rightBumper().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter)
             .andThen(Commands.runOnce(() -> {
-                shooter.setFlywheelVelocity(ShooterConstants.kAutoBumperFlywheelVel);
+                shooter.setFlywheelVelocity(ShooterConstants.kBumperFlywheelVel);
         })));
 
         driver.rightTrigger().whileTrue(transfer.shootCommand().alongWith(new IntakeWiggle(intake)));
@@ -189,8 +185,8 @@ public class RobotContainer {
     public void configureAutonomousCommands() {
 
         NamedCommands.registerCommand("Shoot", transfer.shootCommand());
-        // NamedCommands.registerCommand("TurnFlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
-        // NamedCommands.registerCommand("TurnFlywheelOff", Commands.runOnce(() -> shooter.setAutoAim(false), shooter));
+        NamedCommands.registerCommand("TurnFlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
+        NamedCommands.registerCommand("TurnFlywheelOff", Commands.runOnce(() -> shooter.setAutoAim(false), shooter));
         
         NamedCommands.registerCommand("RunIntake", intake.runIntake(true));
         NamedCommands.registerCommand("PartialRetract", intake.partialRetract());
