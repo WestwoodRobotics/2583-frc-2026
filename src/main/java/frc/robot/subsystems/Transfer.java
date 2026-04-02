@@ -7,6 +7,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
@@ -73,6 +74,8 @@ public class Transfer extends SubsystemBase {
         m_floorMotor1.getConfigurator().apply(TransferConstants.getFloorMotorConfigs());
         m_transferMotor1.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
         m_transferMotor2.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
+
+        ParentDevice.optimizeBusUtilizationForAll(m_floorMotor1, m_transferMotor1, m_transferMotor2);
     }
 
     public void runMotors(double floorVel, double transferVel) {
@@ -90,12 +93,7 @@ public class Transfer extends SubsystemBase {
     }
 
     @Override
-    public void periodic(){
-        SignalLogger.writeDouble("Transfer/FloorCurrent", this.m_floorMotor1.getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Transfer/motor1Current", this.m_transferMotor1.getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Transfer/motor2Current", this.m_transferMotor2.getSupplyCurrent().getValueAsDouble());
-
-    }
+    public void periodic(){}
 
     public Command defaultCommand() {
         // Default: Floor spins at default speed

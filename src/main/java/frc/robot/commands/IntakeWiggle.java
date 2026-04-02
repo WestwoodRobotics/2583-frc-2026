@@ -2,34 +2,43 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.subsystems.Intake;
 
 public class IntakeWiggle extends Command {
     
     private Intake m_intake;
+    private CommandXboxController m_controller;
 
     private Timer m_intervalTimer = new Timer();
 
-    public IntakeWiggle(Intake intake) {
+    public IntakeWiggle(Intake intake, CommandXboxController controller) {
         m_intake = intake;
+        m_controller = controller;
         addRequirements(m_intake);
     }
 
     @Override
     public void initialize() {
         m_intervalTimer.restart();
-        m_intake.setRollerVelocity(IntakeConstants.kRollerShootingVel);
     }
 
     @Override
     public void execute() {
-        if (m_intervalTimer.get() < IntakeConstants.kWiggleTime) {
-            m_intake.setPivotPosition(IntakeConstants.kPivotShoot);
-        } else if (m_intervalTimer.get() < IntakeConstants.kWiggleTime * 2) {
+        if (m_controller.leftTrigger().getAsBoolean()) {
             m_intake.setPivotPosition(IntakeConstants.kPivotOut);
-        } else {
-            m_intervalTimer.reset();
+            m_intake.setRollerVelocity(IntakeConstants.kRollerIntakingVel);
+        }
+        else {
+            m_intake.setRollerVelocity(IntakeConstants.kRollerShootingVel);
+            if (m_intervalTimer.get() < IntakeConstants.kWiggleTime) {
+                m_intake.setPivotPosition(IntakeConstants.kPivotShoot);
+            } else if (m_intervalTimer.get() < IntakeConstants.kWiggleTime * 2) {
+                m_intake.setPivotPosition(IntakeConstants.kPivotOut);
+            } else {
+                m_intervalTimer.reset();
+            }
         }
     }
 

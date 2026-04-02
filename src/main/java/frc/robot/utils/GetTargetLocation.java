@@ -18,13 +18,13 @@ public class GetTargetLocation {
     private static final int kTargetingIterations = 3;
 
     private static double mLastTimestamp = -1.0;
-    private static Translation2d mCachedTarget = null;
+    private static Translation2d m_targetLocation = null;
 
     public static Translation2d getTargetLocation(Pose2d robotPose, ChassisSpeeds currentSpeeds) {
         // Cache result to avoid recalculating multiple times per loop cycle (approx 20ms)
         double currentTimestamp = Timer.getFPGATimestamp();
-        if (Math.abs(currentTimestamp - mLastTimestamp) < 0.005 && mCachedTarget != null) {
-            return mCachedTarget;
+        if (Math.abs(currentTimestamp - mLastTimestamp) < 0.005 && m_targetLocation != null) {
+            return m_targetLocation;
         }
 
         var allianceOpt = DriverStation.getAlliance();
@@ -33,8 +33,6 @@ public class GetTargetLocation {
         }
         var alliance = allianceOpt.orElse(Alliance.Blue);
         boolean isBlue = (alliance == Alliance.Blue);
-
-        Translation2d targetLocation;
 
         // Determine if we are in the alliance's shooting zone based on the robot's X position.
         boolean inZone;
@@ -47,8 +45,7 @@ public class GetTargetLocation {
         if (inZone) {
             // Lock to appropriate hub
             Translation2d realTargetPos = isBlue ? SwerveConstants.blueHub : SwerveConstants.redHub;
-            targetLocation = realTargetPos;
-            // targetLocation = adjustMovingTarget(robotPose.getTranslation(), currentSpeeds, realTargetPos);
+            m_targetLocation = adjustMovingTarget(robotPose, currentSpeeds, realTargetPos);
         } else {
             // Lock to alliance corner
             boolean isTop = robotPose.getY() >= (SwerveConstants.fieldLength / 2.0);
@@ -56,20 +53,19 @@ public class GetTargetLocation {
             double targetX = isBlue ? SwerveConstants.bluePassX : SwerveConstants.redPassX;
             double targetY = isTop ? SwerveConstants.upperPassY : SwerveConstants.lowerPassY;
             
-            targetLocation = new Translation2d(targetX, targetY);
+            m_targetLocation = new Translation2d(targetX, targetY);
         }
 
         mLastTimestamp = currentTimestamp;
-        mCachedTarget = targetLocation;
-        return targetLocation;
+        return m_targetLocation;
     }
 
-    public static Translation2d adjustMovingTarget(Translation2d robotPos, ChassisSpeeds currentSpeeds, Translation2d realTargetPos) {
+    public static Translation2d adjustMovingTarget(Pose2d robotPose, ChassisSpeeds currentSpeeds, Translation2d realTargetPos) {
         // Convert field-relative chassis speeds to a Translation2d vector
         Translation2d robotVelocity = new Translation2d(
             currentSpeeds.vxMetersPerSecond, 
             currentSpeeds.vyMetersPerSecond
-        );
+        ).rotateBy(robotPose.getRotation());
 
         // Initial guess: the virtual target is just the real target
         Translation2d virtualTarget = realTargetPos;
@@ -77,7 +73,7 @@ public class GetTargetLocation {
         // Iterate 3 times to converge on the correct virtual target
         for (int i = 0; i < kTargetingIterations; i++) {
             // 1. Find distance from robot to the CURRENT virtual target
-            double distance = robotPos.getDistance(virtualTarget);
+            double distance = robotPose.getTranslation().getDistance(virtualTarget);
 
             // 2. Look up the Time of Flight for that distance
             // NOTE: This assumes kTOFMap contains an entry for every possible distance.

@@ -36,6 +36,7 @@ public class SwerveConstants {
     public static final double kCompensationFF = Math.toRadians(5.0);
 
     public static final double kSOTMVel = 0.5;
+    public static final double kMinAimSpeed = 0.1;
 
     public static final double bluePassX = 3.5;
     public static final double redPassX = fieldWidth - bluePassX;
@@ -48,4 +49,6 @@ public class SwerveConstants {
 
     public static final double kResetX = 3.560;
     public static final double kResetY = 4.029;
+
+    public static final double kBrakeTime = 0.5;
 }

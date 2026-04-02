@@ -7,6 +7,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -76,6 +77,7 @@ public class Intake extends SubsystemBase {
 
         m_pivotMotor.setControl(m_pivotRequest.withPosition(IntakeConstants.kPivotIn));
 
+        ParentDevice.optimizeBusUtilizationForAll(m_pivotMotor, m_rollerMotor);
     }
 
     @Override
@@ -87,9 +89,6 @@ public class Intake extends SubsystemBase {
         // m_pivotActualPub.set(pivotActual);
         // m_rollerDesiredPub.set(m_rollerRequest.Velocity);
         // m_rollerActualPub.set(rollerActual);
-
-        SignalLogger.writeDouble("Intake/PivotCurrent", this.m_pivotMotor.getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Intake/RollerCurrent", this.m_rollerMotor.getSupplyCurrent().getValueAsDouble());
     }
 
 

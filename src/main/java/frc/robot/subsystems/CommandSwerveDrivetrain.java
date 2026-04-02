@@ -171,6 +171,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+        for (int i = 0; i < modules.length; i++) {
+            this.getModule(i).getDriveMotor().optimizeBusUtilization();
+            this.getModule(i).getSteerMotor().optimizeBusUtilization();
+        }
     }
 
     /**
@@ -286,19 +290,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
             });
         }
-        
-        SignalLogger.writeDouble("Drive/DriveCurrent0", this.getModule(0).getDriveMotor().getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Drive/SteerCurrent0", this.getModule(0).getSteerMotor().getSupplyCurrent().getValueAsDouble());
-    
-        SignalLogger.writeDouble("Drive/DriveCurrent1", this.getModule(1).getDriveMotor().getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Drive/SteerCurrent1", this.getModule(1).getSteerMotor().getSupplyCurrent().getValueAsDouble());
-        
-        SignalLogger.writeDouble("Drive/DriveCurrent2", this.getModule(2).getDriveMotor().getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Drive/SteerCurrent2", this.getModule(2).getSteerMotor().getSupplyCurrent().getValueAsDouble());
-        
-        SignalLogger.writeDouble("Drive/DriveCurrent3", this.getModule(3).getDriveMotor().getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Drive/SteerCurrent3", this.getModule(3).getSteerMotor().getSupplyCurrent().getValueAsDouble());
-
     }
 
     private void startSimThread() {

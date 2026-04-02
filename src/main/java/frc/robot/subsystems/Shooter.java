@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -23,14 +25,30 @@ import frc.robot.constants.ShooterConstants;
 public class Shooter extends SubsystemBase {
 
     private final CANBus canBus = ShooterConstants.kCANBus;
+    private final TalonFX m_hoodMotor = new TalonFX(ShooterConstants.kHoodMotorId, canBus);
     private final TalonFX m_bottomLeftFlywheel = new TalonFX(ShooterConstants.kBottomLeftFlywheelId, canBus);
     private final TalonFX m_bottomRightFlywheel = new TalonFX(ShooterConstants.kBottomRightFlywheelId, canBus);
     private final TalonFX m_topLeftFlywheel = new TalonFX(ShooterConstants.kTopLeftFlywheelId, canBus);
     private final TalonFX m_topRightFlywheel = new TalonFX(ShooterConstants.kTopRightFlywheelId, canBus);
 
     private final VelocityTorqueCurrentFOC m_flywheelRequest = new VelocityTorqueCurrentFOC(0.0);
-
+    private final PositionTorqueCurrentFOC m_hoodRequest = new PositionTorqueCurrentFOC(0.0);
     private final VoltageOut m_voltReq = new VoltageOut(0.0);
+
+    private SysIdRoutine m_hoodSysIdRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(
+                Volts.of(0.25).per(Second),
+                Volts.of(1),
+                null,
+                state -> SignalLogger.writeString("SysIdHood_state", state.toString())
+            
+            ), 
+            new SysIdRoutine.Mechanism(
+                (volts) -> m_hoodMotor.setControl(m_voltReq.withOutput(volts.in(Volts))),
+                null,
+                this
+            )
+        );
 
     private SysIdRoutine m_flywheelSysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
@@ -61,13 +79,19 @@ public class Shooter extends SubsystemBase {
     // private final DoublePublisher m_flywheelDesiredRPS = m_table.getDoubleTopic("Flywheel/DesiredRPS").publish();
     // private final DoublePublisher m_flywheelActualRPS = m_table.getDoubleTopic("Flywheel/ActualRPS").publish();
     // private final BooleanPublisher m_atDesiredRPS = m_table.getBooleanTopic("Flywheel/AtDesiredRPS").publish();
+    // private final DoublePublisher m_hoodDesiredPos = m_table.getDoubleTopic("Hood/DesiredPos").publish();
+    // private final DoublePublisher m_hoodActualPos = m_table.getDoubleTopic("Hood/ActualPos").publish();
+    // private final DoublePublisher m_hoodDesiredAngle = m_table.getDoubleTopic("Hood/DesiredAngle").publish();
+    // private final DoublePublisher m_hoodActualAngle = m_table.getDoubleTopic("Hood/ActualAngle").publish();
     private final BooleanPublisher m_autoAimEnabledPub = m_table.getBooleanTopic("AutoAimEnabled").publish();
     private final BooleanPublisher m_isManualPub = m_table.getBooleanTopic("FlywheelOn").publish();
 
+    private double m_desiredAngle = ShooterConstants.kMinAngle;
     private boolean m_autoAimEnabled = true;
 
     public Shooter() {
         // Apply configurations directly from constants to keep constructor clean of variables
+        m_hoodMotor.getConfigurator().apply(ShooterConstants.getHoodMotorConfigs());
         m_bottomLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
         m_bottomRightFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
         m_topLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
@@ -77,21 +101,20 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        double flywheelVel = m_topRightFlywheel.getVelocity().getValueAsDouble();
-
+        // double hoodPos = m_hoodMotor.getPosition().getValueAsDouble();
+        // double flywheelVel = m_topRightFlywheel.getVelocity().getValueAsDouble();
         // m_flywheelDesiredRPS.set(m_flywheelRequest.Velocity);
         // m_flywheelActualRPS.set(flywheelVel);
+        // m_hoodDesiredPos.set(m_hoodRequest.Position);
+        // m_hoodActualPos.set(hoodPos);
+        // m_hoodDesiredAngle.set(m_desiredAngle);
         // m_atDesiredRPS.set(Math.abs(flywheelVel - m_flywheelRequest.Velocity) < ShooterConstants.kFlywheelToleranceRPS);
+
+        // double actualAngle = (hoodPos - ShooterConstants.kPosAtMinAngle) / ShooterConstants.kPerDegree + ShooterConstants.kMinAngle;
+        // m_hoodActualAngle.set(actualAngle);
 
         m_autoAimEnabledPub.set(m_autoAimEnabled);
         m_isManualPub.set(!m_autoAimEnabled);
-        SignalLogger.writeDouble("Shooter/FlywheelActualVel", flywheelVel);
-        SignalLogger.writeDouble("Shooter/FlywheelDesiredVel", m_flywheelRequest.Velocity);
-
-        SignalLogger.writeDouble("Shooter/FlywheelBLCurrent", this.m_bottomLeftFlywheel.getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Shooter/FlywheelBRCurrent", this.m_bottomRightFlywheel.getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Shooter/FlywheelTLCurrent", this.m_topLeftFlywheel.getSupplyCurrent().getValueAsDouble());
-        SignalLogger.writeDouble("Shooter/FlywheelTRCurrent", this.m_topRightFlywheel.getSupplyCurrent().getValueAsDouble());
     }
 
     public void toggleAutoAim() {
@@ -109,11 +132,32 @@ public class Shooter extends SubsystemBase {
         return m_autoAimEnabled;
     }
 
+    public void setHoodVoltage(double volts) {
+        m_autoAimEnabled = false;
+        m_hoodMotor.setControl(m_voltReq.withOutput(volts));
+    }
+
     public void changeFlywheelVelocity(double delta) {
         m_autoAimEnabled = false;
         double newVel = m_flywheelRequest.Velocity + delta;
         newVel = MathUtil.clamp(newVel, 0.0, ShooterConstants.kMaxFlywheelRPS);
         setFlywheelVelocity(newVel);
+    }
+
+    public void setHoodPosition(double position) {
+        m_hoodMotor.setControl(m_hoodRequest.withPosition(position));
+    }
+
+    public void setHoodAngle(double angle) {
+        m_desiredAngle = MathUtil.clamp(angle, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
+        double angleDelta = m_desiredAngle - ShooterConstants.kMinAngle;
+        double position = ShooterConstants.kPosAtMinAngle + angleDelta * ShooterConstants.kPerDegree;
+
+        setHoodPosition(position);
+    }
+
+    public void resetHoodPosition() {
+        m_hoodMotor.setPosition(0.0);
     }
 
     public void setFlywheelVelocity(double velocity) {

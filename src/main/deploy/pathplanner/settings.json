@@ -5,14 +5,16 @@
   "pathFolders": [
     "DepotPaths",
     "LeftPaths",
+    "LeftTrenchPaths",
     "PreloadPaths",
-    "RightPaths"
+    "RightBumpPaths",
+    "RightTrenchPaths"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 2.0,
-  "defaultMaxAccel": 2.0,
-  "defaultMaxAngVel": 540.0,
-  "defaultMaxAngAccel": 277.0,
+  "defaultMaxVel": 4.5,
+  "defaultMaxAccel": 10.0,
+  "defaultMaxAngVel": 720.0,
+  "defaultMaxAngAccel": 210.0,
   "defaultNominalVoltage": 12.0,
   "robotMass": 61.235,
   "robotMOI": 68.291,
