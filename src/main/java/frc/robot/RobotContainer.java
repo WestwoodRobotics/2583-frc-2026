@@ -110,7 +110,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        driver.a().whileTrue(new AimSwerve(drivetrain, faceAngle, driver));
+        driver.a().whileTrue(new AimSwerve(drivetrain, faceAngle, brake, driver));
 
         driver.x().whileTrue(drivetrain.applyRequest(() -> {
             CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver, 3);
@@ -140,7 +140,7 @@ public class RobotContainer {
                 shooter.setFlywheelVelocity(ShooterConstants.kBumperFlywheelVel);
         })));
 
-        driver.rightTrigger().whileTrue(transfer.shootCommand().alongWith(new IntakeWiggle(intake)));
+        driver.rightTrigger().whileTrue(transfer.shootCommand().alongWith(new IntakeWiggle(intake, driver)));
 
         // Run intake while holding left trigger
         driver.leftBumper().whileTrue(intake.runIntake(false));
@@ -154,11 +154,20 @@ public class RobotContainer {
         operator.a().whileTrue(transfer.reverseCommand())
             .onFalse(transfer.shootCommand().until(() -> !driver.rightTrigger().getAsBoolean()));
 
+        operator.rightTrigger().whileTrue(Commands.startEnd(
+            () -> shooter.setHoodVoltage(ShooterConstants.kManualHoodVolts),
+            () -> shooter.setHoodVoltage(0.0),
+            shooter));
+        operator.leftTrigger().whileTrue(Commands.startEnd(
+            () -> shooter.setHoodVoltage(-ShooterConstants.kManualHoodVolts),
+            () -> shooter.setHoodVoltage(0.0),
+            shooter));
         operator.rightBumper().onTrue(Commands.runOnce(
             () -> shooter.changeFlywheelVelocity(ShooterConstants.kManualFlywheelInc), shooter));
         operator.leftBumper().onTrue(Commands.runOnce(
             () -> shooter.changeFlywheelVelocity(-ShooterConstants.kManualFlywheelInc), shooter));
 
+        operator.povDown().onTrue(Commands.runOnce(shooter::resetHoodPosition, shooter).ignoringDisable(true));
         operator.povRight().onTrue(Commands.runOnce(intake::resetPivot, intake).ignoringDisable(true));
         operator.povLeft().onTrue(Commands.runOnce(GetHubStatus::togglePracticeMode));
 
@@ -190,9 +199,9 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("RunIntake", intake.runIntake(true));
         NamedCommands.registerCommand("PartialRetract", intake.partialRetract());
-        NamedCommands.registerCommand("IntakeWiggle", new IntakeWiggle(intake));
+        NamedCommands.registerCommand("IntakeWiggle", new IntakeWiggle(intake, driver));
 
-        NamedCommands.registerCommand("AimSwerve", new AimSwerve(drivetrain, faceAngle, driver));
+        NamedCommands.registerCommand("AimSwerve", new AimSwerve(drivetrain, faceAngle, brake, driver));
     }
 
     public Command getAutonomousCommand() {

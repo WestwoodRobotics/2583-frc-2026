@@ -5,7 +5,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.SwerveConstants;
@@ -17,8 +16,6 @@ public class AdjustShooter extends Command {
 
     private Shooter m_shooter;
     private CommandSwerveDrivetrain m_drivetrain;
-    public static double headingCorrection;
-    public static double perpendicularVel;
 
     private final DoublePublisher distancePub = NetworkTableInstance.getDefault()
         .getTable("Shooter")
@@ -33,16 +30,8 @@ public class AdjustShooter extends Command {
 
     @Override
     public void execute() {
-        
         Pose2d robotPose = m_drivetrain.getState().Pose;
         Pose2d shooterPose = robotPose.plus(SwerveConstants.robotToShooter);
-        double xVel = (m_drivetrain.getState().Speeds.vxMetersPerSecond);
-        double yVel = m_drivetrain.getState().Speeds.vyMetersPerSecond;
-
-        double robotHeading = m_drivetrain.getState().RawHeading.getRadians();
-
-        double fieldXVel = xVel * Math.cos(robotHeading) - yVel * Math.sin(robotHeading);
-        double fieldYVel = xVel * Math.sin(robotHeading) + yVel * Math.cos(robotHeading);
 
         Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose, m_drivetrain.getState().Speeds);
         if (targetLocation == null) {
@@ -51,39 +40,6 @@ public class AdjustShooter extends Command {
         }
 
         double distance = shooterPose.getTranslation().getDistance(targetLocation);
-        double flywheelRPS = ShooterConstants.kDistanceToRPS.get(distance);
-        double flywheelMS = flywheelRPS * (0.0508) * (2* Math.PI);
-
-        //compensations for the robot movement
-        double xCompensation = fieldXVel * Math.cos(-robotHeading); 
-        double yCompensation = fieldYVel * Math.sin(-robotHeading);
-
-        //decomposition of ball vector
-        double horziontal_Ball_component = flywheelMS * Math.cos(Math.toRadians(60));
-        double vertical_Ball_component = flywheelMS * Math.sin(Math.toRadians(60));
-
-        double totalCompensation = xCompensation - yCompensation;
-
-        double Compensated_Horizontal_Ball = horziontal_Ball_component - (totalCompensation * 2.0); //tuning compensation multiplier
-        
-        SmartDashboard.putNumber("total Compensation", totalCompensation);
-        //vertical component is always the same, only thing we have to change is horizontal
-        double Compensated_FlywheelMS = Math.sqrt((Math.pow(Compensated_Horizontal_Ball, 2)) + (Math.pow(vertical_Ball_component , 2)));
-        double Compensated_FlywheelRPS = (Compensated_FlywheelMS / (0.0508) / (2*Math.PI)) ;
-
-        //angle compensation
-        double goalDX = shooterPose.getX() - targetLocation.getX();
-        double goalDY =  shooterPose.getY() - targetLocation.getY();
-
-        double unitGoalDX = goalDX / distance;
-        double unitGoalDY = goalDY / distance;
-
-        double perpendicularX = -unitGoalDY;
-        double perpendicularY = unitGoalDX;
-
-        perpendicularVel = (perpendicularX * fieldXVel) + (perpendicularY * fieldYVel);
-
-        headingCorrection = Math.atan2(perpendicularVel, distance);
        
         distancePub.set(distance);
 
@@ -91,8 +47,20 @@ public class AdjustShooter extends Command {
             return;
         }
 
-        Compensated_FlywheelRPS = MathUtil.clamp(Compensated_FlywheelRPS, 0, ShooterConstants.kMaxFlywheelRPS);
-        m_shooter.setFlywheelVelocity(Compensated_FlywheelRPS);   
+        Double flywheelRPS = ShooterConstants.kDistanceToRPS.get(distance);
+        Double hoodAngle = ShooterConstants.kDistanceToAngle.get(distance);
+
+        if (flywheelRPS == null || hoodAngle == null) {
+            // If distance is out of bounds of our mapping, do not adjust shooter
+            m_shooter.setFlywheelVelocity(0.0);
+            m_shooter.setHoodAngle(ShooterConstants.kMaxAngle);
+            return;
+        }
+
+        flywheelRPS = MathUtil.clamp(flywheelRPS, 0, ShooterConstants.kMaxFlywheelRPS);
+        m_shooter.setFlywheelVelocity(flywheelRPS);   
+        hoodAngle = MathUtil.clamp(hoodAngle, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
+        m_shooter.setHoodAngle(hoodAngle);
     }
     
 }

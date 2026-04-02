@@ -5,9 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.HootAutoReplay;
-import com.ctre.phoenix6.SignalLogger;
 
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -48,40 +46,26 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
         }
-        SignalLogger.start();
     }
 
     @Override
-    public void autonomousPeriodic() {
-        SignalLogger.writeDouble("Robot/BatteryVoltage", RobotController.getBatteryVoltage());
-        SignalLogger.writeDouble("Robot/BrownoutVoltage", RobotController.getBrownoutVoltage());
-
-    }
+    public void autonomousPeriodic() {}
 
     @Override
-    public void autonomousExit() {
-        SignalLogger.stop();
-    }
+    public void autonomousExit() {}
 
     @Override
     public void teleopInit() {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
-        SignalLogger.start();
     }
 
     @Override
-    public void teleopPeriodic() {
-        SignalLogger.writeDouble("Robot/BatteryVoltage", RobotController.getBatteryVoltage());
-        SignalLogger.writeDouble("Robot/BrownoutVoltage", RobotController.getBrownoutVoltage());
-
-    }
+    public void teleopPeriodic() {}
 
     @Override
-    public void teleopExit() {
-        SignalLogger.stop();
-    }
+    public void teleopExit() {}
 
     @Override
     public void testInit() {
