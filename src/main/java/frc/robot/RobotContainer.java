@@ -11,6 +11,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
+import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -63,7 +64,10 @@ public class RobotContainer {
     public final Intake intake = new Intake();
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    private final double[] driverInputs = new double[3];
+
+
+    private final AutoFactory autoFactory;
+
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
@@ -80,6 +84,14 @@ public class RobotContainer {
     };
     
     public RobotContainer() {
+        autoFactory = new AutoFactory(
+            () -> drivetrain.getState().Pose, // A function that returns the current robot pose
+            drivetrain::resetPose, // A function that resets the current robot pose to the provided Pose2d
+            drivetrain ::followTrajectory, // The drive subsystem trajectory follower 
+            true, // If alliance flipping should be enabled 
+            drivetrain // The drive subsystem
+        );
+
         NamedCommands.registerCommand("runintake",  intake.runIntake());
         NamedCommands.registerCommand("stopintake", Commands.runOnce(() -> {}, intake)); 
         NamedCommands.registerCommand("faceHub",  new AimSwerve(drivetrain, faceAngle, driver).withTimeout(0.8));
@@ -87,6 +99,8 @@ public class RobotContainer {
 
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
+        autoChooser.addOption("Pickup and Score", pickupAndScoreAuto()); 
+
         //fuel
         FuelSim.getInstance().spawnStartingFuel();
 
@@ -217,5 +231,12 @@ public class RobotContainer {
         SignalLogger.writeDouble("Drivetrain/Vx", state.Speeds.vxMetersPerSecond);
         SignalLogger.writeDouble("Drivetrain/Vy", state.Speeds.vyMetersPerSecond);
         SignalLogger.writeDouble("Drivetrain/Omega", state.Speeds.omegaRadiansPerSecond);
+    }
+
+    public Command pickupAndScoreAuto() {
+        return Commands.sequence(
+        autoFactory.resetOdometry("NewPath"),
+        autoFactory.trajectoryCmd("NewPath")
+    );
     }
 }
