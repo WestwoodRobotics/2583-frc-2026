@@ -12,7 +12,10 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
+import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -73,7 +76,7 @@ public class RobotContainer {
     private final AutoFactory autoFactory;
 
     /* Path follower */
-    private final SendableChooser<Command> autoChooser;
+    private final AutoChooser autoChooser;
 
     public RobotContainer() {
          autoFactory = new AutoFactory(
@@ -85,9 +88,10 @@ public class RobotContainer {
         );
         // Autonomous configurations
         configureAutonomousCommands();
-        autoChooser = AutoBuilder.buildAutoChooser("PreloadAuto");
+        autoChooser = new AutoChooser();
+        autoChooser.addRoutine("Middle", this::middleAuto); 
+
         SmartDashboard.putData("Auto Mode", autoChooser);
-        autoChooser.addOption("Middle", middleAuto()); 
 
         configureBindings();
 
@@ -205,32 +209,43 @@ public class RobotContainer {
 
     public void configureAutonomousCommands() {
 
-        NamedCommands.registerCommand("Shoot", transfer.shootCommand());
-        NamedCommands.registerCommand("TurnFlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
-        NamedCommands.registerCommand("TurnFlywheelOff", Commands.runOnce(() -> shooter.setAutoAim(false), shooter));
+        // NamedCommands.registerCommand("Shoot", transfer.shootCommand());
+        // NamedCommands.registerCommand("TurnFlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
+        // NamedCommands.registerCommand("TurnFlywheelOff", Commands.runOnce(() -> shooter.setAutoAim(false), shooter));
         
-        NamedCommands.registerCommand("RunIntake", intake.runIntake(true));
-        NamedCommands.registerCommand("PartialRetract", intake.partialRetract());
-        NamedCommands.registerCommand("IntakeWiggle", new IntakeWiggle(intake, driver));
-        NamedCommands.registerCommand("Wait", new WaitCommand(5));
+        // NamedCommands.registerCommand("RunIntake", intake.runIntake(true));
+        // NamedCommands.registerCommand("PartialRetract", intake.partialRetract());
+        // NamedCommands.registerCommand("IntakeWiggle", new IntakeWiggle(intake, driver));
 
-        autoFactory.bind("RunIntake", intake.runIntake(true));
 
-        NamedCommands.registerCommand("AimSwerve", new AimSwerve(drivetrain, faceAngle, brake, driver));
+        // NamedCommands.registerCommand("AimSwerve", new AimSwerve(drivetrain, faceAngle, brake, driver));
     }
 
-    public Command middleAuto() {
-        return Commands.sequence(
-        autoFactory.resetOdometry("CycleOne"),
-        autoFactory.trajectoryCmd("CycleOne"),
-        autoFactory.resetOdometry("CycleTwo"),
-        autoFactory.trajectoryCmd("CycleTwo")
+    public AutoRoutine middleAuto() {
+        AutoRoutine routine = autoFactory.newRoutine("RightTrench");
 
-    );
+        AutoTrajectory CycleOne = routine.trajectory("CycleOne");
+        AutoTrajectory CycleTwo = routine.trajectory("CycleTwo");
+
+        routine.active().onTrue(
+            Commands.sequence(
+                CycleOne.resetOdometry(),
+                CycleOne.cmd()
+            )
+        );
+
+        SmartDashboard.putBoolean("CycleOne", false);
+        CycleOne.atTime("RunIntake").onTrue(intake.runIntake(true));
+        
+        SmartDashboard.putBoolean("CycleOne", true);
+
+        CycleOne.done().onTrue(CycleTwo.cmd());
+
+        return routine;
     }
 
     public Command getAutonomousCommand() {
-        /* Run the path selected from the auto chooser */
-        return autoChooser.getSelected();
+         /* Run the path selected from the auto chooser */
+         return autoChooser.selectedCommandScheduler();
     }
 }

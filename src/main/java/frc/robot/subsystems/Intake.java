@@ -11,9 +11,13 @@ import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -30,6 +34,9 @@ public class Intake extends SubsystemBase {
     private final VelocityTorqueCurrentFOC m_rollerRequest = new VelocityTorqueCurrentFOC(0.0);
 
     private final VoltageOut m_voltReq = new VoltageOut(0.0);
+
+    private NetworkTableInstance table = NetworkTableInstance.getDefault();
+    private StructPublisher<Pose3d> intakepublisher = table.getStructTopic("/intake/pose", Pose3d.struct).publish();
 
     private final SysIdRoutine m_pivotSysIdRoutine = 
             new SysIdRoutine(
@@ -121,6 +128,10 @@ public class Intake extends SubsystemBase {
         return Commands.run(() -> {
             setPivotPosition(IntakeConstants.kPivotOut);
             setRollerVelocity(velocity);
+            Pose3d intakepose = new Pose3d(0.28,0,0.275, new Rotation3d(0,Math.sin(Timer.getTimestamp())+1.0,0));
+
+            intakepublisher.set(intakepose);
+
         }, this);
     }
 
@@ -136,6 +147,8 @@ public class Intake extends SubsystemBase {
         return Commands.startEnd(() ->{
             setPivotPosition(IntakeConstants.kPivotShoot);
             setRollerVelocity(IntakeConstants.kRollerShootingVel);
+            Pose3d intakepose = new Pose3d(0.28,0,0.275, new Rotation3d(0,Math.sin(Timer.getTimestamp())+1.0,0));
+            intakepublisher.set(intakepose);
         },
         () -> setPivotPosition(IntakeConstants.kPivotOut),
         this);
