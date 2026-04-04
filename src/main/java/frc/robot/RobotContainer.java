@@ -64,6 +64,7 @@ public class RobotContainer {
     public final Intake intake = new Intake();
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    private final double[] driverInputs = new double[3];
 
 
     private final AutoFactory autoFactory;

@@ -410,7 +410,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         this.setControl(m_pathApplyFieldSpeeds.withSpeeds(speeds));
     }
 
-    public static double [] joyStickPolar(CommandXboxController controller, int power) {
+     public static void joyStickPolar(double[] out, CommandXboxController controller, int power) {
+
 
         double x2 = MathUtil.applyDeadband(-controller.getLeftY(), 0.1);
         double y2 = MathUtil.applyDeadband(-controller.getLeftX(), 0.1);
