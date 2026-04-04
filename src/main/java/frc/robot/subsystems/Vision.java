@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -49,8 +51,6 @@ public class Vision extends SubsystemBase {
 
     private boolean wasOnBump = false;
     private double landingStartTime = 0.0;
-
-    private boolean frontCamHasTargets;
 
     public Vision(CommandSwerveDrivetrain drivetrain) {
         this.drivetrain = drivetrain;
@@ -117,10 +117,8 @@ public class Vision extends SubsystemBase {
         // landingPub.set(isLanding);
 
         measurements.clear();
-        frontCamHasTargets = false;
 
         for (int i = 0; i < cameras.length; i++) {
-            if (i > 1 && frontCamHasTargets) { continue; }
             
             for (PhotonPipelineResult result : cameras[i].getAllUnreadResults()) {
                 Optional<EstimatedRobotPose> poseOptional = poseEstimators[i].estimateCoprocMultiTagPose(result);
@@ -131,8 +129,6 @@ public class Vision extends SubsystemBase {
                     EstimatedRobotPose pose = poseOptional.get();
                     Optional<Matrix<N3, N1>> stdDevs = Optional.empty();
 
-                    if (i < 2) { frontCamHasTargets = true; }
-
                     if (isLanding) {
                         stdDevs = Optional.of(VecBuilder.fill(VisionConstants.landingStdDev, VisionConstants.landingStdDev, Double.MAX_VALUE));
                     } else {
@@ -142,6 +138,7 @@ public class Vision extends SubsystemBase {
                     // visionXPubs[i].set(pose.estimatedPose.getX());
                     // visionYPubs[i].set(pose.estimatedPose.getY());
                     // visionRotPubs[i].set(pose.estimatedPose.toPose2d().getRotation().getDegrees());  
+                    SignalLogger.writeStruct("Vision/" + cameras[i].getName() + "Pose", Pose3d.struct, pose.estimatedPose);
                     
                     if (stdDevs.isPresent()) {
                         // xyStdDevPubs[i].set(stdDevs.get().get(0, 0));
@@ -185,7 +182,7 @@ public class Vision extends SubsystemBase {
 
         double k = (numTags > 1) ? VisionConstants.multiTagK : VisionConstants.singleTagK;
         double sigma_xy = (k / totalArea) + VisionConstants.baseSigma;
-        double sigma_theta = (numTags > 1 && i < 2) ? VisionConstants.multiTagThetaSigma : Double.MAX_VALUE;
+        double sigma_theta = (numTags > 1) ? VisionConstants.multiTagThetaSigma : Double.MAX_VALUE;
 
         numTagsPubs[i].set(numTags);
         // totalAreaPubs[i].set(totalArea);

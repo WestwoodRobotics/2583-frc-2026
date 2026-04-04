@@ -88,6 +88,7 @@ public class Shooter extends SubsystemBase {
 
     private double m_desiredAngle = ShooterConstants.kMinAngle;
     private boolean m_autoAimEnabled = true;
+    private boolean m_hoodUp = false;
 
     public Shooter() {
         // Apply configurations directly from constants to keep constructor clean of variables
@@ -119,12 +120,23 @@ public class Shooter extends SubsystemBase {
 
     public void toggleAutoAim() {
         m_autoAimEnabled = !m_autoAimEnabled;
+        if (!m_autoAimEnabled) {
+            setFlywheelVelocity(0.0);
+            setHoodAngle(90.0);
+            setHood(true);
+        } else {
+            setHood(false);
+        }
     }
 
     public void setAutoAim(boolean aim) {
         m_autoAimEnabled = aim;
         if (!aim) {
             setFlywheelVelocity(0.0);
+            setHoodAngle(90.0);
+            setHood(true);
+        } else {
+            setHood(false);
         }
     }
 
@@ -158,6 +170,14 @@ public class Shooter extends SubsystemBase {
 
     public void resetHoodPosition() {
         m_hoodMotor.setPosition(0.0);
+    }
+
+    public void setHood(boolean up) {
+        m_hoodUp = up;
+    }
+
+    public boolean getHoodState() {
+        return m_hoodUp;
     }
 
     public void setFlywheelVelocity(double velocity) {

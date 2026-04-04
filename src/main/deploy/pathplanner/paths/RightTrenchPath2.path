@@ -21,11 +21,11 @@
       },
       "prevControl": {
         "x": 6.734548129927626,
-        "y": 0.81833572553539
+        "y": 0.8183357255353898
       },
       "nextControl": {
         "x": 7.139725318944281,
-        "y": 1.1113057675201656
+        "y": 1.1113057675201659
       },
       "isLocked": false,
       "linkedName": null
@@ -57,7 +57,7 @@
       },
       "nextControl": {
         "x": 5.904917693899291,
-        "y": 4.187661511137948
+        "y": 4.187661511137946
       },
       "isLocked": false,
       "linkedName": null
@@ -100,10 +100,6 @@
     {
       "waypointRelativePos": 0.7,
       "rotationDegrees": 90.0
-    },
-    {
-      "waypointRelativePos": 0.7787714149746193,
-      "rotationDegrees": 135.0
     },
     {
       "waypointRelativePos": 1.118734137055838,
@@ -153,6 +149,17 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "FlywheelOffEvent",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "FlywheelOff"
+        }
+      }
+    },
+    {
       "name": "RunIntakeEvent",
       "waypointRelativePos": 1.0,
       "endWaypointRelativePos": 3.8,
@@ -162,13 +169,24 @@
           "name": "RunIntake"
         }
       }
+    },
+    {
+      "name": "FlywheelOnEvent",
+      "waypointRelativePos": 4.1,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "FlywheelOn"
+        }
+      }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 10.0,
     "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 210.0,
+    "maxAngularAcceleration": 220.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },

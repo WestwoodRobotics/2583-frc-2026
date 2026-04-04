@@ -58,9 +58,13 @@ public class AdjustShooter extends Command {
         }
 
         flywheelRPS = MathUtil.clamp(flywheelRPS, 0, ShooterConstants.kMaxFlywheelRPS);
-        m_shooter.setFlywheelVelocity(flywheelRPS);   
-        hoodAngle = MathUtil.clamp(hoodAngle, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
-        m_shooter.setHoodAngle(hoodAngle);
+        m_shooter.setFlywheelVelocity(flywheelRPS);
+        if (m_shooter.getHoodState()) {
+            hoodAngle = MathUtil.clamp(hoodAngle, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
+            m_shooter.setHoodAngle(hoodAngle);
+        } else {
+            hoodAngle = ShooterConstants.kMaxAngle;
+        }
     }
     
 }

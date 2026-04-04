@@ -16,10 +16,12 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import frc.robot.constants.SwerveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Shooter;
 import frc.robot.utils.GetTargetLocation;
 
 public class AimSwerve extends Command {
     private final CommandSwerveDrivetrain drivetrain;
+    private final Shooter shooter;
     private final CommandXboxController controller;
 
     private final SwerveRequest.FieldCentricFacingAngle driveRequest;
@@ -34,13 +36,24 @@ public class AimSwerve extends Command {
     private final Timer brakeTimer = new Timer();
     private boolean isAiming = false;
 
-    public AimSwerve(CommandSwerveDrivetrain drivetrain, SwerveRequest.FieldCentricFacingAngle request, SwerveRequest.SwerveDriveBrake brake, CommandXboxController controller) {
+    public AimSwerve(CommandSwerveDrivetrain drivetrain, Shooter shooter, SwerveRequest.FieldCentricFacingAngle request, SwerveRequest.SwerveDriveBrake brake, CommandXboxController controller) {
         this.drivetrain = drivetrain;
+        this.shooter = shooter;
         this.controller = controller;
         this.driveRequest = request;
         this.brakeRequest = brake;
         addRequirements(drivetrain);
         brakeTimer.start();
+    }
+
+    @Override
+    public void initialize() {
+        shooter.setHood(true);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        shooter.setHood(false);
     }
 
     @Override

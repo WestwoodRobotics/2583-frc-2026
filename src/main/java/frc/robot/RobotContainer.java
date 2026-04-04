@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -30,7 +29,6 @@ import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.commands.AimSwerve;
 import frc.robot.commands.AdjustShooter;
-import frc.robot.commands.AlignCornerShot;
 import frc.robot.commands.IntakeWiggle;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -110,7 +108,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        driver.a().whileTrue(new AimSwerve(drivetrain, faceAngle, brake, driver));
+        driver.a().whileTrue(new AimSwerve(drivetrain, shooter, faceAngle, brake, driver));
 
         driver.x().whileTrue(drivetrain.applyRequest(() -> {
             CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver, 3);
@@ -131,14 +129,24 @@ public class RobotContainer {
         }).alongWith(intake.partialRetract()))
             .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
         
-        driver.y().whileTrue(Commands.run(() -> shooter.setFlywheelVelocity(ShooterConstants.kTrenchFlywheelVel), shooter));
+        driver.y().whileTrue(
+            Commands.sequence(
+                Commands.runOnce(() -> shooter.setHood(true)),
+                Commands.run(() -> shooter.setFlywheelVelocity(ShooterConstants.kTrenchFlywheelVel), shooter)
+            ).finallyDo(() -> shooter.setHood(false))
+        );
         
         driver.b().whileTrue(drivetrain.applyRequest(() -> brake));
 
-        driver.rightBumper().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter)
-            .andThen(Commands.runOnce(() -> {
-                shooter.setFlywheelVelocity(ShooterConstants.kBumperFlywheelVel);
-        })));
+        driver.rightBumper().whileTrue(
+            Commands.sequence(
+                Commands.runOnce(() -> shooter.setHood(true)),
+                Commands.run(() -> {
+                    shooter.setFlywheelVelocity(ShooterConstants.kBumperFlywheelVel);
+                    shooter.setHoodAngle(ShooterConstants.kBumperHoodAngle);
+                }, shooter)
+            ).finallyDo(() -> shooter.setHood(false))
+        );
 
         driver.rightTrigger().whileTrue(transfer.shootCommand().alongWith(new IntakeWiggle(intake, driver)));
 
@@ -194,14 +202,14 @@ public class RobotContainer {
     public void configureAutonomousCommands() {
 
         NamedCommands.registerCommand("Shoot", transfer.shootCommand());
-        NamedCommands.registerCommand("TurnFlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
-        NamedCommands.registerCommand("TurnFlywheelOff", Commands.runOnce(() -> shooter.setAutoAim(false), shooter));
+        NamedCommands.registerCommand("FlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
+        NamedCommands.registerCommand("FlywheelOff", Commands.runOnce(() -> shooter.setAutoAim(false), shooter));
         
         NamedCommands.registerCommand("RunIntake", intake.runIntake(true));
         NamedCommands.registerCommand("PartialRetract", intake.partialRetract());
         NamedCommands.registerCommand("IntakeWiggle", new IntakeWiggle(intake, driver));
 
-        NamedCommands.registerCommand("AimSwerve", new AimSwerve(drivetrain, faceAngle, brake, driver));
+        NamedCommands.registerCommand("AimSwerve", new AimSwerve(drivetrain, shooter, faceAngle, brake, driver));
     }
 
     public Command getAutonomousCommand() {
