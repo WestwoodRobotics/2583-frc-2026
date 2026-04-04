@@ -237,7 +237,7 @@ public class RobotContainer {
         SmartDashboard.putBoolean("CycleOne", false);
         CycleOne.atTime("RunIntake").onTrue(intake.runIntake(true));
         CycleOne.atTime("StopIntake").onTrue(intake.RollerZero());
-        CycleOne.atTime("FlywheelOn").onTrue(Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
+        CycleOne.atTime("FlywheelOn").onTrue(Commands.race(Commands.runOnce(() -> shooter.setAutoAim(true), shooter), new WaitCommand(3.0)));
         CycleOne.atTime("TransferOn").onTrue(transfer.shootCommand());
         CycleTwo.atTime("FlywheelOff").onTrue(Commands.runOnce(() -> shooter.setAutoAim(false), shooter));
         CycleTwo.atTime("TransferOff").onTrue(Commands.runOnce(() -> transfer.runMotors(0,0)));
