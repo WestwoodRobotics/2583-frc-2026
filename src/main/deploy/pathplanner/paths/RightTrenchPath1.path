@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.601745008680556,
-        "y": 0.6443789062500003
+        "x": 4.3884022824536375,
+        "y": 0.6256633380884444
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.851679765408901,
-        "y": 0.6500900689287397
+        "x": 4.638337039181983,
+        "y": 0.6313745007671838
       },
       "isLocked": false,
       "linkedName": null
@@ -95,7 +95,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.4493178934010149,
-      "rotationDegrees": 180.0
+      "rotationDegrees": 0.0
     },
     {
       "waypointRelativePos": 0.7650400539340098,
@@ -144,6 +144,17 @@
     },
     {
       "name": "RunIntakeEvent",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.1,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "RunIntake"
+        }
+      }
+    },
+    {
+      "name": "RunIntakeEvent",
       "waypointRelativePos": 1.0055183531746033,
       "endWaypointRelativePos": 4.400359623015875,
       "command": {
@@ -181,7 +192,7 @@
   "folder": "RightTrenchPaths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

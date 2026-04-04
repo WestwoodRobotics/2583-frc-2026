@@ -55,17 +55,18 @@ public class IntakeConstants {
     public static TalonFXConfiguration getRollerConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 20.0;
+        configs.Slot0.kP = 10.0;
         configs.Slot0.kI = 0.0;
         configs.Slot0.kD = 0.0;
-        configs.Slot0.kS = 17.774;
+        configs.Slot0.kS = 11.0;
         configs.Slot0.kV = 0.0;
         configs.Slot0.kA = 0.16294;
 
         // configs.CurrentLimits.StatorCurrentLimit = 80.0;
         // configs.CurrentLimits.SupplyCurrentLimit = 50.0;
 
-        configs.Feedback.SensorToMechanismRatio = (2.0/1.0 * 30.0/24.0);
+        configs.Feedback.SensorToMechanismRatio = (29.0 / 12.0);
+        configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         return configs;
     }

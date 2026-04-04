@@ -108,35 +108,35 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        driver.a().whileTrue(new AimSwerve(drivetrain, shooter, faceAngle, brake, driver));
+        // driver.a().whileTrue(new AimSwerve(drivetrain, shooter, faceAngle, brake, driver));
 
-        driver.x().whileTrue(drivetrain.applyRequest(() -> {
-            CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver, 3);
+        // driver.x().whileTrue(drivetrain.applyRequest(() -> {
+        //     CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver, 3);
 
-            Rotation2d currentRot = drivetrain.getState().Pose.getRotation();
+        //     Rotation2d currentRot = drivetrain.getState().Pose.getRotation();
 
-            if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
-                currentRot = currentRot.plus(new Rotation2d(Math.PI));
-            }
-            double currentDeg = currentRot.getDegrees();
-            double closestDiagonalDeg = Math.round((currentDeg - 45) / 90.0) * 90.0 + 45;
+        //     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+        //         currentRot = currentRot.plus(new Rotation2d(Math.PI));
+        //     }
+        //     double currentDeg = currentRot.getDegrees();
+        //     double closestDiagonalDeg = Math.round((currentDeg - 45) / 90.0) * 90.0 + 45;
 
-            return faceAngle
-                .withVelocityX(driverInputs[0])
-                .withVelocityY(driverInputs[1])
-                .withTargetDirection(Rotation2d.fromDegrees(closestDiagonalDeg));
+        //     return faceAngle
+        //         .withVelocityX(driverInputs[0])
+        //         .withVelocityY(driverInputs[1])
+        //         .withTargetDirection(Rotation2d.fromDegrees(closestDiagonalDeg));
 
-        }).alongWith(intake.partialRetract()))
-            .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
+        // }).alongWith(intake.partialRetract()))
+        //     .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
         
-        driver.y().whileTrue(
-            Commands.sequence(
-                Commands.runOnce(() -> shooter.setHood(true)),
-                Commands.run(() -> shooter.setFlywheelVelocity(ShooterConstants.kTrenchFlywheelVel), shooter)
-            ).finallyDo(() -> shooter.setHood(false))
-        );
+        // driver.y().whileTrue(
+        //     Commands.sequence(
+        //         Commands.runOnce(() -> shooter.setHood(true)),
+        //         Commands.run(() -> shooter.setFlywheelVelocity(ShooterConstants.kTrenchFlywheelVel), shooter)
+        //     ).finallyDo(() -> shooter.setHood(false))
+        // );
         
-        driver.b().whileTrue(drivetrain.applyRequest(() -> brake));
+        // driver.b().whileTrue(drivetrain.applyRequest(() -> brake));
 
         driver.rightBumper().whileTrue(
             Commands.sequence(
@@ -188,10 +188,10 @@ public class RobotContainer {
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        // driver.x().whileTrue(shooter.sysIdDynamic(Direction.kForward));
-        // driver.y().whileTrue(shooter.sysIdDynamic(Direction.kReverse));
-        // driver.b().whileTrue(shooter.sysIdQuasistatic(Direction.kForward));
-        // driver.a().whileTrue(shooter.sysIdQuasistatic(Direction.kReverse));
+        // driver.x().whileTrue(intake.sysIdDynamic(Direction.kForward));
+        // driver.y().whileTrue(intake.sysIdDynamic(Direction.kReverse));
+        // driver.b().whileTrue(intake.sysIdQuasistatic(Direction.kForward));
+        // driver.a().whileTrue(intake.sysIdQuasistatic(Direction.kReverse));
 
         // driver.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
         // driver.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
