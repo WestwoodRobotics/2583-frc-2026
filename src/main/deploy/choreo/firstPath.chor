@@ -1,0 +1,84 @@
+{
+ "name":"firstPath",
+ "version":2,
+ "type":"Swerve",
+ "variables":{
+  "expressions":{},
+  "poses":{}
+ },
+ "config":{
+  "frontLeft":{
+   "x":{
+    "exp":"0.307 m",
+    "val":0.307
+   },
+   "y":{
+    "exp":"0.251 m",
+    "val":0.251
+   }
+  },
+  "backLeft":{
+   "x":{
+    "exp":"-0.307 m",
+    "val":-0.307
+   },
+   "y":{
+    "exp":"-0.251 m",
+    "val":-0.251
+   }
+  },
+  "mass":{
+   "exp":"61.235 kg",
+   "val":61.235
+  },
+  "inertia":{
+   "exp":"68.291 kg m ^ 2",
+   "val":68.291
+  },
+  "gearing":{
+   "exp":"7.031",
+   "val":7.031
+  },
+  "radius":{
+   "exp":"0.048 m",
+   "val":0.048
+  },
+  "vmax":{
+   "exp":"6000 RPM",
+   "val":628.3185307179587
+  },
+  "tmax":{
+   "exp":"1.2 N * m",
+   "val":1.2
+  },
+  "cof":{
+   "exp":"2.255",
+   "val":2.255
+  },
+  "bumper":{
+   "front":{
+    "exp":"0.4155 m",
+    "val":0.4155
+   },
+   "side":{
+    "exp":"0.48 m",
+    "val":0.48
+   },
+   "back":{
+    "exp":"0.4155 m",
+    "val":0.4155
+   }
+  },
+  "differentialTrackWidth":{
+   "exp":"22 in",
+   "val":0.5588
+  }
+ },
+ "generationFeatures":[],
+ "codegen":{
+  "root":"../C:/Users/Student/WestwoodRobotics/FRC-2026/2583-frc-2026/src/main/deploy/choreo",
+  "genVars":true,
+  "genTrajData":true,
+  "useChoreoLib":true
+ }
+}

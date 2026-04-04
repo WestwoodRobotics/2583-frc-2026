@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
+import choreo.auto.AutoFactory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -68,14 +70,24 @@ public class RobotContainer {
     public final Shooter shooter = new Shooter();
     public final LED led = new LED(drivetrain, driver, operator);
 
+    private final AutoFactory autoFactory;
+
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
+         autoFactory = new AutoFactory(
+            () -> drivetrain.getState().Pose, // A function that returns the current robot pose
+            drivetrain::resetPose, // A function that resets the current robot pose to the provided Pose2d
+            drivetrain ::followTrajectory, // The drive subsystem trajectory follower 
+            true, // If alliance flipping should be enabled 
+            drivetrain // The drive subsystem
+        );
         // Autonomous configurations
         configureAutonomousCommands();
         autoChooser = AutoBuilder.buildAutoChooser("PreloadAuto");
         SmartDashboard.putData("Auto Mode", autoChooser);
+        autoChooser.addOption("Middle", middleAuto()); 
 
         configureBindings();
 
@@ -200,8 +212,21 @@ public class RobotContainer {
         NamedCommands.registerCommand("RunIntake", intake.runIntake(true));
         NamedCommands.registerCommand("PartialRetract", intake.partialRetract());
         NamedCommands.registerCommand("IntakeWiggle", new IntakeWiggle(intake, driver));
+        NamedCommands.registerCommand("Wait", new WaitCommand(5));
+
+        autoFactory.bind("RunIntake", intake.runIntake(true));
 
         NamedCommands.registerCommand("AimSwerve", new AimSwerve(drivetrain, faceAngle, brake, driver));
+    }
+
+    public Command middleAuto() {
+        return Commands.sequence(
+        autoFactory.resetOdometry("CycleOne"),
+        autoFactory.trajectoryCmd("CycleOne"),
+        autoFactory.resetOdometry("CycleTwo"),
+        autoFactory.trajectoryCmd("CycleTwo")
+
+    );
     }
 
     public Command getAutonomousCommand() {
