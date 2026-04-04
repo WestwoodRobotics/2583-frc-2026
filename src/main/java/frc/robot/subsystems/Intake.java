@@ -115,6 +115,16 @@ public class Intake extends SubsystemBase {
         m_rollerMotor.setControl(m_rollerRequest.withVelocity(velocity));
     }
 
+    public Command RollerZero(){
+        return Commands.run(() -> {
+            setRollerVelocity(0);
+            Pose3d intakepose = new Pose3d(-0.2,0,-0.1, new Rotation3d(0,0,0));
+
+            intakepublisher.set(intakepose);
+
+        }, this);
+    }
+
     public Command intakeDefault() {
         return Commands.run(
             () -> setRollerVelocity(IntakeConstants.kRollerNeutralVel),
@@ -128,7 +138,7 @@ public class Intake extends SubsystemBase {
         return Commands.run(() -> {
             setPivotPosition(IntakeConstants.kPivotOut);
             setRollerVelocity(velocity);
-            Pose3d intakepose = new Pose3d(0.28,0,0.275, new Rotation3d(0,Math.sin(Timer.getTimestamp())+1.0,0));
+            Pose3d intakepose = new Pose3d(-0.2,0,-0.1, new Rotation3d(0,Math.sin(Timer.getTimestamp())+(7 * Math.PI / 4),0));
 
             intakepublisher.set(intakepose);
 
