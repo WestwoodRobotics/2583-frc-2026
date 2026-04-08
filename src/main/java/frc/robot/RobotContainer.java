@@ -108,52 +108,60 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        // driver.a().whileTrue(new AimSwerve(drivetrain, shooter, faceAngle, brake, driver));
+        driver.a().whileTrue(new AimSwerve(drivetrain, shooter, faceAngle, brake, driver));
 
-        // driver.x().whileTrue(drivetrain.applyRequest(() -> {
-        //     CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver, 3);
+        driver.x().whileTrue(drivetrain.applyRequest(() -> {
+            CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver, 3);
 
-        //     Rotation2d currentRot = drivetrain.getState().Pose.getRotation();
+            Rotation2d currentRot = drivetrain.getState().Pose.getRotation();
 
-        //     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
-        //         currentRot = currentRot.plus(new Rotation2d(Math.PI));
-        //     }
-        //     double currentDeg = currentRot.getDegrees();
-        //     double closestDiagonalDeg = Math.round((currentDeg - 45) / 90.0) * 90.0 + 45;
+            if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+                currentRot = currentRot.plus(new Rotation2d(Math.PI));
+            }
+            double currentDeg = currentRot.getDegrees();
+            double closestDiagonalDeg = Math.round((currentDeg - 45) / 90.0) * 90.0 + 45;
 
-        //     return faceAngle
-        //         .withVelocityX(driverInputs[0])
-        //         .withVelocityY(driverInputs[1])
-        //         .withTargetDirection(Rotation2d.fromDegrees(closestDiagonalDeg));
+            return faceAngle
+                .withVelocityX(driverInputs[0])
+                .withVelocityY(driverInputs[1])
+                .withTargetDirection(Rotation2d.fromDegrees(closestDiagonalDeg));
 
-        // }).alongWith(intake.partialRetract()))
-        //     .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
+        }).alongWith(intake.partialRetract()))
+            .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
         
-        // driver.y().whileTrue(
-        //     Commands.sequence(
-        //         Commands.runOnce(() -> shooter.setHood(true)),
-        //         Commands.run(() -> shooter.setFlywheelVelocity(ShooterConstants.kTrenchFlywheelVel), shooter)
-        //     ).finallyDo(() -> shooter.setHood(false))
-        // );
+        driver.y().whileTrue(Commands.run(() -> {
+            shooter.setFlywheelVelocity(ShooterConstants.kTrenchFlywheelVel);
+        }, shooter));
         
-        // driver.b().whileTrue(drivetrain.applyRequest(() -> brake));
+        driver.b().whileTrue(drivetrain.applyRequest(() -> {
+
+            CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver, 3);
+
+            Rotation2d currentRot = drivetrain.getState().Pose.getRotation();
+
+            if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+                currentRot = currentRot.plus(new Rotation2d(Math.PI));
+            }
+            double currentDeg = currentRot.getDegrees();
+            double closestDiagonalDeg = Math.round((currentDeg) / 90.0) * 90.0;
+
+            return faceAngle
+                .withVelocityX(driverInputs[0])
+                .withVelocityY(driverInputs[1])
+                .withTargetDirection(Rotation2d.fromDegrees(closestDiagonalDeg));
+        }));
 
         driver.rightBumper().whileTrue(
-            Commands.sequence(
-                Commands.runOnce(() -> shooter.setHood(true)),
-                Commands.run(() -> {
-                    shooter.setFlywheelVelocity(ShooterConstants.kBumperFlywheelVel);
-                    shooter.setHoodAngle(ShooterConstants.kBumperHoodAngle);
-                }, shooter)
-            ).finallyDo(() -> shooter.setHood(false))
+            Commands.run(() -> {
+                shooter.setFlywheelVelocity(ShooterConstants.kBumperFlywheelVel);
+                shooter.setHoodAngle(ShooterConstants.kBumperHoodAngle);
+            }, shooter)
         );
 
         driver.rightTrigger().whileTrue(transfer.shootCommand().alongWith(new IntakeWiggle(intake, driver)));
 
         // Run intake while holding left trigger
-        driver.leftBumper().whileTrue(intake.runIntake(false));
-
-        driver.leftTrigger().and(driver.rightTrigger().negate()).whileTrue(intake.runIntake(true));
+        driver.leftTrigger().and(driver.rightTrigger().negate()).whileTrue(intake.runIntake());
 
         operator.x().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter)
             .andThen(Commands.runOnce(() -> shooter.setFlywheelVelocity(0.0), shooter)));
@@ -163,12 +171,12 @@ public class RobotContainer {
             .onFalse(transfer.shootCommand().until(() -> !driver.rightTrigger().getAsBoolean()));
 
         operator.rightTrigger().whileTrue(Commands.startEnd(
-            () -> shooter.setHoodVoltage(ShooterConstants.kManualHoodVolts),
-            () -> shooter.setHoodVoltage(0.0),
+            () -> shooter.setHoodTorque(ShooterConstants.kManualHoodTorque),
+            () -> shooter.setHoodTorque(0.0),
             shooter));
         operator.leftTrigger().whileTrue(Commands.startEnd(
-            () -> shooter.setHoodVoltage(-ShooterConstants.kManualHoodVolts),
-            () -> shooter.setHoodVoltage(0.0),
+            () -> shooter.setHoodTorque(-ShooterConstants.kManualHoodTorque),
+            () -> shooter.setHoodTorque(0.0),
             shooter));
         operator.rightBumper().onTrue(Commands.runOnce(
             () -> shooter.changeFlywheelVelocity(ShooterConstants.kManualFlywheelInc), shooter));
@@ -205,7 +213,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("FlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
         NamedCommands.registerCommand("FlywheelOff", Commands.runOnce(() -> shooter.setAutoAim(false), shooter));
         
-        NamedCommands.registerCommand("RunIntake", intake.runIntake(true));
+        NamedCommands.registerCommand("RunIntake", intake.runIntake());
         NamedCommands.registerCommand("PartialRetract", intake.partialRetract());
         NamedCommands.registerCommand("IntakeWiggle", new IntakeWiggle(intake, driver));
 

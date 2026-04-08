@@ -6,7 +6,6 @@ import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.LossOfSignalBehaviorValue;
 import com.ctre.phoenix6.signals.RGBWColor;
-import com.ctre.phoenix6.signals.StripTypeValue;
 
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
@@ -32,7 +31,7 @@ import frc.robot.utils.GetTargetLocation;
 
 public class LED extends SubsystemBase {
 
-    // private CANdle candle;
+    private CANdle candle;
     private final CommandSwerveDrivetrain drivetrain;
     private final CommandXboxController driver;
     private final CommandXboxController operator;
@@ -43,7 +42,7 @@ public class LED extends SubsystemBase {
     private final BooleanPublisher m_isHubActivePub = m_hubStatusTable.getBooleanTopic("IsHubActive").publish();
     private final DoublePublisher m_countdownPub = m_hubStatusTable.getDoubleTopic("countdown").publish();
     private final DoublePublisher m_endgamePub = m_hubStatusTable.getDoubleTopic("endgame").publish();
-    // private final BooleanPublisher m_isPracticePub = m_hubStatusTable.getBooleanTopic("IsPractice").publish();
+    private final BooleanPublisher m_isPracticePub = m_hubStatusTable.getBooleanTopic("IsPractice").publish();
 
     private final NetworkTable m_shooterTable = NetworkTableInstance.getDefault().getTable("Shooter");
     private final BooleanPublisher m_canShootPub = m_shooterTable.getBooleanTopic("CanShoot").publish();
@@ -52,13 +51,13 @@ public class LED extends SubsystemBase {
         this.drivetrain = drivetrain;
         this.driver = driver;
         this.operator = operator;
-        // candle = new CANdle(LEDConstants.candleId, LEDConstants.canBus);
+        candle = new CANdle(LEDConstants.candleId, LEDConstants.canBus);
 
         CANdleConfiguration cfg = new CANdleConfiguration();
         cfg.LED.BrightnessScalar = 1.0;
         cfg.LED.LossOfSignalBehavior = LossOfSignalBehaviorValue.DisableLEDs;
 
-        // candle.getConfigurator().apply(cfg);
+        candle.getConfigurator().apply(cfg);
 
         wasHubActive = GetHubStatus.isHubActive();
     }
@@ -69,7 +68,7 @@ public class LED extends SubsystemBase {
         m_isHubActivePub.set(isHubActive);
         m_countdownPub.set(GetHubStatus.getHubCountdown());
         m_endgamePub.set(GetHubStatus.getEndgameCountdown());
-        // m_isPracticePub.set(GetHubStatus.isPractice());
+        m_isPracticePub.set(GetHubStatus.isPractice());
 
         if (isHubActive != wasHubActive) {
             CommandScheduler.getInstance().schedule(
@@ -86,25 +85,26 @@ public class LED extends SubsystemBase {
         }
         wasHubActive = isHubActive;
 
-        // if (!isHubActive) {
-        //     setSolidColor(Color.kRed);
-        //     return;
-        // }
+        if (!isHubActive) {
+            setSolidColor(Color.kRed);
+            return;
+        }
+        Pose2d robotPose = drivetrain.getState().Pose;
         
-        boolean isAligned = isAligned(drivetrain.getState().Pose);
+        boolean isAligned = isAligned(robotPose);
         m_canShootPub.set(isAligned);
 
-        // if (isAligned) {
-        //     setSolidColor(Color.kGreen);
-        //     return;
-        // }
+        if (isAligned) {
+            setSolidColor(Color.kGreen);
+            return;
+        }
 
-        // if (isSwerveCommandRunning() && isInAllianceZone(robotPose)) {
-        //     setSolidColor(Color.kYellow);
-        //     return;
-        // }
+        if (isSwerveCommandRunning() && isInAllianceZone(robotPose)) {
+            setSolidColor(Color.kYellow);
+            return;
+        }
 
-        // setSolidColor(Color.kOrange);
+        setSolidColor(Color.kOrange);
     }
 
     private boolean isAligned(Pose2d robotPose) {
@@ -135,21 +135,20 @@ public class LED extends SubsystemBase {
         }
     }
 
-    // public void setSolidColor(Color color, double brightness){
-    //     candle.setControl(new SolidColor(0, LEDConstants.endIndex).withColor(new RGBWColor(color).scaleBrightness(brightness)));
-    // }
+    public void setSolidColor(Color color, double brightness){
+        candle.setControl(new SolidColor(0, LEDConstants.endIndex).withColor(new RGBWColor(color).scaleBrightness(brightness)));
+    }
 
-    // public void setSolidColor(Color color){
-    //     this.setSolidColor(color, 1);
-    // }
+    public void setSolidColor(Color color){
+        this.setSolidColor(color, 1);
+    }
     
-    // public void clearColor(){
-    //     candle.setControl(new SolidColor(0, LEDConstants.endIndex).withColor(new RGBWColor(new Color(0,0,0)).scaleBrightness(1)));
-    // }
+    public void clearColor(){
+        candle.setControl(new SolidColor(0, LEDConstants.endIndex).withColor(new RGBWColor(new Color(0,0,0)).scaleBrightness(1)));
+    }
     
-    // public void startFireAnimation(){
-    //     FireAnimation FIRE = new FireAnimation(0, LEDConstants.endIndex).withBrightness(1).withCooling(0.3);
-    //     candle.setControl(FIRE);   
-    // }
-
+    public void startFireAnimation(){
+        FireAnimation FIRE = new FireAnimation(0, LEDConstants.endIndex).withBrightness(1).withCooling(0.3);
+        candle.setControl(FIRE);   
+    }
 }

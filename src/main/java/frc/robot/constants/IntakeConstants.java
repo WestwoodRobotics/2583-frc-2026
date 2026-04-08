@@ -13,15 +13,14 @@ public class IntakeConstants {
 
     public static final double kPivotOffset = 0.2958984375;
 
-    public static final double kPivotIn = 0.2958984375;
+    public static final double kPivotIn = kPivotOffset;
     public static final double kPivotPartial = 0.00;
     public static final double kPivotOut = -0.14;
     public static final double kPivotShoot = 0.08;
     public static final double kResetPivotPos = -0.085205078125;
 
     public static final double kRollerNeutralVel = 0.0;
-    public static final double kRollerIntakingVel = 25.0;
-    public static final double kRollerFastIntakingVel = 35.0;
+    public static final double kRollerIntakingVel = 35.0;
     public static final double kRollerShootingVel = 5.0;
 
     public static final double kWiggleTime = 0.5;
@@ -55,12 +54,12 @@ public class IntakeConstants {
     public static TalonFXConfiguration getRollerConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 10.0;
+        configs.Slot0.kP = 5.0;
         configs.Slot0.kI = 0.0;
         configs.Slot0.kD = 0.0;
-        configs.Slot0.kS = 11.0;
+        configs.Slot0.kS = 16.7;
         configs.Slot0.kV = 0.0;
-        configs.Slot0.kA = 0.16294;
+        configs.Slot0.kA = 0.28155307749;
 
         // configs.CurrentLimits.StatorCurrentLimit = 80.0;
         // configs.CurrentLimits.SupplyCurrentLimit = 50.0;

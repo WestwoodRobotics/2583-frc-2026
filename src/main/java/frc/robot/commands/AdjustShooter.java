@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.SwerveConstants;
@@ -60,10 +61,19 @@ public class AdjustShooter extends Command {
         flywheelRPS = MathUtil.clamp(flywheelRPS, 0, ShooterConstants.kMaxFlywheelRPS);
         m_shooter.setFlywheelVelocity(flywheelRPS);
         if (m_shooter.getHoodState()) {
+            if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
+                if (robotPose.getX() > SwerveConstants.allianceZoneWidth) {
+                    hoodAngle = ShooterConstants.kMinAngle;
+                }
+            } else {
+                if (robotPose.getX() < (SwerveConstants.fieldWidth - SwerveConstants.allianceZoneWidth)) {
+                    hoodAngle = ShooterConstants.kMinAngle;
+                }
+            }
             hoodAngle = MathUtil.clamp(hoodAngle, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
             m_shooter.setHoodAngle(hoodAngle);
         } else {
-            hoodAngle = ShooterConstants.kMaxAngle;
+            m_shooter.setHoodAngle(ShooterConstants.kMaxAngle);
         }
     }
     

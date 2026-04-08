@@ -7,8 +7,8 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
@@ -33,18 +33,18 @@ public class Shooter extends SubsystemBase {
 
     private final VelocityTorqueCurrentFOC m_flywheelRequest = new VelocityTorqueCurrentFOC(0.0);
     private final PositionTorqueCurrentFOC m_hoodRequest = new PositionTorqueCurrentFOC(0.0);
-    private final VoltageOut m_voltReq = new VoltageOut(0.0);
+    private final TorqueCurrentFOC m_torqueReq = new TorqueCurrentFOC(0.0);
 
     private SysIdRoutine m_hoodSysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
-                Volts.of(0.25).per(Second),
-                Volts.of(1),
+                Volts.of(2.0).per(Second),
+                Volts.of(10.0),
                 null,
                 state -> SignalLogger.writeString("SysIdHood_state", state.toString())
             
             ), 
             new SysIdRoutine.Mechanism(
-                (volts) -> m_hoodMotor.setControl(m_voltReq.withOutput(volts.in(Volts))),
+                (volts) -> m_hoodMotor.setControl(m_torqueReq.withOutput(volts.in(Volts))),
                 null,
                 this
             )
@@ -52,18 +52,18 @@ public class Shooter extends SubsystemBase {
 
     private SysIdRoutine m_flywheelSysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(
-                null,
-                null,
+                Volts.of(5.0).per(Second),
+                Volts.of(30.0),
                 null,
                 state -> SignalLogger.writeString("SysIdFlywheel_state", state.toString())
             
             ), 
             new SysIdRoutine.Mechanism(
                 (volts) -> {
-                    m_topRightFlywheel.setControl(m_voltReq.withOutput(volts.in(Volts)));
-                    m_bottomRightFlywheel.setControl(m_voltReq.withOutput(volts.in(Volts)));
-                    m_topLeftFlywheel.setControl(m_voltReq.withOutput(-volts.in(Volts)));
-                    m_bottomLeftFlywheel.setControl(m_voltReq.withOutput(-volts.in(Volts)));
+                    m_topRightFlywheel.setControl(m_torqueReq.withOutput(volts.in(Volts)));
+                    m_bottomRightFlywheel.setControl(m_torqueReq.withOutput(volts.in(Volts)));
+                    m_topLeftFlywheel.setControl(m_torqueReq.withOutput(-volts.in(Volts)));
+                    m_bottomLeftFlywheel.setControl(m_torqueReq.withOutput(-volts.in(Volts)));
                 },
                 null,
                 this
@@ -76,13 +76,13 @@ public class Shooter extends SubsystemBase {
     private final Follower m_opposedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Opposed);
 
     private final NetworkTable m_table = NetworkTableInstance.getDefault().getTable("Shooter");
-    // private final DoublePublisher m_flywheelDesiredRPS = m_table.getDoubleTopic("Flywheel/DesiredRPS").publish();
+    private final DoublePublisher m_flywheelDesiredRPS = m_table.getDoubleTopic("Flywheel/DesiredRPS").publish();
     // private final DoublePublisher m_flywheelActualRPS = m_table.getDoubleTopic("Flywheel/ActualRPS").publish();
-    // private final BooleanPublisher m_atDesiredRPS = m_table.getBooleanTopic("Flywheel/AtDesiredRPS").publish();
+    private final BooleanPublisher m_atDesiredRPS = m_table.getBooleanTopic("Flywheel/AtDesiredRPS").publish();
     // private final DoublePublisher m_hoodDesiredPos = m_table.getDoubleTopic("Hood/DesiredPos").publish();
     // private final DoublePublisher m_hoodActualPos = m_table.getDoubleTopic("Hood/ActualPos").publish();
     // private final DoublePublisher m_hoodDesiredAngle = m_table.getDoubleTopic("Hood/DesiredAngle").publish();
-    // private final DoublePublisher m_hoodActualAngle = m_table.getDoubleTopic("Hood/ActualAngle").publish();
+    private final DoublePublisher m_hoodActualAngle = m_table.getDoubleTopic("Hood/ActualAngle").publish();
     private final BooleanPublisher m_autoAimEnabledPub = m_table.getBooleanTopic("AutoAimEnabled").publish();
     private final BooleanPublisher m_isManualPub = m_table.getBooleanTopic("FlywheelOn").publish();
 
@@ -102,17 +102,17 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // double hoodPos = m_hoodMotor.getPosition().getValueAsDouble();
-        // double flywheelVel = m_topRightFlywheel.getVelocity().getValueAsDouble();
+        double hoodPos = m_hoodMotor.getPosition().getValueAsDouble();
+        double flywheelVel = m_topRightFlywheel.getVelocity().getValueAsDouble();
         // m_flywheelDesiredRPS.set(m_flywheelRequest.Velocity);
         // m_flywheelActualRPS.set(flywheelVel);
         // m_hoodDesiredPos.set(m_hoodRequest.Position);
         // m_hoodActualPos.set(hoodPos);
         // m_hoodDesiredAngle.set(m_desiredAngle);
-        // m_atDesiredRPS.set(Math.abs(flywheelVel - m_flywheelRequest.Velocity) < ShooterConstants.kFlywheelToleranceRPS);
+        m_atDesiredRPS.set(Math.abs(flywheelVel - m_flywheelRequest.Velocity) < ShooterConstants.kFlywheelToleranceRPS);
 
-        // double actualAngle = (hoodPos - ShooterConstants.kPosAtMinAngle) / ShooterConstants.kPerDegree + ShooterConstants.kMinAngle;
-        // m_hoodActualAngle.set(actualAngle);
+        double actualAngle = (hoodPos - ShooterConstants.kPosAtMinAngle) / ShooterConstants.kPerDegree + ShooterConstants.kMinAngle;
+        m_hoodActualAngle.set(actualAngle);
 
         m_autoAimEnabledPub.set(m_autoAimEnabled);
         m_isManualPub.set(!m_autoAimEnabled);
@@ -123,9 +123,6 @@ public class Shooter extends SubsystemBase {
         if (!m_autoAimEnabled) {
             setFlywheelVelocity(0.0);
             setHoodAngle(90.0);
-            setHood(true);
-        } else {
-            setHood(false);
         }
     }
 
@@ -134,9 +131,6 @@ public class Shooter extends SubsystemBase {
         if (!aim) {
             setFlywheelVelocity(0.0);
             setHoodAngle(90.0);
-            setHood(true);
-        } else {
-            setHood(false);
         }
     }
 
@@ -144,9 +138,9 @@ public class Shooter extends SubsystemBase {
         return m_autoAimEnabled;
     }
 
-    public void setHoodVoltage(double volts) {
+    public void setHoodTorque(double torque) {
         m_autoAimEnabled = false;
-        m_hoodMotor.setControl(m_voltReq.withOutput(volts));
+        m_hoodMotor.setControl(m_torqueReq.withOutput(torque));
     }
 
     public void changeFlywheelVelocity(double delta) {

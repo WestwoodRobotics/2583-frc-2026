@@ -5,16 +5,14 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,19 +26,18 @@ public class Intake extends SubsystemBase {
 
     private final MotionMagicTorqueCurrentFOC m_pivotRequest = new MotionMagicTorqueCurrentFOC(0.0);
     private final VelocityTorqueCurrentFOC m_rollerRequest = new VelocityTorqueCurrentFOC(0.0);
-
-    private final VoltageOut m_voltReq = new VoltageOut(0.0);
+    private final TorqueCurrentFOC m_torqueReq = new TorqueCurrentFOC(0.0);
 
     private final SysIdRoutine m_pivotSysIdRoutine = 
             new SysIdRoutine(
                 new SysIdRoutine.Config(
-                    Volts.of(0.25).per(Second),
-                    Volts.of(1),
+                    Volts.of(2.0).per(Second), // Represents 2 Amps per second
+                    Volts.of(10.0),            // Represents a 10 Amp dynamic step
                     null,
                     state -> SignalLogger.writeString("SysIdPivot_state", state.toString())
                 ),
                 new SysIdRoutine.Mechanism(
-                    (volts) -> m_pivotMotor.setControl(m_voltReq.withOutput(volts.in(Volts))),
+                    (volts) -> m_pivotMotor.setControl(m_torqueReq.withOutput(volts.in(Volts))),
                     null,
                     this)
             );
@@ -48,22 +45,22 @@ public class Intake extends SubsystemBase {
     private final SysIdRoutine m_rollerSysIdRoutine  = 
             new SysIdRoutine(
                     new SysIdRoutine.Config(
-                        null,
-                        null,
+                        Volts.of(5.0).per(Second),
+                        Volts.of(30.0),
                         null,
                         state -> SignalLogger.writeString("SysIdRoller_state", state.toString())
                     ),
                     new SysIdRoutine.Mechanism(
-                        (volts) -> m_rollerMotor.setControl(m_voltReq.withOutput(volts.in(Volts))),
+                        (volts) -> m_rollerMotor.setControl(m_torqueReq.withOutput(volts.in(Volts))),
                         null,
                         this)
                 );
 
     private SysIdRoutine m_sysIdRoutineToApply = m_rollerSysIdRoutine;
 
-    // private final NetworkTable m_intakeTable = NetworkTableInstance.getDefault().getTable("Intake");
+    private final NetworkTable m_intakeTable = NetworkTableInstance.getDefault().getTable("Intake");
     // private final DoublePublisher m_pivotDesiredPub = m_intakeTable.getDoubleTopic("Pivot/DesiredPos").publish();
-    // private final DoublePublisher m_pivotActualPub = m_intakeTable.getDoubleTopic("Pivot/ActualPos").publish();
+    private final DoublePublisher m_pivotActualPub = m_intakeTable.getDoubleTopic("Pivot/ActualPos").publish();
     // private final DoublePublisher m_rollerDesiredPub = m_intakeTable.getDoubleTopic("Roller/DesiredVelocityRPS").publish();
     // private final DoublePublisher m_rollerActualPub = m_intakeTable.getDoubleTopic("Roller/ActualVelocityRPS").publish();
 
@@ -82,15 +79,14 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // double pivotActual = m_pivotMotor.getPosition().getValueAsDouble();
+        double pivotActual = m_pivotMotor.getPosition().getValueAsDouble();
         // double rollerActual = m_rollerMotor.getVelocity().getValueAsDouble();
 
         // m_pivotDesiredPub.set(m_pivotRequest.Position);
-        // m_pivotActualPub.set(pivotActual);
+        m_pivotActualPub.set(pivotActual);
         // m_rollerDesiredPub.set(m_rollerRequest.Velocity);
         // m_rollerActualPub.set(rollerActual);
     }
-
 
     /**
      * Sets the position of the pivot motor using Motion Magic Expo (Torque Current FOC).
@@ -116,11 +112,10 @@ public class Intake extends SubsystemBase {
     }
 
     // Set position to out and velocity to intaking
-    public Command runIntake(boolean fullSpeed) {
-        double velocity = fullSpeed ? IntakeConstants.kRollerFastIntakingVel : IntakeConstants.kRollerIntakingVel;
+    public Command runIntake() {
         return Commands.run(() -> {
             setPivotPosition(IntakeConstants.kPivotOut);
-            setRollerVelocity(velocity);
+            setRollerVelocity(IntakeConstants.kRollerIntakingVel);
         }, this);
     }
 
