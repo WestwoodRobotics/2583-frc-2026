@@ -6,7 +6,7 @@ import static edu.wpi.first.units.Units.Volts;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -32,7 +32,7 @@ public class Shooter extends SubsystemBase {
     private final TalonFX m_topRightFlywheel = new TalonFX(ShooterConstants.kTopRightFlywheelId, canBus);
 
     private final VelocityTorqueCurrentFOC m_flywheelRequest = new VelocityTorqueCurrentFOC(0.0);
-    private final PositionTorqueCurrentFOC m_hoodRequest = new PositionTorqueCurrentFOC(0.0);
+    private final MotionMagicTorqueCurrentFOC m_hoodRequest = new MotionMagicTorqueCurrentFOC(0.0);
     private final TorqueCurrentFOC m_torqueReq = new TorqueCurrentFOC(0.0);
 
     private SysIdRoutine m_hoodSysIdRoutine = new SysIdRoutine(
@@ -80,7 +80,7 @@ public class Shooter extends SubsystemBase {
     // private final DoublePublisher m_flywheelActualRPS = m_table.getDoubleTopic("Flywheel/ActualRPS").publish();
     private final BooleanPublisher m_atDesiredRPS = m_table.getBooleanTopic("Flywheel/AtDesiredRPS").publish();
     // private final DoublePublisher m_hoodDesiredPos = m_table.getDoubleTopic("Hood/DesiredPos").publish();
-    // private final DoublePublisher m_hoodActualPos = m_table.getDoubleTopic("Hood/ActualPos").publish();
+    private final DoublePublisher m_hoodActualPos = m_table.getDoubleTopic("Hood/ActualPos").publish();
     // private final DoublePublisher m_hoodDesiredAngle = m_table.getDoubleTopic("Hood/DesiredAngle").publish();
     private final DoublePublisher m_hoodActualAngle = m_table.getDoubleTopic("Hood/ActualAngle").publish();
     private final BooleanPublisher m_autoAimEnabledPub = m_table.getBooleanTopic("AutoAimEnabled").publish();
@@ -104,10 +104,10 @@ public class Shooter extends SubsystemBase {
     public void periodic() {
         double hoodPos = m_hoodMotor.getPosition().getValueAsDouble();
         double flywheelVel = m_topRightFlywheel.getVelocity().getValueAsDouble();
-        // m_flywheelDesiredRPS.set(m_flywheelRequest.Velocity);
+        m_flywheelDesiredRPS.set(m_flywheelRequest.Velocity);
         // m_flywheelActualRPS.set(flywheelVel);
         // m_hoodDesiredPos.set(m_hoodRequest.Position);
-        // m_hoodActualPos.set(hoodPos);
+        m_hoodActualPos.set(hoodPos);
         // m_hoodDesiredAngle.set(m_desiredAngle);
         m_atDesiredRPS.set(Math.abs(flywheelVel - m_flywheelRequest.Velocity) < ShooterConstants.kFlywheelToleranceRPS);
 

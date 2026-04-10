@@ -31,13 +31,8 @@ public class IntakeWiggle extends Command {
             m_intake.setRollerVelocity(IntakeConstants.kRollerIntakingVel);
         }
         else {
-            m_intake.setRollerVelocity(IntakeConstants.kRollerShootingVel);
-            if (m_intervalTimer.get() < IntakeConstants.kWiggleTime) {
+            if(m_intervalTimer.hasElapsed(IntakeConstants.kWiggleTime)) {
                 m_intake.setPivotPosition(IntakeConstants.kPivotShoot);
-            } else if (m_intervalTimer.get() < IntakeConstants.kWiggleTime * 2) {
-                m_intake.setPivotPosition(IntakeConstants.kPivotOut);
-            } else {
-                m_intervalTimer.reset();
             }
         }
     }

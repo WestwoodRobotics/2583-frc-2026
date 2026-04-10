@@ -130,7 +130,8 @@ public class RobotContainer {
             .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
         
         driver.y().whileTrue(Commands.run(() -> {
-            shooter.setFlywheelVelocity(ShooterConstants.kTrenchFlywheelVel);
+            shooter.setFlywheelVelocity(30.0);
+            shooter.setHoodAngle(70.0);
         }, shooter));
         
         driver.b().whileTrue(drivetrain.applyRequest(() -> {

@@ -11,17 +11,17 @@ public class IntakeConstants {
     public static final int kRollerMotorId = 21;
     public static final CANBus kCANBus = new CANBus("SwerveCAN");
 
-    public static final double kPivotOffset = 0.2958984375;
+    public static final double kPivotOffset = 0.33;
 
     public static final double kPivotIn = kPivotOffset;
     public static final double kPivotPartial = 0.00;
-    public static final double kPivotOut = -0.14;
-    public static final double kPivotShoot = 0.08;
-    public static final double kResetPivotPos = -0.085205078125;
+    public static final double kPivotOut = -0.11;
+    public static final double kPivotShoot = 0.16;
+    public static final double kResetPivotPos = -0.066162109375;
 
     public static final double kRollerNeutralVel = 0.0;
     public static final double kRollerIntakingVel = 35.0;
-    public static final double kRollerShootingVel = 5.0;
+    public static final double kRollerShootingVel = 15.0;
 
     public static final double kWiggleTime = 0.5;
 

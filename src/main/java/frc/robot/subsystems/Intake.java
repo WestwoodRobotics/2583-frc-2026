@@ -74,7 +74,7 @@ public class Intake extends SubsystemBase {
 
         m_pivotMotor.setControl(m_pivotRequest.withPosition(IntakeConstants.kPivotIn));
 
-        ParentDevice.optimizeBusUtilizationForAll(m_pivotMotor, m_rollerMotor);
+        // ParentDevice.optimizeBusUtilizationForAll(m_pivotMotor, m_rollerMotor);
     }
 
     @Override

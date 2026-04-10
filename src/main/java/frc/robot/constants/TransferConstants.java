@@ -46,12 +46,12 @@ public class TransferConstants {
     public static TalonFXConfiguration getTransferMotorConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 10.0;
+        configs.Slot0.kP = 5.0;
         configs.Slot0.kI = 0.0;
         configs.Slot0.kD = 0.0;
-        configs.Slot0.kS = 11.751;
+        configs.Slot0.kS = 3.0;
         configs.Slot0.kV = 0.0;
-        configs.Slot0.kA = 0.20257;
+        configs.Slot0.kA = 0.248069211307;
 
         // configs.CurrentLimits.StatorCurrentLimit = 0.0;
         // configs.CurrentLimits.SupplyCurrentLimit = 0.0;

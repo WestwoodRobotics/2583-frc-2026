@@ -172,8 +172,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
         configureAutoBuilder();
         for (int i = 0; i < modules.length; i++) {
-            this.getModule(i).getDriveMotor().optimizeBusUtilization();
-            this.getModule(i).getSteerMotor().optimizeBusUtilization();
+            // this.getModule(i).getDriveMotor().optimizeBusUtilization();
+            // this.getModule(i).getSteerMotor().optimizeBusUtilization();
         }
     }
 

@@ -17,9 +17,9 @@ public class ShooterConstants {
 
     public static final double kMaxFlywheelRPS = 82.1666666667;
 
-    public static final double kPosAtMinAngle = 7.048828125;
+    public static final double kPosAtMinAngle = 0.066162109375;
     public static final double kPosAtMaxAngle = 0.0;
-    public static final double kMinAngle = 57.0;
+    public static final double kMinAngle = 56.0;
     public static final double kMaxAngle = 90.0;
     public static final double kPerDegree = (kPosAtMaxAngle - kPosAtMinAngle) / (kMaxAngle - kMinAngle);
 
@@ -36,12 +36,11 @@ public class ShooterConstants {
     public static final InterpolatingDoubleTreeMap kDistanceToTOF = new InterpolatingDoubleTreeMap();
 
     static {
-        kDistanceToRPS.put(0.0, 32.47639);
-        kDistanceToRPS.put(7.225356, 70.0);
-        kDistanceToRPS.put(Double.MAX_VALUE, kMaxFlywheelRPS);
+        kDistanceToRPS.put(0.0, 30.0);
+        kDistanceToRPS.put(999.0, 30.0);
 
-        kDistanceToAngle.put(0.0, 90.0);
-        kDistanceToAngle.put(999.0, kMinAngle);
+        kDistanceToAngle.put(0.0, 70.0);
+        kDistanceToAngle.put(999.0, 70.0);
 
         kDistanceToTOF.put(0.0, 0.0);
         kDistanceToTOF.put(999.0, 0.0);
@@ -70,16 +69,21 @@ public class ShooterConstants {
     public static TalonFXConfiguration getHoodMotorConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 20.0;
+        configs.Slot0.kP = 10.0;
         configs.Slot0.kI = 0.0;
-        configs.Slot0.kD = 0.4;
-        configs.Slot0.kS = 3.0;
+        configs.Slot0.kD = 0.0;
+        configs.Slot0.kS = 3.7;
         configs.Slot0.kV = 0.0;
-        configs.Slot0.kA = 0.2;
-        configs.Slot0.kG = 0.0;
+        configs.Slot0.kA = 6.4;
+        configs.Slot0.kG = 1.0;
+
+        configs.Feedback.SensorToMechanismRatio = (54.0 / 11.0) * (28.0 / 15.0) * (106.0 / 7.0);
+
+        configs.MotionMagic.MotionMagicAcceleration = 0.8;
+        configs.MotionMagic.MotionMagicCruiseVelocity = 0.4;
         
         configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         
         return configs;
     }

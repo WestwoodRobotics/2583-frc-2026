@@ -30,7 +30,7 @@ public class Transfer extends SubsystemBase {
     private final VelocityTorqueCurrentFOC m_transferRequest = new VelocityTorqueCurrentFOC(0);
     private final TorqueCurrentFOC m_torqueReq = new TorqueCurrentFOC(0.0);
 
-    private final Follower m_transferInvertedFollower = new Follower(TransferConstants.kTransferId1, MotorAlignmentValue.Opposed);
+    private final Follower m_transferFollower = new Follower(TransferConstants.kTransferId1, MotorAlignmentValue.Aligned);
 
     private final BooleanSubscriber m_canShootSub = NetworkTableInstance.getDefault()
         .getTable("Shooter")
@@ -75,13 +75,16 @@ public class Transfer extends SubsystemBase {
         m_transferMotor1.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
         m_transferMotor2.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
 
-        ParentDevice.optimizeBusUtilizationForAll(m_floorMotor, m_transferMotor1, m_transferMotor2);
+        // ParentDevice.optimizeBusUtilizationForAll(m_floorMotor, m_transferMotor1, m_transferMotor2);
     }
+
+    @Override
+    public void periodic() {}
 
     public void runMotors(double floorVel, double transferVel) {
         m_floorMotor.setControl(m_floorRequest.withVelocity(floorVel));
         m_transferMotor1.setControl(m_transferRequest.withVelocity(transferVel));
-        m_transferMotor2.setControl(m_transferInvertedFollower);
+        m_transferMotor2.setControl(m_transferFollower);
     }
 
     /**
@@ -91,9 +94,6 @@ public class Transfer extends SubsystemBase {
     public double getTransferVelocity() {
         return m_transferMotor1.getVelocity().getValueAsDouble();
     }
-
-    @Override
-    public void periodic(){}
 
     public Command defaultCommand() {
         // Default: Floor spins at default speed
