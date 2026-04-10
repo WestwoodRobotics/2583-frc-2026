@@ -1,11 +1,6 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Volts;
-
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -16,7 +11,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
@@ -26,37 +20,6 @@ public class Intake extends SubsystemBase {
 
     private final MotionMagicTorqueCurrentFOC m_pivotRequest = new MotionMagicTorqueCurrentFOC(0.0);
     private final VelocityTorqueCurrentFOC m_rollerRequest = new VelocityTorqueCurrentFOC(0.0);
-    private final TorqueCurrentFOC m_torqueReq = new TorqueCurrentFOC(0.0);
-
-    private final SysIdRoutine m_pivotSysIdRoutine = 
-            new SysIdRoutine(
-                new SysIdRoutine.Config(
-                    Volts.of(2.0).per(Second), // Represents 2 Amps per second
-                    Volts.of(10.0),            // Represents a 10 Amp dynamic step
-                    null,
-                    state -> SignalLogger.writeString("SysIdPivot_state", state.toString())
-                ),
-                new SysIdRoutine.Mechanism(
-                    (volts) -> m_pivotMotor.setControl(m_torqueReq.withOutput(volts.in(Volts))),
-                    null,
-                    this)
-            );
-
-    private final SysIdRoutine m_rollerSysIdRoutine  = 
-            new SysIdRoutine(
-                    new SysIdRoutine.Config(
-                        Volts.of(5.0).per(Second),
-                        Volts.of(30.0),
-                        null,
-                        state -> SignalLogger.writeString("SysIdRoller_state", state.toString())
-                    ),
-                    new SysIdRoutine.Mechanism(
-                        (volts) -> m_rollerMotor.setControl(m_torqueReq.withOutput(volts.in(Volts))),
-                        null,
-                        this)
-                );
-
-    private SysIdRoutine m_sysIdRoutineToApply = m_rollerSysIdRoutine;
 
     private final NetworkTable m_intakeTable = NetworkTableInstance.getDefault().getTable("Intake");
     // private final DoublePublisher m_pivotDesiredPub = m_intakeTable.getDoubleTopic("Pivot/DesiredPos").publish();
@@ -138,13 +101,5 @@ public class Intake extends SubsystemBase {
 
     public void resetPivot() {
         m_pivotMotor.setPosition(IntakeConstants.kResetPivotPos);
-    }
-
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutineToApply.quasistatic(direction);
-    }
-
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_sysIdRoutineToApply.dynamic(direction);
     }
 }

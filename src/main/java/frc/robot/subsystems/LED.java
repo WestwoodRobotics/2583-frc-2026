@@ -116,7 +116,7 @@ public class LED extends SubsystemBase {
         Rotation2d requiredRobotRotation = angleToTarget.minus(SwerveConstants.robotToShooter.getRotation());
         
         double error = Math.abs(robotPose.getRotation().minus(requiredRobotRotation).getDegrees());
-        return error < LEDConstants.kMaxHeadingError;
+        return error <= LEDConstants.kMaxHeadingError;
     }
 
     private boolean isSwerveCommandRunning() {

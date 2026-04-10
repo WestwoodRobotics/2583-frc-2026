@@ -1,13 +1,9 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Volts;
-
 import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
+import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -19,7 +15,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
@@ -32,45 +27,9 @@ public class Shooter extends SubsystemBase {
     private final TalonFX m_topRightFlywheel = new TalonFX(ShooterConstants.kTopRightFlywheelId, canBus);
 
     private final VelocityTorqueCurrentFOC m_flywheelRequest = new VelocityTorqueCurrentFOC(0.0);
+    private final VelocityTorqueCurrentFOC m_hoodVelocityRequest = new VelocityTorqueCurrentFOC(0.0);
     private final MotionMagicTorqueCurrentFOC m_hoodRequest = new MotionMagicTorqueCurrentFOC(0.0);
-    private final TorqueCurrentFOC m_torqueReq = new TorqueCurrentFOC(0.0);
-
-    private SysIdRoutine m_hoodSysIdRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(
-                Volts.of(2.0).per(Second),
-                Volts.of(10.0),
-                null,
-                state -> SignalLogger.writeString("SysIdHood_state", state.toString())
-            
-            ), 
-            new SysIdRoutine.Mechanism(
-                (volts) -> m_hoodMotor.setControl(m_torqueReq.withOutput(volts.in(Volts))),
-                null,
-                this
-            )
-        );
-
-    private SysIdRoutine m_flywheelSysIdRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(
-                Volts.of(5.0).per(Second),
-                Volts.of(30.0),
-                null,
-                state -> SignalLogger.writeString("SysIdFlywheel_state", state.toString())
-            
-            ), 
-            new SysIdRoutine.Mechanism(
-                (volts) -> {
-                    m_topRightFlywheel.setControl(m_torqueReq.withOutput(volts.in(Volts)));
-                    m_bottomRightFlywheel.setControl(m_torqueReq.withOutput(volts.in(Volts)));
-                    m_topLeftFlywheel.setControl(m_torqueReq.withOutput(-volts.in(Volts)));
-                    m_bottomLeftFlywheel.setControl(m_torqueReq.withOutput(-volts.in(Volts)));
-                },
-                null,
-                this
-            )
-        );
-    
-    private final SysIdRoutine m_routineToApply = m_flywheelSysIdRoutine;
+    private final NeutralOut m_neutralReq = new NeutralOut();
 
     private final Follower m_alignedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Aligned);
     private final Follower m_opposedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Opposed);
@@ -138,9 +97,13 @@ public class Shooter extends SubsystemBase {
         return m_autoAimEnabled;
     }
 
-    public void setHoodTorque(double torque) {
+    public void setHoodVelocity(double velocity) {
         m_autoAimEnabled = false;
-        m_hoodMotor.setControl(m_torqueReq.withOutput(torque));
+        if (Math.abs(velocity) < 0.001) {
+            m_hoodMotor.setControl(m_neutralReq);
+        } else {
+            m_hoodMotor.setControl(m_hoodVelocityRequest.withVelocity(velocity));
+        }
     }
 
     public void changeFlywheelVelocity(double delta) {
@@ -179,13 +142,5 @@ public class Shooter extends SubsystemBase {
         m_bottomRightFlywheel.setControl(m_alignedFollower);
         m_topLeftFlywheel.setControl(m_opposedFollower);
         m_bottomLeftFlywheel.setControl(m_opposedFollower);
-    }
-
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return m_routineToApply.quasistatic(direction);
-    }
-
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_routineToApply.dynamic(direction);
     }
 }

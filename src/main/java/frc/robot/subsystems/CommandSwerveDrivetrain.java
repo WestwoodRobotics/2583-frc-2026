@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.generated.TunerConstants;
+import frc.robot.constants.SwerveConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
@@ -352,7 +353,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
 
-    public static void joyStickPolar(double[] out, CommandXboxController controller, int power) {
+    public static void joyStickPolar(double[] out, CommandXboxController controller) {
 
         double x2 = MathUtil.applyDeadband(-controller.getLeftY(), 0.1);
         double y2 = MathUtil.applyDeadband(-controller.getLeftX(), 0.1);
@@ -369,7 +370,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
 
         // Use a simple multiplication for power of 2 for efficiency as the comment suggests
-        double rScaled = (power == 2) ? r * r : Math.pow(r, power);
+        double rScaled = Math.pow(r, SwerveConstants.kDrivePower);
 
         out[0] = rScaled * Math.cos(theta) * MaxSpeed;
         out[1] = rScaled * Math.sin(theta) * MaxSpeed;

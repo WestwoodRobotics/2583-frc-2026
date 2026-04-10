@@ -17,27 +17,6 @@ public class SwerveConstants {
     public static final Translation2d blueHub = new Translation2d(allianceZoneWidth, fieldLength / 2);
     public static final Translation2d redHub = new Translation2d(fieldWidth - allianceZoneWidth, fieldLength / 2);
 
-    public static final double upperCornerY = 7.350;
-    public static final double lowerCornerY = fieldLength - upperCornerY;
-    public static final double blueCornerX = 4;
-    public static final double redCornerX = fieldWidth - blueCornerX;
-
-    public static final double upperBlueCornerAngle = Math.toRadians(-79.58837132);
-    public static final double lowerBlueCornerAngle = Math.toRadians(79.58837132);
-    public static final double upperRedCornerAngle = Math.toRadians(79.58837132 - 180);
-    public static final double lowerRedCornerAngle = Math.toRadians(-79.58837132 + 180);
-
-    public static final double alignMaxVel = 3;
-    public static final double alignMaxAccel = 3;
-    public static final double alignMaxOmega = 1.5;
-    public static final double alignMaxAlpha = 2;
-
-    public static final double kCompensationP = 1.2;
-    public static final double kCompensationFF = Math.toRadians(5.0);
-
-    public static final double kSOTMVel = 0.5;
-    public static final double kMinAimSpeed = 0.1;
-
     public static final double bluePassX = 3.5;
     public static final double redPassX = fieldWidth - bluePassX;
     public static final double lowerPassY = 2.0;
@@ -51,4 +30,6 @@ public class SwerveConstants {
     public static final double kResetY = 4.029;
 
     public static final double kBrakeTime = 0.5;
+
+    public static final int kDrivePower = 3;
 }

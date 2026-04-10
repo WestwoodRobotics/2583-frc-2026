@@ -6,14 +6,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.subsystems.Intake;
 
-public class IntakeWiggle extends Command {
+public class IntakeShoot extends Command {
     
     private Intake m_intake;
     private CommandXboxController m_controller;
 
     private Timer m_intervalTimer = new Timer();
 
-    public IntakeWiggle(Intake intake, CommandXboxController controller) {
+    public IntakeShoot(Intake intake, CommandXboxController controller) {
         m_intake = intake;
         m_controller = controller;
         addRequirements(m_intake);
@@ -31,9 +31,7 @@ public class IntakeWiggle extends Command {
             m_intake.setRollerVelocity(IntakeConstants.kRollerIntakingVel);
         }
         else {
-            if(m_intervalTimer.hasElapsed(IntakeConstants.kWiggleTime)) {
-                m_intake.setPivotPosition(IntakeConstants.kPivotShoot);
-            }
+            m_intake.setPivotPosition(IntakeConstants.kPivotShoot);
         }
     }
 

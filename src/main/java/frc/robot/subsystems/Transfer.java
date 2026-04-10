@@ -1,12 +1,6 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Volts;
-
-import com.ctre.phoenix6.CANBus;
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -18,7 +12,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.TransferConstants;
 
 public class Transfer extends SubsystemBase {
@@ -28,7 +21,6 @@ public class Transfer extends SubsystemBase {
 
     private final VelocityTorqueCurrentFOC m_floorRequest = new VelocityTorqueCurrentFOC(0);
     private final VelocityTorqueCurrentFOC m_transferRequest = new VelocityTorqueCurrentFOC(0);
-    private final TorqueCurrentFOC m_torqueReq = new TorqueCurrentFOC(0.0);
 
     private final Follower m_transferFollower = new Follower(TransferConstants.kTransferId1, MotorAlignmentValue.Aligned);
 
@@ -36,39 +28,6 @@ public class Transfer extends SubsystemBase {
         .getTable("Shooter")
         .getBooleanTopic("CanShoot")
         .subscribe(true);
-
-    private final SysIdRoutine m_floorSysIdRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            Volts.of(5.0).per(Second),
-            Volts.of(30.0),
-            null,
-            (state) -> SignalLogger.writeString("floor_state", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(
-            (volts) -> {
-                m_floorMotor.setControl(m_torqueReq.withOutput(volts.in(Volts)));
-            }, 
-            null, 
-            this)
-    );
-
-    private final SysIdRoutine m_transferSysIdRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            Volts.of(5.0).per(Second),
-            Volts.of(30.0),
-            null,
-            (state) -> SignalLogger.writeString("transfer_state", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(
-            (volts) -> {
-                m_transferMotor1.setControl(m_torqueReq.withOutput(volts.in(Volts)));
-                m_transferMotor2.setControl(m_torqueReq.withOutput(-volts.in(Volts)));
-            }, 
-            null, 
-            this)
-    );
-
-    private final SysIdRoutine m_routineToApply = m_transferSysIdRoutine;
 
     public Transfer() {
         m_floorMotor.getConfigurator().apply(TransferConstants.getFloorMotorConfigs());
@@ -97,8 +56,7 @@ public class Transfer extends SubsystemBase {
 
     public Command defaultCommand() {
         // Default: Floor spins at default speed
-        double transferSpeed = DriverStation.isAutonomous() ? 0.0 : TransferConstants.kTransferDefaultVel;
-        return Commands.run(() -> runMotors(TransferConstants.kFloorDefaultVel, transferSpeed), this);
+        return Commands.run(() -> runMotors(TransferConstants.kFloorDefaultVel, TransferConstants.kTransferDefaultVel), this);
     }
 
     public Command reverseCommand() {
@@ -113,13 +71,5 @@ public class Transfer extends SubsystemBase {
         }
         this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel);
         }, this);
-    }
-
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return m_routineToApply.quasistatic(direction);
-    }
-
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return m_routineToApply.dynamic(direction);
     }
 }

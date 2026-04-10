@@ -23,11 +23,10 @@ public class ShooterConstants {
     public static final double kMaxAngle = 90.0;
     public static final double kPerDegree = (kPosAtMaxAngle - kPosAtMinAngle) / (kMaxAngle - kMinAngle);
 
-    public static final double kTrenchFlywheelVel = 48.99627892532494;
     public static final double kBumperHoodAngle = 57.0;
     public static final double kBumperFlywheelVel = 45.0;
 
-    public static final double kManualHoodTorque = 1.0;
+    public static final double kManualHoodVelocity = 0.1;
     public static final double kManualFlywheelInc = 1.0;
     public static final double kFlywheelToleranceRPS = 1.0;
 

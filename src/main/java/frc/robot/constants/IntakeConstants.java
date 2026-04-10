@@ -23,8 +23,6 @@ public class IntakeConstants {
     public static final double kRollerIntakingVel = 35.0;
     public static final double kRollerShootingVel = 15.0;
 
-    public static final double kWiggleTime = 0.5;
-
     public static TalonFXConfiguration getPivotConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         

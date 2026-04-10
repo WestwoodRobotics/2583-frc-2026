@@ -3,7 +3,6 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -58,13 +57,10 @@ public class AimSwerve extends Command {
 
     @Override
     public void execute() {
-        ChassisSpeeds speeds = drivetrain.getState().Speeds;
-        double velocity = Math.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
         boolean canShoot = m_canShootSub.get();
-        boolean barelyMoving = velocity < SwerveConstants.kMinAimSpeed;
 
         if (DriverStation.isTeleop()) {
-            CommandSwerveDrivetrain.joyStickPolar(driverInputs, controller, 2);
+            CommandSwerveDrivetrain.joyStickPolar(driverInputs, controller);
         } else {
             driverInputs[0] = 0;
             driverInputs[1] = 0;
@@ -73,7 +69,7 @@ public class AimSwerve extends Command {
 
         boolean driverCommandingMove = Math.hypot(driverInputs[0], driverInputs[1]) > 0.05;
 
-        if (canShoot && barelyMoving && !driverCommandingMove) {
+        if (canShoot && !driverCommandingMove) {
             if (!isAiming) {
                 brakeTimer.restart();
                 isAiming = true;
@@ -83,7 +79,7 @@ public class AimSwerve extends Command {
             isAiming = false;
         }
 
-        if (brakeTimer.hasElapsed(SwerveConstants.kBrakeTime) && canShoot && barelyMoving && !driverCommandingMove) {
+        if (brakeTimer.hasElapsed(SwerveConstants.kBrakeTime) && canShoot && !driverCommandingMove) {
             drivetrain.setControl(brakeRequest);
             return;
         }

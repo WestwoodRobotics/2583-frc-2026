@@ -15,7 +15,7 @@ public class GetTargetLocation {
      * Number of iterations to run when converging on a moving target solution. More iterations
      * increase accuracy but also latency.
      */
-    private static final int kTargetingIterations = 3;
+    private static final int kTargetingIterations = 4;
 
     private static double mLastTimestamp = -1.0;
     private static Translation2d m_targetLocation = null;
@@ -31,7 +31,7 @@ public class GetTargetLocation {
         if (allianceOpt.isEmpty()) {
             return null;
         }
-        var alliance = allianceOpt.orElse(Alliance.Blue);
+        var alliance = allianceOpt.get();
         boolean isBlue = (alliance == Alliance.Blue);
 
         // Determine if we are in the alliance's shooting zone based on the robot's X position.
@@ -44,8 +44,7 @@ public class GetTargetLocation {
 
         if (inZone) {
             // Lock to appropriate hub
-            Translation2d realTargetPos = isBlue ? SwerveConstants.blueHub : SwerveConstants.redHub;
-            m_targetLocation = adjustMovingTarget(robotPose, currentSpeeds, realTargetPos);
+            m_targetLocation = isBlue ? SwerveConstants.blueHub : SwerveConstants.redHub;
         } else {
             // Lock to alliance corner
             boolean isTop = robotPose.getY() >= (SwerveConstants.fieldLength / 2.0);
@@ -56,6 +55,7 @@ public class GetTargetLocation {
             m_targetLocation = new Translation2d(targetX, targetY);
         }
 
+        m_targetLocation = adjustMovingTarget(robotPose, currentSpeeds, m_targetLocation);
         mLastTimestamp = currentTimestamp;
         return m_targetLocation;
     }
@@ -69,6 +69,7 @@ public class GetTargetLocation {
 
         // Initial guess: the virtual target is just the real target
         Translation2d virtualTarget = realTargetPos;
+        Translation2d robotMovement;
 
         // Iterate 3 times to converge on the correct virtual target
         for (int i = 0; i < kTargetingIterations; i++) {
@@ -82,7 +83,7 @@ public class GetTargetLocation {
             double timeOfFlight = ShooterConstants.kDistanceToTOF.get(distance);
 
             // 3. Calculate how much the robot will move during that time
-            Translation2d robotMovement = robotVelocity.times(timeOfFlight);
+            robotMovement = robotVelocity.times(timeOfFlight);
 
             // 4. Shift the target in the OPPOSITE direction of the robot's movement
             virtualTarget = realTargetPos.minus(robotMovement);
