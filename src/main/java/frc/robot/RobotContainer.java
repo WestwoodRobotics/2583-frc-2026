@@ -11,6 +11,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -115,8 +116,8 @@ public class RobotContainer {
             .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
         
         driver.y().whileTrue(Commands.run(() -> {
-            shooter.setFlywheelVelocity(30.0);
-            shooter.setHoodAngle(70.0);
+            shooter.setFlywheelVelocity(25.0);
+            shooter.setHoodAngle(62.0);
         }, shooter));
         
         driver.b().whileTrue(new LockHeading(drivetrain, faceAngle, driver, 0));
@@ -140,13 +141,11 @@ public class RobotContainer {
         operator.a().whileTrue(transfer.reverseCommand())
             .onFalse(transfer.shootCommand().until(() -> !driver.rightTrigger().getAsBoolean()));
 
-        operator.rightTrigger().whileTrue(Commands.startEnd(
-            () -> shooter.setHoodVelocity(ShooterConstants.kManualHoodVelocity),
-            () -> shooter.setHoodVelocity(0.0),
+        operator.rightTrigger().onTrue(Commands.runOnce(
+            () -> shooter.changeHoodAngle(2.0),
             shooter));
-        operator.leftTrigger().whileTrue(Commands.startEnd(
-            () -> shooter.setHoodVelocity(-ShooterConstants.kManualHoodVelocity),
-            () -> shooter.setHoodVelocity(0.0),
+        operator.leftTrigger().onTrue(Commands.runOnce(
+            () -> shooter.setHoodAngle(90.0),
             shooter));
         operator.rightBumper().onTrue(Commands.runOnce(
             () -> shooter.changeFlywheelVelocity(ShooterConstants.kManualFlywheelInc), shooter));
@@ -180,12 +179,13 @@ public class RobotContainer {
     public void configureAutonomousCommands() {
 
         NamedCommands.registerCommand("Shoot", transfer.shootCommand());
-        NamedCommands.registerCommand("FlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true), shooter));
-        NamedCommands.registerCommand("FlywheelOff", Commands.runOnce(() -> shooter.setAutoAim(false), shooter));
-        
+        NamedCommands.registerCommand("FlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true)));
+        NamedCommands.registerCommand("FlywheelOff", Commands.runOnce(() -> shooter.setAutoAim(false)));
+        NamedCommands.registerCommand("StopTransfer", transfer.stopTransfer());
+    
         NamedCommands.registerCommand("RunIntake", intake.runIntake());
         NamedCommands.registerCommand("PartialRetract", intake.partialRetract());
-        NamedCommands.registerCommand("IntakeWiggle", new IntakeShoot(intake, driver));
+        NamedCommands.registerCommand("IntakeShoot", new IntakeShoot(intake, driver));
 
         NamedCommands.registerCommand("AimSwerve", new AimSwerve(drivetrain, shooter, faceAngle, brake, driver));
     }

@@ -12,6 +12,7 @@ import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -40,14 +41,15 @@ public class Shooter extends SubsystemBase {
     private final BooleanPublisher m_atDesiredRPS = m_table.getBooleanTopic("Flywheel/AtDesiredRPS").publish();
     // private final DoublePublisher m_hoodDesiredPos = m_table.getDoubleTopic("Hood/DesiredPos").publish();
     private final DoublePublisher m_hoodActualPos = m_table.getDoubleTopic("Hood/ActualPos").publish();
-    // private final DoublePublisher m_hoodDesiredAngle = m_table.getDoubleTopic("Hood/DesiredAngle").publish();
+    private final DoublePublisher m_hoodDesiredAngle = m_table.getDoubleTopic("Hood/DesiredAngle").publish();
     private final DoublePublisher m_hoodActualAngle = m_table.getDoubleTopic("Hood/ActualAngle").publish();
     private final BooleanPublisher m_autoAimEnabledPub = m_table.getBooleanTopic("AutoAimEnabled").publish();
     private final BooleanPublisher m_isManualPub = m_table.getBooleanTopic("FlywheelOn").publish();
 
     private double m_desiredAngle = ShooterConstants.kMinAngle;
-    private boolean m_autoAimEnabled = true;
+    private boolean m_autoAimEnabled = false;
     private boolean m_hoodUp = false;
+    private boolean m_passing = false;
 
     public Shooter() {
         // Apply configurations directly from constants to keep constructor clean of variables
@@ -56,7 +58,6 @@ public class Shooter extends SubsystemBase {
         m_bottomRightFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
         m_topLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
         m_topRightFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
-
     }
 
     @Override
@@ -67,7 +68,7 @@ public class Shooter extends SubsystemBase {
         // m_flywheelActualRPS.set(flywheelVel);
         // m_hoodDesiredPos.set(m_hoodRequest.Position);
         m_hoodActualPos.set(hoodPos);
-        // m_hoodDesiredAngle.set(m_desiredAngle);
+        m_hoodDesiredAngle.set(m_desiredAngle);
         m_atDesiredRPS.set(Math.abs(flywheelVel - m_flywheelRequest.Velocity) < ShooterConstants.kFlywheelToleranceRPS);
 
         double actualAngle = (hoodPos - ShooterConstants.kPosAtMinAngle) / ShooterConstants.kPerDegree + ShooterConstants.kMinAngle;
@@ -97,13 +98,11 @@ public class Shooter extends SubsystemBase {
         return m_autoAimEnabled;
     }
 
-    public void setHoodVelocity(double velocity) {
+    public void changeHoodAngle(double delta) {
         m_autoAimEnabled = false;
-        if (Math.abs(velocity) < 0.001) {
-            m_hoodMotor.setControl(m_neutralReq);
-        } else {
-            m_hoodMotor.setControl(m_hoodVelocityRequest.withVelocity(velocity));
-        }
+        double newPos = m_desiredAngle + delta;
+        newPos = MathUtil.clamp(newPos, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
+        setHoodAngle(62.0);
     }
 
     public void changeFlywheelVelocity(double delta) {
@@ -135,6 +134,14 @@ public class Shooter extends SubsystemBase {
 
     public boolean getHoodState() {
         return m_hoodUp;
+    }
+
+    public void setPassing(boolean pass) {
+        m_passing = pass;
+    }
+
+    public boolean getPassing() {
+        return m_passing;
     }
 
     public void setFlywheelVelocity(double velocity) {

@@ -25,18 +25,6 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DepotPath4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotPath5"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "DepotPath6"
           }
         },
@@ -59,7 +47,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "IntakeWiggle"
+                  "name": "IntakeShoot"
                 }
               },
               {

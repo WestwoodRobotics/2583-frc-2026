@@ -17,7 +17,7 @@ public class SwerveConstants {
     public static final Translation2d blueHub = new Translation2d(allianceZoneWidth, fieldLength / 2);
     public static final Translation2d redHub = new Translation2d(fieldWidth - allianceZoneWidth, fieldLength / 2);
 
-    public static final double bluePassX = 3.5;
+    public static final double bluePassX = 2.5;
     public static final double redPassX = fieldWidth - bluePassX;
     public static final double lowerPassY = 2.0;
     public static final double upperPassY = fieldLength - lowerPassY;

@@ -63,7 +63,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
     public static final double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    public static final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    public static final double MaxAngularRate = RotationsPerSecond.of(1.5).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -374,6 +374,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         out[0] = rScaled * Math.cos(theta) * MaxSpeed;
         out[1] = rScaled * Math.sin(theta) * MaxSpeed;
-        out[2] = rot2 * MaxAngularRate;
+        out[2] = Math.copySign(Math.pow(rot2, 2.0) * MaxAngularRate, rot2);
     }
 }

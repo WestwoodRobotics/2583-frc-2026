@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANdleConfiguration;
 import com.ctre.phoenix6.controls.FireAnimation;
+import com.ctre.phoenix6.controls.LarsonAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.LossOfSignalBehaviorValue;
@@ -86,7 +87,7 @@ public class LED extends SubsystemBase {
         wasHubActive = isHubActive;
 
         if (!isHubActive) {
-            setSolidColor(Color.kRed);
+            setSolidColor(new Color(255,60,0));
             return;
         }
         Pose2d robotPose = drivetrain.getState().Pose;
@@ -104,8 +105,8 @@ public class LED extends SubsystemBase {
             return;
         }
 
-        setSolidColor(Color.kOrange);
-    }
+         setSolidColor(new Color(255,60,0));
+     }
 
     private boolean isAligned(Pose2d robotPose) {
         Translation2d target = GetTargetLocation.getTargetLocation(robotPose, drivetrain.getState().Speeds);
@@ -136,7 +137,7 @@ public class LED extends SubsystemBase {
     }
 
     public void setSolidColor(Color color, double brightness){
-        candle.setControl(new SolidColor(0, LEDConstants.endIndex).withColor(new RGBWColor(color).scaleBrightness(brightness)));
+        candle.setControl(new SolidColor(8, LEDConstants.endIndex).withColor(new RGBWColor(color).scaleBrightness(brightness)));
     }
 
     public void setSolidColor(Color color){
@@ -144,11 +145,18 @@ public class LED extends SubsystemBase {
     }
     
     public void clearColor(){
-        candle.setControl(new SolidColor(0, LEDConstants.endIndex).withColor(new RGBWColor(new Color(0,0,0)).scaleBrightness(1)));
+        candle.setControl(new SolidColor(8, LEDConstants.endIndex).withColor(new RGBWColor(new Color(0,0,0)).scaleBrightness(1)));
     }
     
     public void startFireAnimation(){
-        FireAnimation FIRE = new FireAnimation(0, LEDConstants.endIndex).withBrightness(1).withCooling(0.3);
+        FireAnimation FIRE = new FireAnimation(8, LEDConstants.endIndex).withBrightness(1).withCooling(0.3);
         candle.setControl(FIRE);   
     }
+
+    public void startLarsonAnimation(Color color){
+        LarsonAnimation larson = new LarsonAnimation(8, LEDConstants.endIndex).withColor(new RGBWColor(color)).withSize(7).withFrameRate(45);
+        candle.setControl(larson);   
+    }
+
+    
 }

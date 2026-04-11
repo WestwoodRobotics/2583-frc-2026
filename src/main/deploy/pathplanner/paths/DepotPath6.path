@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 0.727,
-        "y": 6.33
+        "y": 5.6
       },
       "prevControl": null,
       "nextControl": {
         "x": 1.7269999999999999,
-        "y": 6.33
+        "y": 5.6
       },
       "isLocked": false,
-      "linkedName": "DepotPoint6"
+      "linkedName": "DepotPoint4"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 4.934236804564907
       },
       "prevControl": {
-        "x": 2.2627652633101856,
-        "y": 5.879443287037037
+        "x": 1.8265477888730377,
+        "y": 5.555292439372327
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,9 +34,9 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.5,
-    "maxAcceleration": 10.0,
+    "maxAcceleration": 8.0,
     "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 220.0,
+    "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },

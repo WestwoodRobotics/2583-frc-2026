@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.IntakeConstants;
@@ -21,6 +22,7 @@ public class IntakeShoot extends Command {
 
     @Override
     public void initialize() {
+        SmartDashboard.putBoolean("intakeshoot", true);
         m_intervalTimer.restart();
     }
 
@@ -32,6 +34,11 @@ public class IntakeShoot extends Command {
         }
         else {
             m_intake.setPivotPosition(IntakeConstants.kPivotShoot);
+            if (m_intake.getPivotPosition() >= IntakeConstants.kPivotShoot - 0.03) {
+                m_intake.setRollerVelocity(IntakeConstants.kRollerShootingVel);
+            } else {
+                m_intake.setRollerVelocity(0.0);
+            }
         }
     }
 

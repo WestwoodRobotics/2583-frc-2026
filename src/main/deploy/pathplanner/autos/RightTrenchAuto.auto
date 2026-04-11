@@ -35,7 +35,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "IntakeWiggle"
+                  "name": "IntakeShoot"
                 }
               }
             ]
@@ -72,7 +72,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "IntakeWiggle"
+                  "name": "IntakeShoot"
                 }
               }
             ]
@@ -81,7 +81,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

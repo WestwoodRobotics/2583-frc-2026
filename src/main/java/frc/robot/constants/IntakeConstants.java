@@ -11,7 +11,7 @@ public class IntakeConstants {
     public static final int kRollerMotorId = 21;
     public static final CANBus kCANBus = new CANBus("SwerveCAN");
 
-    public static final double kPivotOffset = 0.33;
+    public static final double kPivotOffset = 0.296875;
 
     public static final double kPivotIn = kPivotOffset;
     public static final double kPivotPartial = 0.00;
@@ -20,13 +20,13 @@ public class IntakeConstants {
     public static final double kResetPivotPos = -0.066162109375;
 
     public static final double kRollerNeutralVel = 0.0;
-    public static final double kRollerIntakingVel = 35.0;
-    public static final double kRollerShootingVel = 15.0;
+    public static final double kRollerIntakingVel = 32.0;
+    public static final double kRollerShootingVel = 20.0;
 
     public static TalonFXConfiguration getPivotConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 240.0;
+        configs.Slot0.kP = 300.0;
         configs.Slot0.kI = 0.0;
         configs.Slot0.kD = 60.0;
         configs.Slot0.kS = 5.0;    
@@ -35,7 +35,7 @@ public class IntakeConstants {
         configs.Slot0.kG = 17.0;
         configs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
         
-        configs.MotionMagic.MotionMagicAcceleration = 7.0;
+        configs.MotionMagic.MotionMagicAcceleration = 8.0;
         configs.MotionMagic.MotionMagicCruiseVelocity = 2.0;
 
         // configs.CurrentLimits.StatorCurrentLimit = 80.0;

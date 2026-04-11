@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -59,16 +60,21 @@ public class Transfer extends SubsystemBase {
         return Commands.run(() -> runMotors(TransferConstants.kFloorDefaultVel, TransferConstants.kTransferDefaultVel), this);
     }
 
+    public Command stopTransfer() {
+        return Commands.run(() -> runMotors(0.0, 0.0), this);
+    }
+
     public Command reverseCommand() {
         return Commands.run(() -> runMotors(-TransferConstants.kFloorShootVel, -TransferConstants.kTransferShootVel), this);
     }
 
     public Command shootCommand() {
         return Commands.run(() -> {
-            if (DriverStation.isAutonomous() && !m_canShootSub.get()) {
-            this.runMotors(0.0, 0.0);
-            return;
-        }
+        //     if (DriverStation.isAutonomous() && !m_canShootSub.get()) {
+        //     this.runMotors(0.0, 0.0);
+        //     return;
+        // }
+        SmartDashboard.putBoolean("running transfer" , true);
         this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel);
         }, this);
     }
