@@ -19,6 +19,7 @@ public class GetTargetLocation {
 
     private static double mLastTimestamp = -1.0;
     private static Translation2d m_targetLocation = null;
+    private static boolean m_inZone = true;
 
     public static Translation2d getTargetLocation(Pose2d robotPose, ChassisSpeeds currentSpeeds) {
         // Cache result to avoid recalculating multiple times per loop cycle (approx 20ms)
@@ -35,14 +36,13 @@ public class GetTargetLocation {
         boolean isBlue = (alliance == Alliance.Blue);
 
         // Determine if we are in the alliance's shooting zone based on the robot's X position.
-        boolean inZone;
         if (isBlue) {
-            inZone = robotPose.getX() < SwerveConstants.allianceZoneWidth;
+            m_inZone = robotPose.getX() < SwerveConstants.allianceZoneWidth;
         } else {
-            inZone = robotPose.getX() > (SwerveConstants.fieldWidth - SwerveConstants.allianceZoneWidth);
+            m_inZone = robotPose.getX() > (SwerveConstants.fieldWidth - SwerveConstants.allianceZoneWidth);
         }
 
-        if (inZone) {
+        if (m_inZone) {
             // Lock to appropriate hub
             m_targetLocation = isBlue ? SwerveConstants.blueHub : SwerveConstants.redHub;
         } else {
@@ -89,5 +89,9 @@ public class GetTargetLocation {
             virtualTarget = realTargetPos.minus(robotMovement);
         }
         return virtualTarget;
+    }
+
+    public static boolean inZone() {
+        return m_inZone;
     }
 }

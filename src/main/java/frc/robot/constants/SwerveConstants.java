@@ -10,7 +10,7 @@ public class SwerveConstants {
     public static final double allianceZoneWidth = 4.611624;
 
     public static final Transform2d robotToShooter = new Transform2d(
-        new Translation2d(0.1344549, 0.0),
+        new Translation2d(0.1905, 0.0),
         new Rotation2d(Math.toRadians(0))
     );
 
@@ -29,7 +29,7 @@ public class SwerveConstants {
     public static final double kResetX = 3.560;
     public static final double kResetY = 4.029;
 
-    public static final double kBrakeTime = 0.5;
+    public static final double kBrakeTime = 0.3;
 
     public static final int kDrivePower = 3;
 }

@@ -1,0 +1,140 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.582922222222222,
+        "y": 0.6244444444444435
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.8926947341466107,
+        "y": 0.6651209077765368
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.533100000000001,
+        "y": 0.9557555555555552
+      },
+      "prevControl": {
+        "x": 8.34668131134512,
+        "y": 0.628082219581412
+      },
+      "nextControl": {
+        "x": 8.961017075498402,
+        "y": 1.7079173514602908
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.533100000000001,
+        "y": 4.200655555555556
+      },
+      "prevControl": {
+        "x": 8.651754594506533,
+        "y": 3.9806076353143265
+      },
+      "nextControl": {
+        "x": 7.965305022858381,
+        "y": 5.253645575563189
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.9898,
+        "y": 2.5441
+      },
+      "prevControl": {
+        "x": 6.166576695296636,
+        "y": 2.7208766952966372
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "RightDelayedTrenchPoint1"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4493178934010149,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 0.9834024896265512,
+      "rotationDegrees": -90.22958931237325
+    },
+    {
+      "waypointRelativePos": 1.9986318210659886,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 2.4084963002114153,
+      "rotationDegrees": 47.27250846462629
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.1,
+      "maxWaypointRelativePos": 3.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 8.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 180.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "RunIntakeEvent",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 0.2,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "RunIntake"
+        }
+      }
+    },
+    {
+      "name": "RunIntakeEvent",
+      "waypointRelativePos": 1.0055183531746033,
+      "endWaypointRelativePos": 3.0,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "RunIntake"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 180.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 49.39870535499565
+  },
+  "reversed": false,
+  "folder": "RightDelayedTrenchPaths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}

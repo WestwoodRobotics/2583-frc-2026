@@ -12,8 +12,6 @@ public class IntakeShoot extends Command {
     private Intake m_intake;
     private CommandXboxController m_controller;
 
-    private Timer m_intervalTimer = new Timer();
-
     public IntakeShoot(Intake intake, CommandXboxController controller) {
         m_intake = intake;
         m_controller = controller;
@@ -23,7 +21,8 @@ public class IntakeShoot extends Command {
     @Override
     public void initialize() {
         SmartDashboard.putBoolean("intakeshoot", true);
-        m_intervalTimer.restart();
+        m_intake.slowPivot();
+        m_intake.setRollerVelocity(0.0);
     }
 
     @Override
@@ -34,17 +33,16 @@ public class IntakeShoot extends Command {
         }
         else {
             m_intake.setPivotPosition(IntakeConstants.kPivotShoot);
-            if (m_intake.getPivotPosition() >= IntakeConstants.kPivotShoot - 0.03) {
+            double m_newPos = m_intake.getPivotPosition();
+            if (m_newPos > IntakeConstants.kPivotShoot - IntakeConstants.kJammedThreshold) {
                 m_intake.setRollerVelocity(IntakeConstants.kRollerShootingVel);
-            } else {
-                m_intake.setRollerVelocity(0.0);
             }
         }
     }
 
     @Override
     public void end(boolean interrupted) {
+        m_intake.normalPivot();
         m_intake.setPivotPosition(IntakeConstants.kPivotOut);
-        m_intervalTimer.stop();
     }
 }

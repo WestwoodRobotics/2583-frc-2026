@@ -1,0 +1,80 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.9898,
+        "y": 2.5441
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.750993967431986,
+        "y": 2.5427051416077795
+      },
+      "isLocked": false,
+      "linkedName": "RightDelayedTrenchPoint1"
+    },
+    {
+      "anchor": {
+        "x": 2.609,
+        "y": 2.543
+      },
+      "prevControl": {
+        "x": 2.0573490985199743,
+        "y": 2.5450292898651514
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "RightTrenchPoint1"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.75,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 8.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 180.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "RunIntakeEvent",
+      "waypointRelativePos": 0.5212694125590835,
+      "endWaypointRelativePos": 0.6022957461174955,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "RunIntake"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 180.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 32.77344877418928
+  },
+  "reversed": false,
+  "folder": "RightDelayedTrenchPaths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 49.39870535499565
+  },
+  "useDefaultConstraints": false
+}

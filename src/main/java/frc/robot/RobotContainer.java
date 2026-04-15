@@ -116,36 +116,27 @@ public class RobotContainer {
             .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
         
         driver.y().whileTrue(Commands.run(() -> {
-            shooter.setFlywheelVelocity(25.0);
-            shooter.setHoodAngle(62.0);
+            shooter.setFlywheelVelocity(ShooterConstants.kYFlywheelVel);
+            shooter.setHoodAngle(ShooterConstants.kYHoodAngle);
         }, shooter));
         
         driver.b().whileTrue(new LockHeading(drivetrain, faceAngle, driver, 0));
-
-        driver.rightBumper().whileTrue(
-            Commands.run(() -> {
-                shooter.setFlywheelVelocity(ShooterConstants.kBumperFlywheelVel);
-                shooter.setHoodAngle(ShooterConstants.kBumperHoodAngle);
-            }, shooter)
-        );
 
         driver.rightTrigger().whileTrue(transfer.shootCommand().alongWith(new IntakeShoot(intake, driver)));
 
         // Run intake while holding left trigger
         driver.leftTrigger().and(driver.rightTrigger().negate()).whileTrue(intake.runIntake());
 
-        operator.x().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter)
-            .andThen(Commands.runOnce(() -> shooter.setFlywheelVelocity(0.0), shooter)));
+        operator.x().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter));
         operator.y().onTrue(intake.fullRetract());
         operator.b().onTrue(intake.partialRetract());
-        operator.a().whileTrue(transfer.reverseCommand())
-            .onFalse(transfer.shootCommand().until(() -> !driver.rightTrigger().getAsBoolean()));
+        operator.a().whileTrue(Commands.runOnce(shooter::toogleDormantMode));
 
         operator.rightTrigger().onTrue(Commands.runOnce(
-            () -> shooter.changeHoodAngle(2.0),
+            () -> shooter.changeHoodAngle(-ShooterConstants.kManualHoodInc),
             shooter));
         operator.leftTrigger().onTrue(Commands.runOnce(
-            () -> shooter.setHoodAngle(90.0),
+            () -> shooter.changeHoodAngle(ShooterConstants.kManualHoodInc),
             shooter));
         operator.rightBumper().onTrue(Commands.runOnce(
             () -> shooter.changeFlywheelVelocity(ShooterConstants.kManualFlywheelInc), shooter));
@@ -158,8 +149,8 @@ public class RobotContainer {
 
         operator.rightStick().onTrue(Commands.runOnce(() -> {
             Pose2d pose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
-            ? new Pose2d(SwerveConstants.kResetX, SwerveConstants.kResetY, new Rotation2d(0.0))
-            : new Pose2d(SwerveConstants.fieldWidth - SwerveConstants.kResetX, SwerveConstants.kResetY, new Rotation2d(Math.PI));
+                ? new Pose2d(SwerveConstants.kResetX, SwerveConstants.kResetY, new Rotation2d(0.0))
+                : new Pose2d(SwerveConstants.fieldWidth - SwerveConstants.kResetX, SwerveConstants.kResetY, new Rotation2d(Math.PI));
             drivetrain.resetPose(pose);
         }));
 

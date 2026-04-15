@@ -35,6 +35,7 @@ public class Transfer extends SubsystemBase {
         m_transferMotor1.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
         m_transferMotor2.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
 
+        m_transferMotor2.setControl(m_transferFollower);
         // ParentDevice.optimizeBusUtilizationForAll(m_floorMotor, m_transferMotor1, m_transferMotor2);
     }
 

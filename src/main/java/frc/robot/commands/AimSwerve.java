@@ -55,7 +55,6 @@ public class AimSwerve extends Command {
     @Override
     public void end(boolean interrupted) {
         shooter.setHood(false);
-        shooter.setPassing(false);
     }
 
     @Override
@@ -88,13 +87,6 @@ public class AimSwerve extends Command {
         }
 
         Pose2d robotPose = drivetrain.getState().Pose;
-        
-        // Dynamically update passing state based on alliance and position
-        if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue) {
-            shooter.setPassing(robotPose.getX() > SwerveConstants.allianceZoneWidth);
-        } else {
-            shooter.setPassing(robotPose.getX() < (SwerveConstants.fieldWidth - SwerveConstants.allianceZoneWidth));
-        }
 
         Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose, drivetrain.getState().Speeds);
 

@@ -14,7 +14,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ShooterConstants;
 
@@ -28,9 +27,7 @@ public class Shooter extends SubsystemBase {
     private final TalonFX m_topRightFlywheel = new TalonFX(ShooterConstants.kTopRightFlywheelId, canBus);
 
     private final VelocityTorqueCurrentFOC m_flywheelRequest = new VelocityTorqueCurrentFOC(0.0);
-    private final VelocityTorqueCurrentFOC m_hoodVelocityRequest = new VelocityTorqueCurrentFOC(0.0);
     private final MotionMagicTorqueCurrentFOC m_hoodRequest = new MotionMagicTorqueCurrentFOC(0.0);
-    private final NeutralOut m_neutralReq = new NeutralOut();
 
     private final Follower m_alignedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Aligned);
     private final Follower m_opposedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Opposed);
@@ -45,11 +42,12 @@ public class Shooter extends SubsystemBase {
     private final DoublePublisher m_hoodActualAngle = m_table.getDoubleTopic("Hood/ActualAngle").publish();
     private final BooleanPublisher m_autoAimEnabledPub = m_table.getBooleanTopic("AutoAimEnabled").publish();
     private final BooleanPublisher m_isManualPub = m_table.getBooleanTopic("FlywheelOn").publish();
+    private final BooleanPublisher m_dormantModePub = m_table.getBooleanTopic("DormantModeOn").publish();
 
     private double m_desiredAngle = ShooterConstants.kMinAngle;
     private boolean m_autoAimEnabled = false;
     private boolean m_hoodUp = false;
-    private boolean m_passing = false;
+    private boolean m_dormantMode = true;
 
     public Shooter() {
         // Apply configurations directly from constants to keep constructor clean of variables
@@ -76,6 +74,7 @@ public class Shooter extends SubsystemBase {
 
         m_autoAimEnabledPub.set(m_autoAimEnabled);
         m_isManualPub.set(!m_autoAimEnabled);
+        m_dormantModePub.set(m_dormantMode);
     }
 
     public void toggleAutoAim() {
@@ -102,7 +101,7 @@ public class Shooter extends SubsystemBase {
         m_autoAimEnabled = false;
         double newPos = m_desiredAngle + delta;
         newPos = MathUtil.clamp(newPos, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
-        setHoodAngle(62.0);
+        setHoodAngle(newPos);
     }
 
     public void changeFlywheelVelocity(double delta) {
@@ -136,16 +135,18 @@ public class Shooter extends SubsystemBase {
         return m_hoodUp;
     }
 
-    public void setPassing(boolean pass) {
-        m_passing = pass;
+    public void toogleDormantMode() {
+        m_dormantMode = !m_dormantMode;
     }
 
-    public boolean getPassing() {
-        return m_passing;
+    public boolean getDormantMode() {
+        return m_dormantMode;
     }
+
 
     public void setFlywheelVelocity(double velocity) {
-        m_topRightFlywheel.setControl(m_flywheelRequest.withVelocity(velocity));
+        double clampedVel = MathUtil.clamp(velocity, 0.0, ShooterConstants.kMaxFlywheelRPS);
+        m_topRightFlywheel.setControl(m_flywheelRequest.withVelocity(clampedVel));
         m_bottomRightFlywheel.setControl(m_alignedFollower);
         m_topLeftFlywheel.setControl(m_opposedFollower);
         m_bottomLeftFlywheel.setControl(m_opposedFollower);

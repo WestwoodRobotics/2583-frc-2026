@@ -1,0 +1,187 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.609,
+        "y": 2.543
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.1768613976228677,
+        "y": 2.4815155191552614
+      },
+      "isLocked": false,
+      "linkedName": "RightTrenchPoint1"
+    },
+    {
+      "anchor": {
+        "x": 3.352753038194445,
+        "y": 0.6498901909722223
+      },
+      "prevControl": {
+        "x": 2.2848775147073197,
+        "y": 0.6008973891118298
+      },
+      "nextControl": {
+        "x": 3.79454944620924,
+        "y": 0.6701592611067462
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.976134094151213,
+        "y": 0.6498901909722223
+      },
+      "prevControl": {
+        "x": 6.6803158767966835,
+        "y": 0.6095989924398018
+      },
+      "nextControl": {
+        "x": 8.205555714789975,
+        "y": 0.8173405631642783
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.03710413694722,
+        "y": 4.132039942938659
+      },
+      "prevControl": {
+        "x": 8.156268943629968,
+        "y": 3.866420992406001
+      },
+      "nextControl": {
+        "x": 7.851460135035562,
+        "y": 4.5458413523743815
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.510342368045648,
+        "y": 4.132039942938659
+      },
+      "prevControl": {
+        "x": 6.704549910806333,
+        "y": 4.575678129692521
+      },
+      "nextControl": {
+        "x": 6.3575509764169436,
+        "y": 3.7830107807846147
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.355078459343795,
+        "y": 2.543
+      },
+      "prevControl": {
+        "x": 6.357902548813337,
+        "y": 2.8875883520805665
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9673025063451778,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 2.014925373134327,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 2.2541045368020303,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 2.9986318210659886,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 3.987206823027691,
+      "rotationDegrees": 71.4898645958563
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 2.2,
+      "maxWaypointRelativePos": 5.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 8.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 180.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "FlywheelOffEvent",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "FlywheelOff"
+        }
+      }
+    },
+    {
+      "name": "TransferOffEvent",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": 6.0,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "StopTransfer"
+        }
+      }
+    },
+    {
+      "name": "RunIntakeEvent",
+      "waypointRelativePos": 1.6288467639593898,
+      "endWaypointRelativePos": 5.0,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "RunIntake"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 8.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 180.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "reversed": false,
+  "folder": "RightDelayedTrenchPaths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 32.77344877418928
+  },
+  "useDefaultConstraints": true
+}

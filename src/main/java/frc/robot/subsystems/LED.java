@@ -105,7 +105,11 @@ public class LED extends SubsystemBase {
             return;
         }
 
-         setSolidColor(new Color(255,60,0));
+        if (DriverStation.isDisabled()) {
+            startLarsonAnimation(new Color(255,60,0));
+            return;
+        }
+        setSolidColor(new Color(255,60,0));
      }
 
     private boolean isAligned(Pose2d robotPose) {

@@ -50,8 +50,24 @@ public class AdjustShooter extends Command {
             return;
         }
 
-        Double flywheelRPS = distance * 3.284072 + 17.31856;
+        Double flywheelRPS = distance * 4.65494 + 18.89717;
         Double hoodAngle = 62.0;
+
+        if (m_shooter.getHoodState()) {
+            if (!GetTargetLocation.inZone()) {
+                hoodAngle = ShooterConstants.kMinAngle;
+            }
+        } else {
+            hoodAngle = ShooterConstants.kMaxAngle;
+            if (DriverStation.isTeleop() && m_shooter.getDormantMode()) {
+                if (GetTargetLocation.inZone()) {
+                    flywheelRPS = ShooterConstants.kZoneDormantVel;
+                }
+                else {
+                    flywheelRPS = ShooterConstants.kPassingDormantVel;
+                }
+            }
+        }
 
         if (flywheelRPS == null || hoodAngle == null) {
             // If distance is out of bounds of our mapping, do not adjust shooter
@@ -60,26 +76,7 @@ public class AdjustShooter extends Command {
             return;
         }
 
-        if (m_shooter.getHoodState()) {
-            if (m_shooter.getPassing()) {
-                hoodAngle = ShooterConstants.kMinAngle;
-            }
-            hoodAngle = MathUtil.clamp(hoodAngle, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
-            m_shooter.setHoodAngle(hoodAngle);
-        } else {
-            m_shooter.setHoodAngle(ShooterConstants.kMaxAngle);
-            if(DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-                if (robotPose.getX() > SwerveConstants.allianceZoneWidth) {
-                    flywheelRPS = 20.0;
-                }
-            } else {
-                if (robotPose.getX() < (SwerveConstants.fieldWidth - SwerveConstants.allianceZoneWidth)) {
-                    flywheelRPS = 20.0;
-                }
-            }
-        }
-
-        flywheelRPS = MathUtil.clamp(flywheelRPS, 0, ShooterConstants.kMaxFlywheelRPS);
+        m_shooter.setHoodAngle(hoodAngle);
         m_shooter.setFlywheelVelocity(flywheelRPS);
     }
     

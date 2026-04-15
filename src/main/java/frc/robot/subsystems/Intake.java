@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
@@ -36,7 +37,7 @@ public class Intake extends SubsystemBase {
         // Apply pivot offset
         m_pivotMotor.setPosition(IntakeConstants.kPivotOffset);
 
-        m_pivotMotor.setControl(m_pivotRequest.withPosition(IntakeConstants.kPivotIn));
+        m_pivotMotor.setControl(m_pivotRequest.withPosition(IntakeConstants.kPivotOut));
 
         // ParentDevice.optimizeBusUtilizationForAll(m_pivotMotor, m_rollerMotor);
     }
@@ -58,6 +59,17 @@ public class Intake extends SubsystemBase {
      */
     public void setPivotPosition(double position) {
         m_pivotMotor.setControl(m_pivotRequest.withPosition(position));
+    }
+
+    public void slowPivot() {
+        MotionMagicConfigs slowConfigs = new MotionMagicConfigs()
+            .withMotionMagicCruiseVelocity(1.0)
+            .withMotionMagicAcceleration(5.0);
+        m_pivotMotor.getConfigurator().apply(slowConfigs);
+    }
+
+    public void normalPivot() {
+        m_pivotMotor.getConfigurator().apply(IntakeConstants.getPivotConfigs());
     }
 
     public double getPivotPosition() {
@@ -95,15 +107,6 @@ public class Intake extends SubsystemBase {
     public Command partialRetract() {
         SmartDashboard.putBoolean("partialretract", true);
         return Commands.runOnce(() -> setPivotPosition(IntakeConstants.kPivotPartial), this);
-    }
-
-    public Command shootCommand() {
-        return Commands.startEnd(() ->{
-            setPivotPosition(IntakeConstants.kPivotShoot);
-            setRollerVelocity(IntakeConstants.kRollerShootingVel);
-        },
-        () -> setPivotPosition(IntakeConstants.kPivotOut),
-        this);
     }
 
     public void resetPivot() {

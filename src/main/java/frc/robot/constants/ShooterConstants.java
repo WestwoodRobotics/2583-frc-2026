@@ -15,7 +15,9 @@ public class ShooterConstants {
     public static final int kHoodMotorId = 25;
     public static final CANBus kCANBus = new CANBus("rio");
 
-    public static final double kMaxFlywheelRPS = 40.0;
+    public static final double kMaxFlywheelRPS = 50.0;
+    public static final double kPassingDormantVel = 15.0;
+    public static final double kZoneDormantVel = 20.0;
 
     public static final double kPosAtMinAngle = 0.066162109375;
     public static final double kPosAtMaxAngle = 0.0;
@@ -23,10 +25,10 @@ public class ShooterConstants {
     public static final double kMaxAngle = 90.0;
     public static final double kPerDegree = (kPosAtMaxAngle - kPosAtMinAngle) / (kMaxAngle - kMinAngle);
 
-    public static final double kBumperHoodAngle = 57.0;
-    public static final double kBumperFlywheelVel = 45.0;
+    public static final double kYFlywheelVel = 30.0;
+    public static final double kYHoodAngle = 62.0;
 
-    public static final double kManualHoodVelocity = 0.1;
+    public static final double kManualHoodInc = 2.0;
     public static final double kManualFlywheelInc = 1.0;
     public static final double kFlywheelToleranceRPS = 1.0;
 
@@ -36,6 +38,12 @@ public class ShooterConstants {
 
     static {
         kDistanceToRPS.put(0.0, 20.0);
+        kDistanceToRPS.put(2.881908510064537, 32.0);
+        kDistanceToRPS.put(2.089076844573983, 28.0);
+        kDistanceToRPS.put(3.2036860021744897, 34.0);
+        kDistanceToRPS.put(4.3, 39.0);
+        kDistanceToRPS.put(1.47, 26.0);
+        kDistanceToRPS.put(2.496, 31.0);
         kDistanceToRPS.put(999.0, 20.0);
 
         kDistanceToAngle.put(0.0, 62.0);
@@ -48,12 +56,14 @@ public class ShooterConstants {
     public static TalonFXConfiguration getFlywheelMotorConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 5.0;
+        configs.Slot0.kP = 40.0;
         configs.Slot0.kI = 0.0;
         configs.Slot0.kD = 0.0;
-        configs.Slot0.kS = 8.0;
-        configs.Slot0.kV = 0.512;
-        configs.Slot0.kA = 6.0;
+        configs.Slot0.kS = 3.7;
+        configs.Slot0.kV = 0.0;
+        configs.Slot0.kA = 1.1357132862;
+
+        configs.CurrentLimits.SupplyCurrentLimit = 25.0;
 
         configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
@@ -70,11 +80,11 @@ public class ShooterConstants {
         
         configs.Slot0.kP = 1000.0;
         configs.Slot0.kI = 0.0;
-        configs.Slot0.kD = 20.0;
-        configs.Slot0.kS = 3.7;
+        configs.Slot0.kD = 50.0;
+        configs.Slot0.kS = 5.8;
         configs.Slot0.kV = 0.0;
-        configs.Slot0.kA = 6.4;
-        configs.Slot0.kG = 4.0;
+        configs.Slot0.kA = 3.203;
+        configs.Slot0.kG = 2.3;
 
         configs.Feedback.SensorToMechanismRatio = (54.0 / 11.0) * (28.0 / 15.0) * (106.0 / 7.0);
 

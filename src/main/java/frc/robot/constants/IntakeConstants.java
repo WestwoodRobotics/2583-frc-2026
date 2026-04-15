@@ -11,17 +11,21 @@ public class IntakeConstants {
     public static final int kRollerMotorId = 21;
     public static final CANBus kCANBus = new CANBus("SwerveCAN");
 
-    public static final double kPivotOffset = 0.296875;
+    public static final double kPivotOffset = 0.310546875;
 
     public static final double kPivotIn = kPivotOffset;
     public static final double kPivotPartial = 0.00;
     public static final double kPivotOut = -0.11;
-    public static final double kPivotShoot = 0.16;
+    public static final double kPivotShoot = 0.28;
     public static final double kResetPivotPos = -0.066162109375;
 
     public static final double kRollerNeutralVel = 0.0;
     public static final double kRollerIntakingVel = 32.0;
     public static final double kRollerShootingVel = 20.0;
+
+    public static final double kJammedThreshold = 0.03;
+    public static final double kJammedTime = 0.5;
+    public static final double kRestTime = 1.0;
 
     public static TalonFXConfiguration getPivotConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
@@ -35,8 +39,8 @@ public class IntakeConstants {
         configs.Slot0.kG = 17.0;
         configs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
         
-        configs.MotionMagic.MotionMagicAcceleration = 8.0;
-        configs.MotionMagic.MotionMagicCruiseVelocity = 2.0;
+        configs.MotionMagic.MotionMagicAcceleration = 9.0;
+        configs.MotionMagic.MotionMagicCruiseVelocity = 3.0;
 
         // configs.CurrentLimits.StatorCurrentLimit = 80.0;
         // configs.CurrentLimits.SupplyCurrentLimit = 60.0;
@@ -52,7 +56,7 @@ public class IntakeConstants {
     public static TalonFXConfiguration getRollerConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 5.0;
+        configs.Slot0.kP = 10.0;
         configs.Slot0.kI = 0.0;
         configs.Slot0.kD = 0.0;
         configs.Slot0.kS = 16.7;
@@ -61,6 +65,8 @@ public class IntakeConstants {
 
         // configs.CurrentLimits.StatorCurrentLimit = 80.0;
         // configs.CurrentLimits.SupplyCurrentLimit = 50.0;
+        
+        configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
         configs.Feedback.SensorToMechanismRatio = (29.0 / 12.0);
         configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
