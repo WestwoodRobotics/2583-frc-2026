@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.609,
+        "x": 3.02,
         "y": 2.543
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1768613976228677,
+        "x": 2.5878613976228677,
         "y": 2.4815155191552614
       },
       "isLocked": false,
@@ -181,7 +181,7 @@
   "folder": "RightDelayedTrenchPaths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 32.77344877418928
+    "rotation": 50.0
   },
   "useDefaultConstraints": true
 }

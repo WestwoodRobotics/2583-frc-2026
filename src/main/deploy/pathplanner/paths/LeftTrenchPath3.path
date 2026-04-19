@@ -4,24 +4,24 @@
     {
       "anchor": {
         "x": 3.02,
-        "y": 2.543
+        "y": 5.499655999999999
       },
       "prevControl": null,
       "nextControl": {
         "x": 2.9135408171680597,
-        "y": 1.4095091645537345
+        "y": 6.633146835446265
       },
       "isLocked": false,
-      "linkedName": "RightTrenchPoint1"
+      "linkedName": "LeftTrenchPoint1"
     },
     {
       "anchor": {
-        "x": 3.7414693295292434,
-        "y": 0.6386019971469341
+        "x": 3.7544079885877313,
+        "y": 7.392582025677603
       },
       "prevControl": {
-        "x": 2.719315263908701,
-        "y": 0.9750071326676176
+        "x": 2.9263338088445074,
+        "y": 7.35376604850214
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "TransferOffEvent",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
@@ -54,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.3155127255076
+    "rotation": 179.91808626254394
   },
   "reversed": false,
-  "folder": "RightTrenchPaths",
+  "folder": "LeftTrenchPaths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 50.0
+    "rotation": -50.0
   },
   "useDefaultConstraints": true
 }

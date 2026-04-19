@@ -34,13 +34,13 @@ public class Transfer extends SubsystemBase {
         m_floorMotor.getConfigurator().apply(TransferConstants.getFloorMotorConfigs());
         m_transferMotor1.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
         m_transferMotor2.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
-
-        m_transferMotor2.setControl(m_transferFollower);
         // ParentDevice.optimizeBusUtilizationForAll(m_floorMotor, m_transferMotor1, m_transferMotor2);
     }
 
     @Override
-    public void periodic() {}
+    public void periodic() {
+    //     m_transferMotor2.setControl(m_transferFollower);
+    }
 
     public void runMotors(double floorVel, double transferVel) {
         m_floorMotor.setControl(m_floorRequest.withVelocity(floorVel));
@@ -71,10 +71,10 @@ public class Transfer extends SubsystemBase {
 
     public Command shootCommand() {
         return Commands.run(() -> {
-        //     if (DriverStation.isAutonomous() && !m_canShootSub.get()) {
-        //     this.runMotors(0.0, 0.0);
-        //     return;
-        // }
+            if (DriverStation.isAutonomous() && !m_canShootSub.get()) {
+            this.runMotors(0.0, 0.0);
+            return;
+        }
         SmartDashboard.putBoolean("running transfer" , true);
         this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel);
         }, this);

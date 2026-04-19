@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 2.609,
+        "x": 3.02,
         "y": 2.543
       },
       "prevControl": {
-        "x": 2.0573490985199743,
+        "x": 2.4683490985199743,
         "y": 2.5450292898651514
       },
       "nextControl": null,
@@ -68,7 +68,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 32.77344877418928
+    "rotation": 50.0
   },
   "reversed": false,
   "folder": "RightDelayedTrenchPaths",

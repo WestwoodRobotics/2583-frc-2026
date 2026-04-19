@@ -34,6 +34,7 @@ public class Shooter extends SubsystemBase {
 
     private final NetworkTable m_table = NetworkTableInstance.getDefault().getTable("Shooter");
     private final DoublePublisher m_flywheelDesiredRPS = m_table.getDoubleTopic("Flywheel/DesiredRPS").publish();
+    private final DoublePublisher m_flywheelIncerceptDelta = m_table.getDoubleTopic("Flywheel/InterceptDelta").publish();
     // private final DoublePublisher m_flywheelActualRPS = m_table.getDoubleTopic("Flywheel/ActualRPS").publish();
     private final BooleanPublisher m_atDesiredRPS = m_table.getBooleanTopic("Flywheel/AtDesiredRPS").publish();
     // private final DoublePublisher m_hoodDesiredPos = m_table.getDoubleTopic("Hood/DesiredPos").publish();
@@ -48,6 +49,8 @@ public class Shooter extends SubsystemBase {
     private boolean m_autoAimEnabled = false;
     private boolean m_hoodUp = false;
     private boolean m_dormantMode = true;
+    public double m_intercept = 19.39717;
+    public double m_delta = 0;
 
     public Shooter() {
         // Apply configurations directly from constants to keep constructor clean of variables
@@ -75,6 +78,7 @@ public class Shooter extends SubsystemBase {
         m_autoAimEnabledPub.set(m_autoAimEnabled);
         m_isManualPub.set(!m_autoAimEnabled);
         m_dormantModePub.set(m_dormantMode);
+        m_flywheelIncerceptDelta.set(m_delta);
     }
 
     public void toggleAutoAim() {
@@ -143,6 +147,10 @@ public class Shooter extends SubsystemBase {
         return m_dormantMode;
     }
 
+    public void changeIntercept(double delta) {
+        m_delta += delta;
+        m_intercept += delta;
+    }
 
     public void setFlywheelVelocity(double velocity) {
         double clampedVel = MathUtil.clamp(velocity, 0.0, ShooterConstants.kMaxFlywheelRPS);

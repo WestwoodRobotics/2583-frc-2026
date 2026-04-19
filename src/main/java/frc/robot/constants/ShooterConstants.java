@@ -17,7 +17,7 @@ public class ShooterConstants {
 
     public static final double kMaxFlywheelRPS = 50.0;
     public static final double kPassingDormantVel = 15.0;
-    public static final double kZoneDormantVel = 20.0;
+    public static final double kZoneDormantVel = 26.0;
 
     public static final double kPosAtMinAngle = 0.066162109375;
     public static final double kPosAtMaxAngle = 0.0;
@@ -38,13 +38,12 @@ public class ShooterConstants {
 
     static {
         kDistanceToRPS.put(0.0, 20.0);
-        kDistanceToRPS.put(2.881908510064537, 32.0);
-        kDistanceToRPS.put(2.089076844573983, 28.0);
-        kDistanceToRPS.put(3.2036860021744897, 34.0);
-        kDistanceToRPS.put(4.3, 39.0);
-        kDistanceToRPS.put(1.47, 26.0);
-        kDistanceToRPS.put(2.496, 31.0);
-        kDistanceToRPS.put(999.0, 20.0);
+
+        
+        kDistanceToRPS.put(1.8309003982663195, 27.104368845791093);
+        kDistanceToRPS.put(1.8309003982663195, 27.104368845791093);
+        kDistanceToRPS.put(1.8309003982663195, 27.104368845791093);
+        kDistanceToRPS.put(1.8309003982663195, 27.104368845791093);
 
         kDistanceToAngle.put(0.0, 62.0);
         kDistanceToAngle.put(999.0, 62.0);
@@ -63,7 +62,7 @@ public class ShooterConstants {
         configs.Slot0.kV = 0.0;
         configs.Slot0.kA = 1.1357132862;
 
-        configs.CurrentLimits.SupplyCurrentLimit = 25.0;
+        configs.CurrentLimits.SupplyCurrentLimit = 40.0;
 
         configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
@@ -87,6 +86,8 @@ public class ShooterConstants {
         configs.Slot0.kG = 2.3;
 
         configs.Feedback.SensorToMechanismRatio = (54.0 / 11.0) * (28.0 / 15.0) * (106.0 / 7.0);
+
+        configs.CurrentLimits.SupplyCurrentLimit = 10.0;
 
         configs.MotionMagic.MotionMagicAcceleration = 3.0;
         configs.MotionMagic.MotionMagicCruiseVelocity = 0.7;

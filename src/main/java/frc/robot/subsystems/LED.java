@@ -1,10 +1,13 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANdleConfiguration;
+import com.ctre.phoenix6.controls.EmptyAnimation;
 import com.ctre.phoenix6.controls.FireAnimation;
 import com.ctre.phoenix6.controls.LarsonAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.LossOfSignalBehaviorValue;
 import com.ctre.phoenix6.signals.RGBWColor;
 
@@ -17,10 +20,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -35,9 +36,14 @@ public class LED extends SubsystemBase {
     private CANdle candle;
     private final CommandSwerveDrivetrain drivetrain;
     private final CommandXboxController driver;
-    private final CommandXboxController operator;
 
     private boolean wasHubActive;
+    private boolean wasDisabled;
+    private boolean strobing = false;
+    private boolean fire = false;
+
+
+    private Color currentColor = new Color(0,0,0);
 
     private final NetworkTable m_hubStatusTable = NetworkTableInstance.getDefault().getTable("HubStatus");
     private final BooleanPublisher m_isHubActivePub = m_hubStatusTable.getBooleanTopic("IsHubActive").publish();
@@ -48,10 +54,9 @@ public class LED extends SubsystemBase {
     private final NetworkTable m_shooterTable = NetworkTableInstance.getDefault().getTable("Shooter");
     private final BooleanPublisher m_canShootPub = m_shooterTable.getBooleanTopic("CanShoot").publish();
 
-    public LED(CommandSwerveDrivetrain drivetrain, CommandXboxController driver, CommandXboxController operator) {
+    public LED(CommandSwerveDrivetrain drivetrain, CommandXboxController driver) {
         this.drivetrain = drivetrain;
         this.driver = driver;
-        this.operator = operator;
         candle = new CANdle(LEDConstants.candleId, LEDConstants.canBus);
 
         CANdleConfiguration cfg = new CANdleConfiguration();
@@ -61,55 +66,84 @@ public class LED extends SubsystemBase {
         candle.getConfigurator().apply(cfg);
 
         wasHubActive = GetHubStatus.isHubActive();
+        wasDisabled = DriverStation.isDisabled();
     }
 
     @Override
     public void periodic() {
+        boolean isDisabled = DriverStation.isDisabled();
+
+        if (!isDisabled && wasDisabled) {
+            clearAllAnimations();
+        }
+        wasDisabled = isDisabled;
+
         boolean isHubActive = GetHubStatus.isHubActive();
+        double countdown = GetHubStatus.getHubCountdown();
         m_isHubActivePub.set(isHubActive);
-        m_countdownPub.set(GetHubStatus.getHubCountdown());
+        m_countdownPub.set(countdown);
         m_endgamePub.set(GetHubStatus.getEndgameCountdown());
         m_isPracticePub.set(GetHubStatus.isPractice());
+
+        Pose2d robotPose = drivetrain.getState().Pose;
+        boolean isAligned = isAligned(robotPose);
+        m_canShootPub.set(isAligned);
+
+        if (isDisabled) {
+            currentColor = new Color(255,60,0);
+            startLarsonAnimation(currentColor);
+            return;
+        }
+
+        if (countdown < 3) {
+            strobing = true;
+        } else {
+            strobing = false;
+        }
+
+        if(DriverStation.getMatchTime() <= 30 && DriverStation.isTeleop()){
+            fire = true;
+        } else{
+            fire = false;
+        }
 
         if (isHubActive != wasHubActive) {
             CommandScheduler.getInstance().schedule(
                 Commands.startEnd(
                 () -> {
                     driver.getHID().setRumble(RumbleType.kBothRumble, LEDConstants.kRumbleIntensity);
-                    operator.getHID().setRumble(RumbleType.kBothRumble, LEDConstants.kRumbleIntensity);
                 },
                 () -> {
                     driver.getHID().setRumble(RumbleType.kBothRumble, 0);
-                    operator.getHID().setRumble(RumbleType.kBothRumble, 0);
                 }
             ).withTimeout(LEDConstants.kRumbleTimeout));
         }
         wasHubActive = isHubActive;
 
         if (!isHubActive) {
-            setSolidColor(new Color(255,60,0));
+            currentColor = Color.kRed;
+            setSolidColor(Color.kRed);
             return;
         }
-        Pose2d robotPose = drivetrain.getState().Pose;
-        
-        boolean isAligned = isAligned(robotPose);
-        m_canShootPub.set(isAligned);
 
-        if (isAligned) {
-            setSolidColor(Color.kGreen);
+        if(fire){
+            startFireAnimation();
             return;
         }
 
-        if (isSwerveCommandRunning() && isInAllianceZone(robotPose)) {
-            setSolidColor(Color.kYellow);
+        if (isAligned) {
+            currentColor = Color.kGreen;
+            setSolidColor(currentColor);
             return;
         }
 
-        if (DriverStation.isDisabled()) {
-            startLarsonAnimation(new Color(255,60,0));
+        if (strobing) {
+            currentColor = Color.kPurple;
+            setStrobeAnimation(currentColor);
             return;
         }
-        setSolidColor(new Color(255,60,0));
+        currentColor = new Color(255,60,0);
+        setSolidColor(currentColor);
      }
 
     private boolean isAligned(Pose2d robotPose) {
@@ -124,23 +158,8 @@ public class LED extends SubsystemBase {
         return error <= LEDConstants.kMaxHeadingError;
     }
 
-    private boolean isSwerveCommandRunning() {
-        Command currentCommand = drivetrain.getCurrentCommand();
-        return currentCommand != null && currentCommand != drivetrain.getDefaultCommand();
-    }
-
-    private boolean isInAllianceZone(Pose2d robotPose) {
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isEmpty()) return false;
-
-        if (alliance.orElse(Alliance.Blue) == Alliance.Blue) {
-            return robotPose.getX() < SwerveConstants.allianceZoneWidth;
-        } else {
-            return robotPose.getX() > (SwerveConstants.fieldWidth - SwerveConstants.allianceZoneWidth);
-        }
-    }
-
     public void setSolidColor(Color color, double brightness){
+        if(strobing || fire) return;
         candle.setControl(new SolidColor(8, LEDConstants.endIndex).withColor(new RGBWColor(color).scaleBrightness(brightness)));
     }
 
@@ -153,13 +172,27 @@ public class LED extends SubsystemBase {
     }
     
     public void startFireAnimation(){
-        FireAnimation FIRE = new FireAnimation(8, LEDConstants.endIndex).withBrightness(1).withCooling(0.3);
-        candle.setControl(FIRE);   
+        FireAnimation FIREforward = new FireAnimation(29, LEDConstants.endIndex).withBrightness(1).withCooling(0.25).withSparking(0.45).withFrameRate(40).withDirection(AnimationDirectionValue.Forward).withSlot(0);
+        FireAnimation FIREbackward = new FireAnimation(8, 28).withBrightness(1).withCooling(0.25).withSparking(0.45).withFrameRate(40).withDirection(AnimationDirectionValue.Backward).withSlot(1);
+        candle.setControl(FIREforward); 
+        candle.setControl(FIREbackward);   
     }
 
     public void startLarsonAnimation(Color color){
+        if(strobing || fire) return;
         LarsonAnimation larson = new LarsonAnimation(8, LEDConstants.endIndex).withColor(new RGBWColor(color)).withSize(7).withFrameRate(45);
         candle.setControl(larson);   
+    }
+
+    public void setStrobeAnimation(Color color) {
+        StrobeAnimation strobe = new StrobeAnimation(8, LEDConstants.endIndex).withColor(new RGBWColor(color)).withFrameRate(2);
+        candle.setControl(strobe);
+    }
+
+    public void clearAllAnimations() {
+        for (int slot = 0; slot < LEDConstants.endIndex; slot++) {
+            candle.setControl(new EmptyAnimation(slot));
+        }
     }
 
     

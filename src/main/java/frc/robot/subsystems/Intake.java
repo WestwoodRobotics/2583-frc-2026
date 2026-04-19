@@ -37,7 +37,7 @@ public class Intake extends SubsystemBase {
         // Apply pivot offset
         m_pivotMotor.setPosition(IntakeConstants.kPivotOffset);
 
-        m_pivotMotor.setControl(m_pivotRequest.withPosition(IntakeConstants.kPivotOut));
+        // m_pivotMotor.setControl(m_pivotRequest.withPosition(IntakeConstants.kPivotOut));
 
         // ParentDevice.optimizeBusUtilizationForAll(m_pivotMotor, m_rollerMotor);
     }

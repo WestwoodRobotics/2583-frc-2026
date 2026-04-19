@@ -17,7 +17,7 @@ public class VisionConstants {
 
     public static final Transform3d[] robotToCamTransforms = {
         new Transform3d(
-            new Translation3d(0.298069, 0.0019304, 0.317627),
+            new Translation3d(0.298069, -0.0019304, 0.317627),
             new Rotation3d(0.0, Math.toRadians(12.87), Math.toRadians(25.0))
         ),
         new Transform3d(

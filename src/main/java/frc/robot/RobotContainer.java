@@ -66,7 +66,7 @@ public class RobotContainer {
     public final Vision vision = new Vision(drivetrain);
     public final Transfer transfer = new Transfer();
     public final Shooter shooter = new Shooter();
-    public final LED led = new LED(drivetrain, driver, operator);
+    public final LED led = new LED(drivetrain, driver);
 
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
@@ -127,6 +127,21 @@ public class RobotContainer {
         // Run intake while holding left trigger
         driver.leftTrigger().and(driver.rightTrigger().negate()).whileTrue(intake.runIntake());
 
+        driver.leftBumper().whileTrue(Commands.runEnd(
+            () -> {
+                intake.setPivotPosition(IntakeConstants.kPivotDepot);
+                intake.setRollerVelocity(IntakeConstants.kRollerIntakingVel);
+            },
+            () -> intake.setPivotPosition(IntakeConstants.kPivotOut),
+            intake
+        ));
+
+        driver.rightBumper().whileTrue(Commands.runEnd(
+            () -> intake.setPivotPosition(IntakeConstants.kPivotUp),
+            () -> intake.setPivotPosition(IntakeConstants.kPivotOut),
+            intake
+        ));
+
         operator.x().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter));
         operator.y().onTrue(intake.fullRetract());
         operator.b().onTrue(intake.partialRetract());
@@ -143,9 +158,10 @@ public class RobotContainer {
         operator.leftBumper().onTrue(Commands.runOnce(
             () -> shooter.changeFlywheelVelocity(-ShooterConstants.kManualFlywheelInc), shooter));
 
-        operator.povDown().onTrue(Commands.runOnce(shooter::resetHoodPosition, shooter).ignoringDisable(true));
+        operator.povLeft().onTrue(Commands.runOnce(shooter::resetHoodPosition, shooter).ignoringDisable(true));
         operator.povRight().onTrue(Commands.runOnce(intake::resetPivot, intake).ignoringDisable(true));
-        operator.povLeft().onTrue(Commands.runOnce(GetHubStatus::togglePracticeMode));
+        operator.povUp().onTrue(Commands.runOnce(() -> shooter.changeIntercept(0.5)));
+        operator.povDown().onTrue(Commands.runOnce(() -> shooter.changeIntercept(-0.5)));
 
         operator.rightStick().onTrue(Commands.runOnce(() -> {
             Pose2d pose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue

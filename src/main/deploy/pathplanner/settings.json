@@ -4,9 +4,10 @@
   "holonomicMode": true,
   "pathFolders": [
     "DepotPaths",
-    "RightDelayedTrenchPaths",
+    "LeftTrenchPaths",
     "PreloadPaths",
     "RightBumpPaths",
+    "RightDelayedTrenchPaths",
     "RightTrenchPaths"
   ],
   "autoFolders": [],
