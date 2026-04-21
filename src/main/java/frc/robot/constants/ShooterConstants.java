@@ -8,6 +8,15 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 public class ShooterConstants {
+    // Values identified from your system identification
+    public static final double kFlywheelkV = 0.125; 
+    public static final double kFlywheelkA = 1.1357132862; 
+    public static final double kFlywheelkS = 3.7;  
+
+    // Tuning weights: 1.0 RPS error tolerance, 12.5V max effort
+    public static final double kLQRVelocityTolerance = 1.0; 
+    public static final double kLQRControlEffortVolts = 12.5;
+
     public static final int kTopLeftFlywheelId = 28;
     public static final int kTopRightFlywheelId = 26;
     public static final int kBottomLeftFlywheelId = 29;
@@ -58,9 +67,8 @@ public class ShooterConstants {
         configs.Slot0.kP = 40.0;
         configs.Slot0.kI = 0.0;
         configs.Slot0.kD = 0.0;
-        configs.Slot0.kS = 3.7;
-        configs.Slot0.kV = 0.0;
-        configs.Slot0.kA = 1.1357132862;
+        configs.Slot0.kS = kFlywheelkS;
+
 
         configs.CurrentLimits.SupplyCurrentLimit = 40.0;
 
