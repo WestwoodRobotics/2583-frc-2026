@@ -55,16 +55,14 @@ public class ShooterConstants {
     public static TalonFXConfiguration getFlywheelMotorConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 40.0;
+        configs.Slot0.kP = 5.0;
         configs.Slot0.kI = 0.0;
         configs.Slot0.kD = 0.0;
-        configs.Slot0.kS = 3.7;
-        configs.Slot0.kV = 0.0;
-        configs.Slot0.kA = 1.1357132862;
+        configs.Slot0.kS = 6.4;
+        configs.Slot0.kV = 0.1294363257;
+        configs.Slot0.kA = 1.1327576959;
 
-        configs.CurrentLimits.SupplyCurrentLimit = 40.0;
-
-        configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
+        configs.CurrentLimits.SupplyCurrentLimit = 25.0;
 
         configs.Feedback.SensorToMechanismRatio = 1.0;
         

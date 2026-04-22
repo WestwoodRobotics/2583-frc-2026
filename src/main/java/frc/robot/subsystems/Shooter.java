@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.NeutralOut;
@@ -45,7 +46,7 @@ public class Shooter extends SubsystemBase {
     private final BooleanPublisher m_isManualPub = m_table.getBooleanTopic("FlywheelOn").publish();
     private final BooleanPublisher m_dormantModePub = m_table.getBooleanTopic("DormantModeOn").publish();
 
-    private double m_desiredAngle = ShooterConstants.kMinAngle;
+    private double m_desiredAngle = ShooterConstants.kMaxAngle;
     private boolean m_autoAimEnabled = false;
     private boolean m_hoodUp = false;
     private boolean m_dormantMode = true;
@@ -55,7 +56,8 @@ public class Shooter extends SubsystemBase {
     public Shooter() {
         // Apply configurations directly from constants to keep constructor clean of variables
         m_hoodMotor.getConfigurator().apply(ShooterConstants.getHoodMotorConfigs());
-        m_bottomLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
+        m_bottomLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs()
+            .withTorqueCurrent(new TorqueCurrentConfigs().withPeakReverseTorqueCurrent(5.0)));
         m_bottomRightFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
         m_topLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
         m_topRightFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
@@ -104,7 +106,7 @@ public class Shooter extends SubsystemBase {
     public void changeHoodAngle(double delta) {
         m_autoAimEnabled = false;
         double newPos = m_desiredAngle + delta;
-        newPos = MathUtil.clamp(newPos, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
+        newPos = MathUtil.clamp(newPos, 0.0, ShooterConstants.kMaxAngle);
         setHoodAngle(newPos);
     }
 
@@ -120,7 +122,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setHoodAngle(double angle) {
-        m_desiredAngle = MathUtil.clamp(angle, ShooterConstants.kMinAngle, ShooterConstants.kMaxAngle);
+        m_desiredAngle = MathUtil.clamp(angle, 0.0, ShooterConstants.kMaxAngle);
         double angleDelta = m_desiredAngle - ShooterConstants.kMinAngle;
         double position = ShooterConstants.kPosAtMinAngle + angleDelta * ShooterConstants.kPerDegree;
 
