@@ -5,27 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "DepotPath1"
+            "waitTime": 0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "DepotPath2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotPath3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotPath6"
+            "pathName": "RightThirdPath1"
           }
         },
         {
@@ -37,13 +25,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DepotPath7"
+            "pathName": "RightThirdPath2"
           }
         }
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

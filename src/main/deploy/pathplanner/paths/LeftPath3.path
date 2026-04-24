@@ -57,7 +57,7 @@
     "rotation": 179.91808626254394
   },
   "reversed": false,
-  "folder": "LeftTrenchPaths",
+  "folder": "LeftPaths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -50.0

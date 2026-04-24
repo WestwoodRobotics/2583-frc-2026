@@ -3,39 +3,60 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.9898,
-        "y": 2.5441
+        "x": 2.559755555555556,
+        "y": 4.0739777777777775
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.750993967431986,
-        "y": 2.5427051416077795
+        "x": 2.530522222222223,
+        "y": 4.444266666666667
       },
       "isLocked": false,
-      "linkedName": "RightDelayedTrenchPoint1"
+      "linkedName": "RightThirdPoint1"
     },
     {
       "anchor": {
-        "x": 3.02,
-        "y": 2.543
+        "x": 0.945,
+        "y": 5.0874
       },
       "prevControl": {
-        "x": 2.4683490985199743,
-        "y": 2.5450292898651514
+        "x": 1.6963339499323786,
+        "y": 5.0874
+      },
+      "nextControl": {
+        "x": 0.695,
+        "y": 5.0874
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.8252444444444447,
+        "y": 7.221433333333334
+      },
+      "prevControl": {
+        "x": 0.8252444444444447,
+        "y": 6.971433333333334
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "RightTrenchPoint1"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.7875518672199078,
+      "rotationDegrees": -51.19
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.75,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 0.7,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 0.5,
+        "maxVelocity": 1.0,
         "maxAcceleration": 8.0,
         "maxAngularVelocity": 720.0,
         "maxAngularAcceleration": 180.0,
@@ -48,8 +69,8 @@
   "eventMarkers": [
     {
       "name": "RunIntakeEvent",
-      "waypointRelativePos": 0.5212694125590835,
-      "endWaypointRelativePos": 0.6022957461174955,
+      "waypointRelativePos": 0.8,
+      "endWaypointRelativePos": 2.0,
       "command": {
         "type": "named",
         "data": {
@@ -59,7 +80,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 8.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 180.0,
@@ -68,13 +89,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 50.0
+    "rotation": -51.188615963241624
   },
   "reversed": false,
-  "folder": "RightDelayedTrenchPaths",
+  "folder": "RightThirdPaths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 49.39870535499565
+    "rotation": -0.6182757795167156
   },
   "useDefaultConstraints": false
 }

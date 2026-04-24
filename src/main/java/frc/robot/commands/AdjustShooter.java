@@ -50,8 +50,8 @@ public class AdjustShooter extends Command {
             return;
         }
 
-        Double flywheelRPS = distance * 4.65494 + m_shooter.m_intercept;
-        Double hoodAngle = 62.0;
+        Double flywheelRPS = ShooterConstants.kDistanceToRPS.get(distance);
+        Double hoodAngle = ShooterConstants.kDistanceToAngle.get(distance);
 
         if (m_shooter.getHoodState()) {
             if (!GetTargetLocation.inZone()) {

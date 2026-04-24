@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -82,7 +83,7 @@ public class RobotContainer {
         faceAngle.HeadingController.setPID(SwerveConstants.aimKp, SwerveConstants.aimKi, SwerveConstants.aimKd);
         faceAngle.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
         // Warmup PathPlanner to avoid Java pauses
-        CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
+        CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand().ignoringDisable(true));
     }
 
     private void configureBindings() {
@@ -160,8 +161,6 @@ public class RobotContainer {
 
         operator.povLeft().onTrue(Commands.runOnce(shooter::resetHoodPosition, shooter).ignoringDisable(true));
         operator.povRight().onTrue(Commands.runOnce(intake::resetPivot, intake).ignoringDisable(true));
-        operator.povUp().onTrue(Commands.runOnce(() -> shooter.changeIntercept(0.5)));
-        operator.povDown().onTrue(Commands.runOnce(() -> shooter.changeIntercept(-0.5)));
 
         operator.rightStick().onTrue(Commands.runOnce(() -> {
             Pose2d pose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
@@ -185,16 +184,19 @@ public class RobotContainer {
 
     public void configureAutonomousCommands() {
 
-        NamedCommands.registerCommand("Shoot", transfer.shootCommand());
         NamedCommands.registerCommand("FlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true)));
         NamedCommands.registerCommand("FlywheelOff", Commands.runOnce(() -> shooter.setAutoAim(false)));
         NamedCommands.registerCommand("StopTransfer", transfer.stopTransfer());
     
         NamedCommands.registerCommand("RunIntake", intake.runIntake());
         NamedCommands.registerCommand("PartialRetract", intake.partialRetract());
-        NamedCommands.registerCommand("IntakeShoot", new IntakeShoot(intake, driver));
 
-        NamedCommands.registerCommand("AimSwerve", new AimSwerve(drivetrain, shooter, faceAngle, brake, driver));
+        NamedCommands.registerCommand("Shoot", Commands.race(
+            new WaitCommand(3.5),
+            transfer.shootCommand(),
+            new AimSwerve(drivetrain, shooter, faceAngle, brake, driver),
+            new IntakeShoot(intake, driver)
+        ));
     }
 
     public Command getAutonomousCommand() {

@@ -42,7 +42,7 @@ public class IntakeConstants {
         configs.MotionMagic.MotionMagicAcceleration = 9.0;
         configs.MotionMagic.MotionMagicCruiseVelocity = 3.0;
 
-        configs.CurrentLimits.SupplyCurrentLimit = 50.0;
+        // configs.CurrentLimits.SupplyCurrentLimit = 50.0;
 
         configs.Feedback.SensorToMechanismRatio = (70.0 / 11.0) * (40.0 / 12.0);
         
@@ -55,16 +55,16 @@ public class IntakeConstants {
     public static TalonFXConfiguration getRollerConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 10.0;
+        configs.Slot0.kP = 20.0;
         configs.Slot0.kI = 0.0;
         configs.Slot0.kD = 0.0;
         configs.Slot0.kS = 16.7;
         configs.Slot0.kV = 0.0;
         configs.Slot0.kA = 0.28155307749;
 
-       configs.CurrentLimits.SupplyCurrentLimit = 40.0;
+        // configs.CurrentLimits.SupplyCurrentLimit = 40.0;
         
-        configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
+        // configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
         configs.Feedback.SensorToMechanismRatio = (29.0 / 12.0);
         configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;

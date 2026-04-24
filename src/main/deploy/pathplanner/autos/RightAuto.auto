@@ -7,25 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DepotPath1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotPath2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotPath3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotPath6"
+            "pathName": "RightPath1"
           }
         },
         {
@@ -37,13 +19,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DepotPath7"
+            "pathName": "RightPath2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightPath3"
           }
         }
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

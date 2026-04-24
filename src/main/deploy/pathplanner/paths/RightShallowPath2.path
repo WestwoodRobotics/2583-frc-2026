@@ -135,7 +135,7 @@
     },
     {
       "waypointRelativePos": 4.955068210659898,
-      "rotationDegrees": 50.0
+      "rotationDegrees": 45.0
     }
   ],
   "constraintZones": [
@@ -206,17 +206,6 @@
       }
     },
     {
-      "name": "TransferOffEvent",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": 6.0,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "StopTransfer"
-        }
-      }
-    },
-    {
       "name": "RunIntakeEvent",
       "waypointRelativePos": 2.1877110060769844,
       "endWaypointRelativePos": 4.0,
@@ -228,6 +217,17 @@
       }
     },
     {
+      "name": "PartialRetractEvent",
+      "waypointRelativePos": 4.5,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "PartialRetract"
+        }
+      }
+    },
+    {
       "name": "FlywheelOnEvent",
       "waypointRelativePos": 4.9,
       "endWaypointRelativePos": null,
@@ -235,17 +235,6 @@
         "type": "named",
         "data": {
           "name": "FlywheelOn"
-        }
-      }
-    },
-    {
-      "name": "PartialRetractEvent",
-      "waypointRelativePos": 5.05,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "PartialRetract"
         }
       }
     },
@@ -271,13 +260,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 50.0
+    "rotation": 45.0
   },
   "reversed": false,
-  "folder": "RightTrenchPaths",
+  "folder": "RightPaths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 50.0
+    "rotation": 45.0
   },
   "useDefaultConstraints": true
 }

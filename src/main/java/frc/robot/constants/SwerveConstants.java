@@ -31,5 +31,5 @@ public class SwerveConstants {
 
     public static final double kBrakeTime = 0.3;
 
-    public static final int kDrivePower = 3;
+    public static final double kDrivePower = 2.0;
 }

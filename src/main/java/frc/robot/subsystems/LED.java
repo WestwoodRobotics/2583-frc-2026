@@ -40,8 +40,6 @@ public class LED extends SubsystemBase {
     private boolean wasHubActive;
     private boolean wasDisabled;
     private boolean strobing = false;
-    private boolean fire = false;
-
 
     private Color currentColor = new Color(0,0,0);
 
@@ -101,12 +99,6 @@ public class LED extends SubsystemBase {
             strobing = false;
         }
 
-        if(DriverStation.getMatchTime() <= 30 && DriverStation.isTeleop()){
-            fire = true;
-        } else{
-            fire = false;
-        }
-
         if (isHubActive != wasHubActive) {
             CommandScheduler.getInstance().schedule(
                 Commands.startEnd(
@@ -120,14 +112,14 @@ public class LED extends SubsystemBase {
         }
         wasHubActive = isHubActive;
 
-        if (!isHubActive) {
-            currentColor = Color.kRed;
-            setSolidColor(Color.kRed);
+        if(DriverStation.getMatchTime() <= 30 && DriverStation.isTeleop()){
+            startFireAnimation();
             return;
         }
 
-        if(fire){
-            startFireAnimation();
+        if (!isHubActive) {
+            currentColor = Color.kRed;
+            setSolidColor(Color.kRed);
             return;
         }
 
@@ -159,7 +151,7 @@ public class LED extends SubsystemBase {
     }
 
     public void setSolidColor(Color color, double brightness){
-        if(strobing || fire) return;
+        if (strobing) return;
         candle.setControl(new SolidColor(8, LEDConstants.endIndex).withColor(new RGBWColor(color).scaleBrightness(brightness)));
     }
 
@@ -179,7 +171,7 @@ public class LED extends SubsystemBase {
     }
 
     public void startLarsonAnimation(Color color){
-        if(strobing || fire) return;
+        if (strobing) return;
         LarsonAnimation larson = new LarsonAnimation(8, LEDConstants.endIndex).withColor(new RGBWColor(color)).withSize(7).withFrameRate(45);
         candle.setControl(larson);   
     }
@@ -194,6 +186,4 @@ public class LED extends SubsystemBase {
             candle.setControl(new EmptyAnimation(slot));
         }
     }
-
-    
 }

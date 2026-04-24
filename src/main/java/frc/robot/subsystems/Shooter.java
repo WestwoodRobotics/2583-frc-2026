@@ -1,10 +1,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -13,7 +13,6 @@ import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ShooterConstants;
@@ -35,7 +34,6 @@ public class Shooter extends SubsystemBase {
 
     private final NetworkTable m_table = NetworkTableInstance.getDefault().getTable("Shooter");
     private final DoublePublisher m_flywheelDesiredRPS = m_table.getDoubleTopic("Flywheel/DesiredRPS").publish();
-    private final DoublePublisher m_flywheelIncerceptDelta = m_table.getDoubleTopic("Flywheel/InterceptDelta").publish();
     // private final DoublePublisher m_flywheelActualRPS = m_table.getDoubleTopic("Flywheel/ActualRPS").publish();
     private final BooleanPublisher m_atDesiredRPS = m_table.getBooleanTopic("Flywheel/AtDesiredRPS").publish();
     // private final DoublePublisher m_hoodDesiredPos = m_table.getDoubleTopic("Hood/DesiredPos").publish();
@@ -50,8 +48,6 @@ public class Shooter extends SubsystemBase {
     private boolean m_autoAimEnabled = false;
     private boolean m_hoodUp = false;
     private boolean m_dormantMode = true;
-    public double m_intercept = 19.39717;
-    public double m_delta = 0;
 
     public Shooter() {
         // Apply configurations directly from constants to keep constructor clean of variables
@@ -65,6 +61,10 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+        m_bottomRightFlywheel.setControl(m_alignedFollower);
+        m_topLeftFlywheel.setControl(m_opposedFollower);
+        m_bottomLeftFlywheel.setControl(m_opposedFollower);
+
         double hoodPos = m_hoodMotor.getPosition().getValueAsDouble();
         double flywheelVel = m_topRightFlywheel.getVelocity().getValueAsDouble();
         m_flywheelDesiredRPS.set(m_flywheelRequest.Velocity);
@@ -80,7 +80,8 @@ public class Shooter extends SubsystemBase {
         m_autoAimEnabledPub.set(m_autoAimEnabled);
         m_isManualPub.set(!m_autoAimEnabled);
         m_dormantModePub.set(m_dormantMode);
-        m_flywheelIncerceptDelta.set(m_delta);
+
+        SignalLogger.writeDouble("Shooter/DesiredRPS", m_flywheelRequest.Velocity);
     }
 
     public void toggleAutoAim() {
@@ -106,7 +107,6 @@ public class Shooter extends SubsystemBase {
     public void changeHoodAngle(double delta) {
         m_autoAimEnabled = false;
         double newPos = m_desiredAngle + delta;
-        newPos = MathUtil.clamp(newPos, 0.0, ShooterConstants.kMaxAngle);
         setHoodAngle(newPos);
     }
 
@@ -122,7 +122,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setHoodAngle(double angle) {
-        m_desiredAngle = MathUtil.clamp(angle, 0.0, ShooterConstants.kMaxAngle);
+        m_desiredAngle = MathUtil.clamp(angle, ShooterConstants.kTrueMinAngle, ShooterConstants.kMaxAngle);
         double angleDelta = m_desiredAngle - ShooterConstants.kMinAngle;
         double position = ShooterConstants.kPosAtMinAngle + angleDelta * ShooterConstants.kPerDegree;
 
@@ -149,13 +149,8 @@ public class Shooter extends SubsystemBase {
         return m_dormantMode;
     }
 
-    public void changeIntercept(double delta) {
-        m_delta += delta;
-        m_intercept += delta;
-    }
-
     public void setFlywheelVelocity(double velocity) {
-        double clampedVel = MathUtil.clamp(velocity, 0.0, ShooterConstants.kMaxFlywheelRPS);
+        double clampedVel = MathUtil.clamp(velocity, ShooterConstants.kTrueMinAngle, ShooterConstants.kMaxFlywheelRPS);
         m_topRightFlywheel.setControl(m_flywheelRequest.withVelocity(clampedVel));
         m_bottomRightFlywheel.setControl(m_alignedFollower);
         m_topLeftFlywheel.setControl(m_opposedFollower);

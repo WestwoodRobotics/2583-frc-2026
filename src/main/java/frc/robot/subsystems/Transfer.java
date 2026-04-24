@@ -39,7 +39,7 @@ public class Transfer extends SubsystemBase {
 
     @Override
     public void periodic() {
-    //     m_transferMotor2.setControl(m_transferFollower);
+        m_transferMotor2.setControl(m_transferFollower);
     }
 
     public void runMotors(double floorVel, double transferVel) {
@@ -77,6 +77,6 @@ public class Transfer extends SubsystemBase {
         }
         SmartDashboard.putBoolean("running transfer" , true);
         this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel);
-        }, this);
+        }, this).finallyDo(() -> this.runMotors(0.0, 0.0));
     }
 }

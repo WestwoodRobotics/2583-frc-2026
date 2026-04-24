@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LeftTrenchPath1"
+            "pathName": "LeftPath1"
           }
         },
         {
@@ -44,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LeftShallowPath2"
+            "pathName": "LeftPath2"
           }
         },
         {
@@ -81,7 +81,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LeftTrenchPath3"
+            "pathName": "LeftPath3"
           }
         }
       ]

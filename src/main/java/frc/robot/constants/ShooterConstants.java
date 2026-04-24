@@ -25,6 +25,8 @@ public class ShooterConstants {
     public static final double kMaxAngle = 90.0;
     public static final double kPerDegree = (kPosAtMaxAngle - kPosAtMinAngle) / (kMaxAngle - kMinAngle);
 
+    public static final double kTrueMinAngle = 45.0;
+
     public static final double kYFlywheelVel = 30.0;
     public static final double kYHoodAngle = 62.0;
 
@@ -37,13 +39,14 @@ public class ShooterConstants {
     public static final InterpolatingDoubleTreeMap kDistanceToTOF = new InterpolatingDoubleTreeMap();
 
     static {
-        kDistanceToRPS.put(0.0, 20.0);
-
+        kDistanceToRPS.put(0.0, 26.0);
         
-        kDistanceToRPS.put(1.8309003982663195, 27.104368845791093);
-        kDistanceToRPS.put(1.8309003982663195, 27.104368845791093);
-        kDistanceToRPS.put(1.8309003982663195, 27.104368845791093);
-        kDistanceToRPS.put(1.8309003982663195, 27.104368845791093);
+        // kDistanceToRPS.put(0.0, 26.0);
+        // kDistanceToRPS.put(0.0, 26.0);
+        // kDistanceToRPS.put(0.0, 26.0);
+        // kDistanceToRPS.put(0.0, 26.0);
+
+        kDistanceToRPS.put(999.0, 26.0);
 
         kDistanceToAngle.put(0.0, 62.0);
         kDistanceToAngle.put(999.0, 62.0);
@@ -58,11 +61,11 @@ public class ShooterConstants {
         configs.Slot0.kP = 5.0;
         configs.Slot0.kI = 0.0;
         configs.Slot0.kD = 0.0;
-        configs.Slot0.kS = 6.4;
-        configs.Slot0.kV = 0.1294363257;
+        configs.Slot0.kS = 4.4;
+        configs.Slot0.kV = 0.18667;
         configs.Slot0.kA = 1.1327576959;
 
-        configs.CurrentLimits.SupplyCurrentLimit = 25.0;
+        // configs.CurrentLimits.SupplyCurrentLimit = 40.0;
 
         configs.Feedback.SensorToMechanismRatio = 1.0;
         
@@ -85,7 +88,7 @@ public class ShooterConstants {
 
         configs.Feedback.SensorToMechanismRatio = (54.0 / 11.0) * (28.0 / 15.0) * (106.0 / 7.0);
 
-        configs.CurrentLimits.SupplyCurrentLimit = 10.0;
+        // configs.CurrentLimits.SupplyCurrentLimit = 10.0;
 
         configs.MotionMagic.MotionMagicAcceleration = 3.0;
         configs.MotionMagic.MotionMagicCruiseVelocity = 0.7;
