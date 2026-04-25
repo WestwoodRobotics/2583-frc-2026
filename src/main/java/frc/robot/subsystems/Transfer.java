@@ -11,8 +11,10 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.IntakeShoot;
 import frc.robot.constants.TransferConstants;
 
 public class Transfer extends SubsystemBase {
@@ -25,9 +27,14 @@ public class Transfer extends SubsystemBase {
 
     private final Follower m_transferFollower = new Follower(TransferConstants.kTransferId1, MotorAlignmentValue.Aligned);
 
-    private final BooleanSubscriber m_canShootSub = NetworkTableInstance.getDefault()
+    private final BooleanSubscriber m_headingLockedSub = NetworkTableInstance.getDefault()
         .getTable("Shooter")
-        .getBooleanTopic("CanShoot")
+        .getBooleanTopic("HeadingLocked")
+        .subscribe(true);
+
+    private final BooleanSubscriber m_atDesiredRPSSub = NetworkTableInstance.getDefault()
+        .getTable("Shooter")
+        .getBooleanTopic("Flywheel/AtDesiredRPS")
         .subscribe(true);
 
     public Transfer() {
@@ -71,12 +78,12 @@ public class Transfer extends SubsystemBase {
 
     public Command shootCommand() {
         return Commands.run(() -> {
-            if (DriverStation.isAutonomous() && !m_canShootSub.get()) {
-            this.runMotors(0.0, 0.0);
-            return;
-        }
-        SmartDashboard.putBoolean("running transfer" , true);
-        this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel);
-        }, this).finallyDo(() -> this.runMotors(0.0, 0.0));
+            if (!(m_headingLockedSub.get() && m_atDesiredRPSSub.get())) {
+                this.runMotors(0.0, 0.0);
+                return;
+            }
+            // SmartDashboard.putBoolean("running transfer" , true);
+            this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel);
+            }, this).finallyDo(() -> this.runMotors(0.0, 0.0));
     }
 }

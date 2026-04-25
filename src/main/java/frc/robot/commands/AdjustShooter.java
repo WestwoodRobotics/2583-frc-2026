@@ -50,22 +50,24 @@ public class AdjustShooter extends Command {
             return;
         }
 
-        Double flywheelRPS = ShooterConstants.kDistanceToRPS.get(distance);
+        Double flywheelRPS = ShooterConstants.kDistanceToRPS.get(distance) + m_shooter.m_delta;
         Double hoodAngle = ShooterConstants.kDistanceToAngle.get(distance);
 
-        if (m_shooter.getHoodState()) {
-            if (!GetTargetLocation.inZone()) {
-                hoodAngle = ShooterConstants.kMinAngle;
-            }
-        } else {
-            hoodAngle = ShooterConstants.kMaxAngle;
-            if (GetTargetLocation.inZone()) {
-                if (m_shooter.getDormantMode()) {
-                    flywheelRPS = ShooterConstants.kZoneDormantVel;
+        if (DriverStation.isTeleop()) {
+            if (m_shooter.getHoodState()) {
+                if (!GetTargetLocation.inZone()) {
+                    hoodAngle = ShooterConstants.kTrueMinAngle;
                 }
-            }
-            else {
-                flywheelRPS = ShooterConstants.kPassingDormantVel;
+            } else {
+                hoodAngle = ShooterConstants.kMaxAngle;
+                if (GetTargetLocation.inZone()) {
+                    if (m_shooter.getDormantMode()) {
+                        flywheelRPS = ShooterConstants.kZoneDormantVel;
+                    }
+                }
+                else {
+                    flywheelRPS = ShooterConstants.kPassingDormantVel;
+                }
             }
         }
 

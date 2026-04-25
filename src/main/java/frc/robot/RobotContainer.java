@@ -110,6 +110,9 @@ public class RobotContainer {
         RobotModeTriggers.disabled().whileTrue(
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
+        RobotModeTriggers.teleop().onTrue(Commands.runOnce(
+            () -> shooter.setAutoAim(true))
+        );
 
         driver.a().whileTrue(new AimSwerve(drivetrain, shooter, faceAngle, brake, driver));
 
@@ -123,7 +126,11 @@ public class RobotContainer {
         
         driver.b().whileTrue(new LockHeading(drivetrain, faceAngle, driver, 0));
 
-        driver.rightTrigger().whileTrue(transfer.shootCommand().alongWith(new IntakeShoot(intake, driver)));
+        driver.rightTrigger().whileTrue(Commands.parallel(
+            transfer.shootCommand(),
+            new AimSwerve(drivetrain, shooter, faceAngle, brake, driver),
+            new IntakeShoot(intake, driver)
+        ));
 
         // Run intake while holding left trigger
         driver.leftTrigger().and(driver.rightTrigger().negate()).whileTrue(intake.runIntake());
@@ -161,6 +168,8 @@ public class RobotContainer {
 
         operator.povLeft().onTrue(Commands.runOnce(shooter::resetHoodPosition, shooter).ignoringDisable(true));
         operator.povRight().onTrue(Commands.runOnce(intake::resetPivot, intake).ignoringDisable(true));
+        operator.povDown().onTrue(Commands.runOnce(() -> shooter.changeDelta(-0.5)));
+        operator.povUp().onTrue(Commands.runOnce(() -> shooter.changeDelta(0.5)));
 
         operator.rightStick().onTrue(Commands.runOnce(() -> {
             Pose2d pose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue

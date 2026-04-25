@@ -3,98 +3,58 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.534,
-        "y": 0.526
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 4.103751783166904,
-        "y": 0.5092154065620549
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 5.866,
-        "y": 0.526
-      },
-      "prevControl": {
-        "x": 5.616044230097602,
-        "y": 0.5307024560072073
-      },
-      "nextControl": {
-        "x": 6.115955769902397,
-        "y": 0.5212975439927928
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 5.866,
-        "y": 4.986
-      },
-      "prevControl": {
-        "x": 5.651783292878924,
-        "y": 4.623216129573742
-      },
-      "nextControl": {
-        "x": 6.186875891583452,
-        "y": 5.529415121255349
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 6.9502567760342355,
-        "y": 4.985991440798859
-      },
-      "prevControl": {
-        "x": 6.823537853318098,
-        "y": 5.520085825560998
-      },
-      "nextControl": {
-        "x": 7.076975698750373,
-        "y": 4.45189705603672
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
         "x": 6.536,
         "y": 2.6
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.2872407024475025,
+        "y": 2.5751240702447507
+      },
+      "isLocked": false,
+      "linkedName": "RightThirdPoint2"
+    },
+    {
+      "anchor": {
+        "x": 3.154,
+        "y": 2.6
+      },
       "prevControl": {
-        "x": 6.691263908701854,
-        "y": 3.1212539229671905
+        "x": 3.346094561056382,
+        "y": 2.4400010012138953
+      },
+      "nextControl": {
+        "x": 2.961905438943618,
+        "y": 2.7599989987861044
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.559755555555556,
+        "y": 4.0739777777777775
+      },
+      "prevControl": {
+        "x": 2.680499286733238,
+        "y": 3.782696148359487
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "RightThirdPoint2"
+      "linkedName": "RightThirdPoint1"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.9,
-      "rotationDegrees": -90.0
-    },
-    {
-      "waypointRelativePos": 3.1044776119403052,
-      "rotationDegrees": 91.55835635026361
-    },
-    {
-      "waypointRelativePos": 3.6417910447761144,
-      "rotationDegrees": 75.95696475947607
+      "waypointRelativePos": 0.9941908713692897,
+      "rotationDegrees": 45.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.5,
-      "maxWaypointRelativePos": 4.0,
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 0.0,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 8.0,
@@ -106,8 +66,8 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 4.0,
-      "maxWaypointRelativePos": 4.0,
+      "minWaypointRelativePos": 0.85,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 0.5,
         "maxAcceleration": 8.0,
@@ -119,8 +79,8 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 4.0,
-      "maxWaypointRelativePos": 4.5,
+      "minWaypointRelativePos": 1.0,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 8.0,
@@ -134,35 +94,35 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "RunIntakeEvent",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.1,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "RunIntake"
-        }
-      }
-    },
-    {
-      "name": "FlywheelOffEvent",
+      "name": "PartialRetractEvent",
       "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "FlywheelOff"
+          "name": "PartialRetract"
         }
       }
     },
     {
       "name": "RunIntakeEvent",
-      "waypointRelativePos": 1.4,
-      "endWaypointRelativePos": 4.0,
+      "waypointRelativePos": 0.8750844024307876,
+      "endWaypointRelativePos": 1.2316002700877773,
       "command": {
         "type": "named",
         "data": {
           "name": "RunIntake"
+        }
+      }
+    },
+    {
+      "name": "FlywheelOnEvent",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "FlywheelOn"
         }
       }
     }
@@ -177,13 +137,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 45.0
+    "rotation": -0.618
   },
   "reversed": false,
   "folder": "RightThirdPaths",
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": -90.0
+    "rotation": 45.0
   },
   "useDefaultConstraints": true
 }

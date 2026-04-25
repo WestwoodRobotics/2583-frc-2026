@@ -68,6 +68,17 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "FlywheelOffEvent",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "FlywheelOff"
+        }
+      }
+    },
+    {
       "name": "RunIntakeEvent",
       "waypointRelativePos": 0.8,
       "endWaypointRelativePos": 2.0,

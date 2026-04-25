@@ -33,13 +33,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "TransferOffEvent",
-      "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": 1.0,
+      "name": "FlywheelOffEvent",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "StopTransfer"
+          "name": "FlywheelOff"
         }
       }
     }

@@ -80,15 +80,15 @@
     },
     {
       "anchor": {
-        "x": 6.0057346647646215,
+        "x": 6.106,
         "y": 2.543
       },
       "prevControl": {
-        "x": 6.292041038893827,
+        "x": 6.392306374129205,
         "y": 2.656528934449022
       },
       "nextControl": {
-        "x": 5.696278128212791,
+        "x": 5.796543463448169,
         "y": 2.4202913423256183
       },
       "isLocked": false,
@@ -228,17 +228,6 @@
       }
     },
     {
-      "name": "FlywheelOnEvent",
-      "waypointRelativePos": 4.9,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "FlywheelOn"
-        }
-      }
-    },
-    {
       "name": "RunIntakeEvent",
       "waypointRelativePos": 5.65,
       "endWaypointRelativePos": 5.75,
@@ -246,6 +235,17 @@
         "type": "named",
         "data": {
           "name": "RunIntake"
+        }
+      }
+    },
+    {
+      "name": "FlywheelOnEvent",
+      "waypointRelativePos": 5.8,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "FlywheelOn"
         }
       }
     }

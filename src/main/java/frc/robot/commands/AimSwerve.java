@@ -28,9 +28,9 @@ public class AimSwerve extends Command {
     private final SwerveRequest.SwerveDriveBrake brakeRequest;
     private final double[] driverInputs = new double[3];
 
-    private final BooleanSubscriber m_canShootSub = NetworkTableInstance.getDefault()
+    private final BooleanSubscriber m_headingLockedSub = NetworkTableInstance.getDefault()
         .getTable("Shooter")
-        .getBooleanTopic("CanShoot")
+        .getBooleanTopic("HeadingLocked")
         .subscribe(true);
     
     private final Timer brakeTimer = new Timer();
@@ -59,7 +59,7 @@ public class AimSwerve extends Command {
 
     @Override
     public void execute() {
-        boolean canShoot = m_canShootSub.get();
+        boolean headingLocked = m_headingLockedSub.get();
 
         if (DriverStation.isTeleop()) {
             CommandSwerveDrivetrain.joyStickPolar(driverInputs, controller);
@@ -71,7 +71,7 @@ public class AimSwerve extends Command {
 
         boolean driverCommandingMove = Math.hypot(driverInputs[0], driverInputs[1]) > 0.05;
 
-        if (canShoot && !driverCommandingMove) {
+        if (headingLocked && !driverCommandingMove) {
             if (!isAiming) {
                 brakeTimer.restart();
                 isAiming = true;
@@ -81,7 +81,7 @@ public class AimSwerve extends Command {
             isAiming = false;
         }
 
-        if (brakeTimer.hasElapsed(SwerveConstants.kBrakeTime) && canShoot && !driverCommandingMove) {
+        if (brakeTimer.hasElapsed(SwerveConstants.kBrakeTime) && headingLocked && !driverCommandingMove) {
             drivetrain.setControl(brakeRequest);
             return;
         }

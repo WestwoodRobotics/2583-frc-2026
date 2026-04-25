@@ -64,7 +64,7 @@ public class Intake extends SubsystemBase {
     public void slowPivot() {
         MotionMagicConfigs slowConfigs = new MotionMagicConfigs()
             .withMotionMagicCruiseVelocity(1.0)
-            .withMotionMagicAcceleration(5.0);
+            .withMotionMagicAcceleration(4.0);
         m_pivotMotor.getConfigurator().apply(slowConfigs);
     }
 

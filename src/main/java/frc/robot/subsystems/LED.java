@@ -50,7 +50,7 @@ public class LED extends SubsystemBase {
     private final BooleanPublisher m_isPracticePub = m_hubStatusTable.getBooleanTopic("IsPractice").publish();
 
     private final NetworkTable m_shooterTable = NetworkTableInstance.getDefault().getTable("Shooter");
-    private final BooleanPublisher m_canShootPub = m_shooterTable.getBooleanTopic("CanShoot").publish();
+    private final BooleanPublisher m_headingLockedPub = m_shooterTable.getBooleanTopic("HeadingLocked").publish();
 
     public LED(CommandSwerveDrivetrain drivetrain, CommandXboxController driver) {
         this.drivetrain = drivetrain;
@@ -85,7 +85,7 @@ public class LED extends SubsystemBase {
 
         Pose2d robotPose = drivetrain.getState().Pose;
         boolean isAligned = isAligned(robotPose);
-        m_canShootPub.set(isAligned);
+        m_headingLockedPub.set(isAligned);
 
         if (isDisabled) {
             currentColor = new Color(255,60,0);

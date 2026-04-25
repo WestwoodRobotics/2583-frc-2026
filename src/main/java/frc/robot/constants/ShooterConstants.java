@@ -15,9 +15,9 @@ public class ShooterConstants {
     public static final int kHoodMotorId = 25;
     public static final CANBus kCANBus = new CANBus("rio");
 
-    public static final double kMaxFlywheelRPS = 50.0;
-    public static final double kPassingDormantVel = 15.0;
-    public static final double kZoneDormantVel = 26.0;
+    public static final double kMaxFlywheelRPS = 60.0;
+    public static final double kPassingDormantVel = 0.0;
+    public static final double kZoneDormantVel = 0.0;
 
     public static final double kPosAtMinAngle = 0.066162109375;
     public static final double kPosAtMaxAngle = 0.0;
@@ -32,24 +32,34 @@ public class ShooterConstants {
 
     public static final double kManualHoodInc = 2.0;
     public static final double kManualFlywheelInc = 1.0;
-    public static final double kFlywheelToleranceRPS = 1.0;
+    public static final double kFlywheelToleranceRPS = 4.0;
+
+    public static final double kPeakReverseCurrentLimit = -10.0;
 
     public static final InterpolatingDoubleTreeMap kDistanceToRPS = new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap kDistanceToAngle = new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap kDistanceToTOF = new InterpolatingDoubleTreeMap();
 
     static {
-        kDistanceToRPS.put(0.0, 26.0);
+        kDistanceToRPS.put(0.0, 26.55211);
         
-        // kDistanceToRPS.put(0.0, 26.0);
-        // kDistanceToRPS.put(0.0, 26.0);
-        // kDistanceToRPS.put(0.0, 26.0);
-        // kDistanceToRPS.put(0.0, 26.0);
+        kDistanceToRPS.put(2.65724913458083, 31.55211);
+        kDistanceToRPS.put(2.102248805631872, 28.55211);
+        kDistanceToRPS.put(1.7066029764740926, 26.55211);
+        kDistanceToRPS.put(1.3828900999242464, 26.55211);
+        kDistanceToRPS.put(1.3828900999242464, 26.55211);
+        kDistanceToRPS.put(8.06057, 60.0);
 
         kDistanceToRPS.put(999.0, 26.0);
 
-        kDistanceToAngle.put(0.0, 62.0);
-        kDistanceToAngle.put(999.0, 62.0);
+        kDistanceToAngle.put(0.0, 56.0);
+
+        kDistanceToAngle.put(2.629130514720832, 56.0);
+        kDistanceToAngle.put(2.102248805631872, 56.0);
+        kDistanceToAngle.put(1.7066029764740926, 56.0);
+        kDistanceToAngle.put(1.3828900999242464, 60.0);
+
+        kDistanceToAngle.put(999.0, 56.0);
 
         kDistanceToTOF.put(0.0, 0.0);
         kDistanceToTOF.put(999.0, 0.0);
@@ -58,7 +68,7 @@ public class ShooterConstants {
     public static TalonFXConfiguration getFlywheelMotorConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 5.0;
+        configs.Slot0.kP = 10.0;
         configs.Slot0.kI = 0.0;
         configs.Slot0.kD = 0.0;
         configs.Slot0.kS = 4.4;
