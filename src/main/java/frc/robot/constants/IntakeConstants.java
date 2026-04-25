@@ -16,13 +16,13 @@ public class IntakeConstants {
     public static final double kPivotIn = kPivotOffset;
     public static final double kPivotPartial = 0.00;
     public static final double kPivotOut = -0.11;
-    public static final double kPivotShoot = 0.28;
+    public static final double kPivotShoot = 0.098388671875;
     public static final double kPivotUp = 0.28;
     public static final double kPivotDepot = -0.04296875;
     public static final double kResetPivotPos = -0.066162109375;
 
     public static final double kRollerNeutralVel = 0.0;
-    public static final double kRollerIntakingVel = 32.0;
+    public static final double kRollerIntakingVel = 49.0;
     public static final double kRollerShootingVel = 20.0;
 
     public static final double kJammedThreshold = 0.03;

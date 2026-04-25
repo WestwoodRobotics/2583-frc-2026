@@ -362,6 +362,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         // Clamp magnitude to 1.0 to handle square joystick corners
         double r = Math.min(1.0, Math.hypot(x2, y2));
         double theta = Math.atan2(y2, x2);
+        if (r > 0.85) {
+            out[0] = Math.cos(theta) * MaxSpeed;
+            out[1] = Math.sin(theta) * MaxSpeed;
+            out[2] = Math.copySign(Math.pow(rot2, 2.0) * MaxAngularRate, rot2);
+            return;
+        }
 
         // Use a simple multiplication for power of 2 for efficiency as the comment suggests
         double rScaled = Math.pow(r, SwerveConstants.kDrivePower);

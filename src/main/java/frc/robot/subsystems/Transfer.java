@@ -77,13 +77,10 @@ public class Transfer extends SubsystemBase {
     }
 
     public Command shootCommand() {
-        return Commands.run(() -> {
-            if (!(m_headingLockedSub.get() && m_atDesiredRPSSub.get())) {
-                this.runMotors(0.0, 0.0);
-                return;
-            }
-            // SmartDashboard.putBoolean("running transfer" , true);
-            this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel);
-            }, this).finallyDo(() -> this.runMotors(0.0, 0.0));
+        return Commands.run(() -> this.runMotors(0.0, 0.0), this)
+            .until(() -> m_headingLockedSub.get() && m_atDesiredRPSSub.get())
+            .andThen(
+                Commands.run(() -> this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel), this)
+            ).finallyDo(() -> this.runMotors(0.0, 0.0));
     }
 }
