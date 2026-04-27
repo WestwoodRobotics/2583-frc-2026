@@ -32,7 +32,7 @@ public class ShooterConstants {
 
     public static final double kManualHoodInc = 2.0;
     public static final double kManualFlywheelInc = 1.0;
-    public static final double kFlywheelToleranceRPS = 4.0;
+    public static final double kFlywheelToleranceRPS = 3.0;
 
     public static final double kPeakReverseCurrentLimit = -10.0;
 
@@ -68,7 +68,7 @@ public class ShooterConstants {
     public static TalonFXConfiguration getFlywheelMotorConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 10.0;
+        configs.Slot0.kP = 7.0;
         configs.Slot0.kI = 0.0;
         configs.Slot0.kD = 0.0;
         configs.Slot0.kS = 4.4;

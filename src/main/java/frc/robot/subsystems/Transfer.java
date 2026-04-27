@@ -76,11 +76,17 @@ public class Transfer extends SubsystemBase {
         return Commands.run(() -> runMotors(-TransferConstants.kFloorShootVel, -TransferConstants.kTransferShootVel), this);
     }
 
-    public Command shootCommand() {
+    public Command shootCommand(boolean checkAim) {
         return Commands.run(() -> this.runMotors(0.0, 0.0), this)
-            .until(() -> m_headingLockedSub.get() && m_atDesiredRPSSub.get())
+            .until(() -> (m_headingLockedSub.get() && m_atDesiredRPSSub.get()) || !checkAim)
             .andThen(
                 Commands.run(() -> this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel), this)
             ).finallyDo(() -> this.runMotors(0.0, 0.0));
+    }
+
+    public Command shootTimeCommand() {
+        return Commands.run(() -> this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel), this)
+            .withTimeout(TransferConstants.kTransferShootTime)
+            .finallyDo(() -> this.runMotors(0.0, 0.0));
     }
 }

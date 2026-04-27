@@ -22,7 +22,7 @@ public class IntakeConstants {
     public static final double kResetPivotPos = -0.066162109375;
 
     public static final double kRollerNeutralVel = 0.0;
-    public static final double kRollerIntakingVel = 49.0;
+    public static final double kRollerIntakingVel = 27.0;
     public static final double kRollerShootingVel = 20.0;
 
     public static final double kJammedThreshold = 0.03;
@@ -55,7 +55,7 @@ public class IntakeConstants {
     public static TalonFXConfiguration getRollerConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 20.0;
+        configs.Slot0.kP = 30.0;
         configs.Slot0.kI = 0.0;
         configs.Slot0.kD = 0.0;
         configs.Slot0.kS = 16.7;
@@ -66,7 +66,7 @@ public class IntakeConstants {
         
         // configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
-        configs.Feedback.SensorToMechanismRatio = (29.0 / 12.0);
+        configs.Feedback.SensorToMechanismRatio = (30.0 / 12.0) * (30.0 / 24.0);
         configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         return configs;

@@ -29,7 +29,8 @@ public class SwerveConstants {
     public static final double kResetX = 3.560;
     public static final double kResetY = 4.029;
 
-    public static final double kBrakeTime = 0.3;
+    public static final double kBrakeTime = 0.15;
 
     public static final double kDrivePower = 3.0;
+    public static final double kSlowmodeK = 0.5;
 }

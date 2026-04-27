@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8,
+      "minWaypointRelativePos": 0.6,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.0,
@@ -58,13 +58,13 @@
       }
     },
     {
-      "name": "RunIntakeEvent",
-      "waypointRelativePos": 0.42403781228899395,
+      "name": "IntakeDepotEvent",
+      "waypointRelativePos": 0.5,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
         "data": {
-          "name": "RunIntake"
+          "name": "IntakeDepot"
         }
       }
     }

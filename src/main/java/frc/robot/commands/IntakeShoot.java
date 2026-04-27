@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.subsystems.Intake;
+import frc.robot.utils.GetTargetLocation;
 
 public class IntakeShoot extends Command {
     
@@ -31,6 +32,11 @@ public class IntakeShoot extends Command {
             m_intake.setRollerVelocity(IntakeConstants.kRollerIntakingVel);
         }
         else {
+            if (!GetTargetLocation.inZone()) {
+                m_intake.setPivotPosition(IntakeConstants.kPivotOut);
+                m_intake.setRollerVelocity(0.0);
+                return;
+            }
             m_intake.setPivotPosition(IntakeConstants.kPivotShoot);
             double m_newPos = m_intake.getPivotPosition();
             if (m_newPos > IntakeConstants.kPivotShoot - IntakeConstants.kJammedThreshold) {

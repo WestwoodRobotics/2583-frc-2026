@@ -40,7 +40,6 @@ import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Vision;
-import frc.robot.utils.GetHubStatus;
 
 public class RobotContainer {
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -116,7 +115,7 @@ public class RobotContainer {
 
         driver.a().whileTrue(new AimSwerve(drivetrain, shooter, faceAngle, brake, driver));
 
-        driver.x().whileTrue(new LockHeading(drivetrain, faceAngle, driver, 45).alongWith(intake.partialRetract()))
+        driver.x().whileTrue(new LockHeading(drivetrain, faceAngle, driver, 45.0).alongWith(intake.partialRetract()))
             .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
         
         driver.y().whileTrue(Commands.run(() -> {
@@ -124,10 +123,10 @@ public class RobotContainer {
             shooter.setHoodAngle(ShooterConstants.kYHoodAngle);
         }, shooter));
         
-        driver.b().whileTrue(new LockHeading(drivetrain, faceAngle, driver, 0));
+        driver.b().whileTrue(new LockHeading(drivetrain, faceAngle, driver, 0.0));
 
         driver.rightTrigger().whileTrue(Commands.parallel(
-            transfer.shootCommand(),
+            transfer.shootCommand(true),
             new AimSwerve(drivetrain, shooter, faceAngle, brake, driver),
             new IntakeShoot(intake, driver)
         ));
@@ -144,16 +143,26 @@ public class RobotContainer {
             intake
         ));
 
-        driver.rightBumper().whileTrue(Commands.runEnd(
+        driver.rightBumper().whileTrue(transfer.shootCommand(false));
+
+        driver.start().whileTrue(
+            drivetrain.applyRequest(() -> {
+                CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver);
+
+                return drive.withVelocityX(driverInputs[0] * SwerveConstants.kSlowmodeK)
+                    .withVelocityY(driverInputs[1] * SwerveConstants.kSlowmodeK)
+                    .withRotationalRate(driverInputs[2]);
+            })
+        );
+
+        operator.x().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter));
+        operator.y().onTrue(intake.fullRetract());
+        operator.b().onTrue(transfer.shootTimeCommand());
+        operator.a().whileTrue(Commands.runEnd(
             () -> intake.setPivotPosition(IntakeConstants.kPivotUp),
             () -> intake.setPivotPosition(IntakeConstants.kPivotOut),
             intake
         ));
-
-        operator.x().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter));
-        operator.y().onTrue(intake.fullRetract());
-        operator.b().onTrue(intake.partialRetract());
-        operator.a().whileTrue(Commands.runOnce(shooter::toogleDormantMode));
 
         operator.rightTrigger().onTrue(Commands.runOnce(
             () -> shooter.changeHoodAngle(-ShooterConstants.kManualHoodInc),
@@ -198,11 +207,19 @@ public class RobotContainer {
         NamedCommands.registerCommand("StopTransfer", transfer.stopTransfer());
     
         NamedCommands.registerCommand("RunIntake", intake.runIntake());
+        NamedCommands.registerCommand("IntakeDepot", Commands.runEnd(
+            () -> {
+                intake.setPivotPosition(IntakeConstants.kPivotDepot);
+                intake.setRollerVelocity(IntakeConstants.kRollerIntakingVel);
+            },
+            () -> intake.setPivotPosition(IntakeConstants.kPivotOut),
+            intake
+        ));
         NamedCommands.registerCommand("PartialRetract", intake.partialRetract());
 
         NamedCommands.registerCommand("Shoot", Commands.race(
             new WaitCommand(3.5),
-            transfer.shootCommand(),
+            transfer.shootCommand(true),
             new AimSwerve(drivetrain, shooter, faceAngle, brake, driver),
             new IntakeShoot(intake, driver)
         ));

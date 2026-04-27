@@ -34,7 +34,7 @@ public class VisionConstants {
         ),
     };
 
-    public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
+    public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
     public static final double bumpThresholdDegrees = 10.0;
     public static final double landingTimeSeconds = 0.4;

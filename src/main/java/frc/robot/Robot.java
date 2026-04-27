@@ -7,6 +7,8 @@ package frc.robot;
 import com.ctre.phoenix6.HootAutoReplay;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -20,12 +22,19 @@ public class Robot extends TimedRobot {
         .withTimestampReplay()
         .withJoystickReplay();
 
+    private double m_lastLoopTime;
+
     public Robot() {
         m_robotContainer = new RobotContainer();
+        m_lastLoopTime = Timer.getFPGATimestamp();
     }
 
     @Override
     public void robotPeriodic() {
+        double currentTime = Timer.getFPGATimestamp();
+        SmartDashboard.putNumber("Loop Time (ms)", (currentTime - m_lastLoopTime) * 1000.0);
+        m_lastLoopTime = currentTime;
+
         m_timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run();
     }
