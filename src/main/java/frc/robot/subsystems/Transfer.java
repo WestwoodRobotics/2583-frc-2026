@@ -29,7 +29,7 @@ public class Transfer extends SubsystemBase {
 
     private final BooleanSubscriber m_headingLockedSub = NetworkTableInstance.getDefault()
         .getTable("Shooter")
-        .getBooleanTopic("HeadingLocked")
+        .getBooleanTopic("Aim/HeadingLocked")
         .subscribe(true);
 
     private final BooleanSubscriber m_atDesiredRPSSub = NetworkTableInstance.getDefault()

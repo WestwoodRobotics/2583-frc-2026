@@ -37,11 +37,11 @@ public class VisionConstants {
     public static final AprilTagFieldLayout kFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
     public static final double bumpThresholdDegrees = 10.0;
-    public static final double landingTimeSeconds = 0.4;
+    public static final double landingTimeSeconds = 0.3;
     public static final double landingStdDev = 0.1;
-    public static final double maxYawRateDegreesPerSec = 360.0;
+    public static final double maxYawRateDegreesPerSec = 270.0;
     public static final double maxPoseAmbiguity = 0.2;
-    public static final double multiTagK = 0.25;
+    public static final double multiTagK = 0.2;
     public static final double singleTagK = 0.9;
     public static final double baseSigma = 0.2;
     public static final double multiTagThetaSigma = 8.0;

@@ -30,7 +30,7 @@ public class AimSwerve extends Command {
 
     private final BooleanSubscriber m_headingLockedSub = NetworkTableInstance.getDefault()
         .getTable("Shooter")
-        .getBooleanTopic("HeadingLocked")
+        .getBooleanTopic("Aim/HeadingLocked")
         .subscribe(true);
     
     private final Timer brakeTimer = new Timer();

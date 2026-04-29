@@ -64,7 +64,7 @@ public class IntakeConstants {
 
         // configs.CurrentLimits.SupplyCurrentLimit = 40.0;
         
-        // configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
+        configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
         configs.Feedback.SensorToMechanismRatio = (30.0 / 12.0) * (30.0 / 24.0);
         configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
