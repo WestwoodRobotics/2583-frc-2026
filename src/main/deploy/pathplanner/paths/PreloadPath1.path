@@ -42,10 +42,21 @@
           "name": "RunIntake"
         }
       }
+    },
+    {
+      "name": "FlywheelOnEvent",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "FlywheelOn"
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.5,
+    "maxVelocity": 4.2,
     "maxAcceleration": 7.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 180.0,

@@ -11,21 +11,15 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "DepotPath2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotPath3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotPath6"
           }
         },
         {
@@ -35,15 +29,15 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "DepotPath7"
+            "name": "FlywheelOff"
           }
         }
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

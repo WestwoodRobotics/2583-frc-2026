@@ -6,10 +6,12 @@
     "DepotPaths",
     "PreloadPaths",
     "RightPaths",
-    "RightSneakPaths"
+    "RightSneakPaths",
+    "LeftPaths",
+    "LeftSneakPaths"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 4.5,
+  "defaultMaxVel": 4.2,
   "defaultMaxAccel": 7.0,
   "defaultMaxAngVel": 720.0,
   "defaultMaxAngAccel": 180.0,
@@ -19,7 +21,7 @@
   "robotTrackwidth": 0.546,
   "driveWheelRadius": 0.048,
   "driveGearing": 7.03125,
-  "maxDriveSpeed": 4.38821385222,
+  "maxDriveSpeed": 4.388,
   "driveMotorType": "krakenX60FOC",
   "driveCurrentLimit": 60.0,
   "wheelCOF": 2.255,
