@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         double currentTime = Timer.getFPGATimestamp();
-        SmartDashboard.putNumber("Loop Time (ms)", (currentTime - m_lastLoopTime) * 1000.0);
+        // SmartDashboard.putNumber("Loop Time (ms)", (currentTime - m_lastLoopTime) * 1000.0);
         m_lastLoopTime = currentTime;
 
         m_timeAndJoystickReplay.update();

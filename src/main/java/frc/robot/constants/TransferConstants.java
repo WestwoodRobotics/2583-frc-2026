@@ -28,7 +28,7 @@ public class TransferConstants {
         configs.Slot0.kV = 0.0;
         configs.Slot0.kA = 0.245143636466;
 
-        // configs.CurrentLimits.SupplyCurrentLimit = 20.0;
+        configs.CurrentLimits.SupplyCurrentLimit = 35.0;
 
         configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
@@ -50,7 +50,7 @@ public class TransferConstants {
         configs.Slot0.kV = 0.0;
         configs.Slot0.kA = 0.0971466619;
 
-        // configs.CurrentLimits.SupplyCurrentLimit = 40.0;
+        configs.CurrentLimits.SupplyCurrentLimit = 30.0;
 
         configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 

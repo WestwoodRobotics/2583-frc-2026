@@ -26,25 +26,25 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 2.5
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RightSneakPath1"
+            "pathName": "LeftSneakPath1"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RightThirdPath2"
+            "pathName": "LeftSneakPath2"
           }
         },
         {
@@ -54,9 +54,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "RightThirdPath3"
+            "name": "FlywheelOff"
           }
         }
       ]

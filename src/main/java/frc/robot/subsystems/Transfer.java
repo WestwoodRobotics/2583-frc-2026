@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.IntakeShoot;
 import frc.robot.constants.TransferConstants;
 
@@ -30,12 +31,12 @@ public class Transfer extends SubsystemBase {
     private final BooleanSubscriber m_headingLockedSub = NetworkTableInstance.getDefault()
         .getTable("Shooter")
         .getBooleanTopic("Aim/HeadingLocked")
-        .subscribe(true);
+        .subscribe(false);
 
     private final BooleanSubscriber m_atDesiredRPSSub = NetworkTableInstance.getDefault()
         .getTable("Shooter")
         .getBooleanTopic("Flywheel/AtDesiredRPS")
-        .subscribe(true);
+        .subscribe(false);
 
     public Transfer() {
         m_floorMotor.getConfigurator().apply(TransferConstants.getFloorMotorConfigs());
@@ -77,11 +78,14 @@ public class Transfer extends SubsystemBase {
     }
 
     public Command shootCommand(boolean checkAim) {
-        return Commands.run(() -> this.runMotors(0.0, 0.0), this)
-            .until(() -> (m_headingLockedSub.get() && m_atDesiredRPSSub.get()) || !checkAim)
-            .andThen(
-                Commands.run(() -> this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel), this)
-            ).finallyDo(() -> this.runMotors(0.0, 0.0));
+        return Commands.sequence(
+            new WaitCommand(0.2),
+            Commands.run(() -> this.runMotors(0.0, 0.0), this)
+                .until(() -> (m_headingLockedSub.get() && m_atDesiredRPSSub.get()) || !checkAim)
+                .andThen(
+                    Commands.run(() -> this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel), this)
+                ).finallyDo(() -> this.runMotors(0.0, 0.0))
+        );
     }
 
     public Command shootTimeCommand() {

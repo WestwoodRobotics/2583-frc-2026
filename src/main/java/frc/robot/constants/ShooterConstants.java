@@ -32,7 +32,7 @@ public class ShooterConstants {
 
     public static final double kManualHoodInc = 2.0;
     public static final double kManualFlywheelInc = 1.0;
-    public static final double kFlywheelToleranceRPS = 0.5;
+    public static final double kFlywheelToleranceRPS = 3.0;
 
     public static final double kPeakReverseCurrentLimit = -10.0;
 
@@ -100,7 +100,7 @@ public class ShooterConstants {
 
         configs.Feedback.SensorToMechanismRatio = (54.0 / 11.0) * (28.0 / 15.0) * (106.0 / 7.0);
 
-        // configs.CurrentLimits.SupplyCurrentLimit = 10.0;
+        configs.CurrentLimits.SupplyCurrentLimit = 11.0;
 
         configs.MotionMagic.MotionMagicAcceleration = 3.0;
         configs.MotionMagic.MotionMagicCruiseVelocity = 0.7;

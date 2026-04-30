@@ -112,6 +112,9 @@ public class RobotContainer {
         RobotModeTriggers.teleop().onTrue(Commands.runOnce(
             () -> shooter.setAutoAim(true))
         );
+        RobotModeTriggers.autonomous().onTrue(Commands.runOnce(
+            () -> shooter.setAutoAim(false))
+        );
 
         driver.a().whileTrue(new AimSwerve(drivetrain, shooter, faceAngle, brake, driver));
 
@@ -143,7 +146,10 @@ public class RobotContainer {
             intake
         ));
 
-        driver.rightBumper().whileTrue(transfer.shootCommand(false));
+        driver.rightBumper().whileTrue(
+            transfer.shootCommand(false)
+            .alongWith(new IntakeShoot(intake, driver))
+        );
 
         driver.start().whileTrue(
             drivetrain.applyRequest(() -> {
@@ -185,7 +191,7 @@ public class RobotContainer {
                 ? new Pose2d(SwerveConstants.kResetX, SwerveConstants.kResetY, new Rotation2d(0.0))
                 : new Pose2d(SwerveConstants.fieldWidth - SwerveConstants.kResetX, SwerveConstants.kResetY, new Rotation2d(Math.PI));
             drivetrain.resetPose(pose);
-        }));
+        }).ignoringDisable(true));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

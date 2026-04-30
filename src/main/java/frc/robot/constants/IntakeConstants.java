@@ -18,7 +18,7 @@ public class IntakeConstants {
     public static final double kPivotOut = -0.11;
     public static final double kPivotShoot = 0.098388671875;
     public static final double kPivotUp = 0.28;
-    public static final double kPivotDepot = -0.04296875;
+    public static final double kPivotDepot = -0.03596875;
     public static final double kResetPivotPos = -0.066162109375;
 
     public static final double kRollerNeutralVel = 0.0;
@@ -42,7 +42,7 @@ public class IntakeConstants {
         configs.MotionMagic.MotionMagicAcceleration = 9.0;
         configs.MotionMagic.MotionMagicCruiseVelocity = 3.0;
 
-        // configs.CurrentLimits.SupplyCurrentLimit = 50.0;
+        configs.CurrentLimits.SupplyCurrentLimit = 45.0;
 
         configs.Feedback.SensorToMechanismRatio = (70.0 / 11.0) * (40.0 / 12.0);
         
@@ -62,7 +62,7 @@ public class IntakeConstants {
         configs.Slot0.kV = 0.0;
         configs.Slot0.kA = 0.28155307749;
 
-        // configs.CurrentLimits.SupplyCurrentLimit = 40.0;
+        // configs.CurrentLimits.SupplyCurrentLimit = 50.0;
         
         configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
