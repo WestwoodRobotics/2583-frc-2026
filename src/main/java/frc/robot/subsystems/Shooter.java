@@ -50,7 +50,7 @@ public class Shooter extends SubsystemBase {
     private boolean m_autoAimEnabled = false;
     private boolean m_hoodUp = false;
     private boolean m_dormantMode = true;
-    public double m_delta = 0;
+    public double m_delta = 0.0;
 
     public Shooter() {
         // Apply configurations directly from constants to keep constructor clean of variables

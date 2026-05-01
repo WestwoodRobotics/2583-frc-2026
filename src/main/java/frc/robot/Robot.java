@@ -43,15 +43,16 @@ public class Robot extends TimedRobot {
     public void disabledInit() {}
 
     @Override
-    public void disabledPeriodic() {}
+    public void disabledPeriodic() {
+        // Pre-fetch the autonomous command to ensure no NetworkTables delay during autonomousInit
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    }
 
     @Override
     public void disabledExit() {}
 
     @Override
     public void autonomousInit() {
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
         }

@@ -91,12 +91,4 @@ public class GetHubStatus {
     public static void changeWhoWon(boolean won) {
         didWin = won;
     }
-
-    public static void togglePracticeMode() {
-        isPractice = !isPractice;
-    }
-
-    public static boolean isPractice() {
-        return isPractice;
-    }
 }

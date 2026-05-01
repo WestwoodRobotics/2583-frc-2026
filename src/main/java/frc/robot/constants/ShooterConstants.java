@@ -27,40 +27,38 @@ public class ShooterConstants {
 
     public static final double kTrueMinAngle = 45.0;
 
-    public static final double kYFlywheelVel = 26.55211;
-    public static final double kYHoodAngle = 56.0;
+    public static final double kYFlywheelVel = 27.858921832551054;
+    public static final double kYHoodAngle = 60.0;
 
     public static final double kManualHoodInc = 2.0;
     public static final double kManualFlywheelInc = 1.0;
-    public static final double kFlywheelToleranceRPS = 3.0;
+    public static final double kFlywheelToleranceRPS = 2.0;
 
-    public static final double kPeakReverseCurrentLimit = -10.0;
+    public static final double kPeakReverseCurrentLimit = -5.0;
 
     public static final InterpolatingDoubleTreeMap kDistanceToRPS = new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap kDistanceToAngle = new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap kDistanceToTOF = new InterpolatingDoubleTreeMap();
 
     static {
-        // kDistanceToRPS.put(0.0, 26.55211);
-        
-        kDistanceToRPS.put(0.0, 19.89);
-        kDistanceToRPS.put(8.726, 60.5);
-        // kDistanceToRPS.put(2.65724913458083, 31.55211);
-        // kDistanceToRPS.put(2.102248805631872, 28.55211);
-        // kDistanceToRPS.put(1.7066029764740926, 26.55211);
-        // kDistanceToRPS.put(1.3828900999242464, 26.55211);
-        // kDistanceToRPS.put(1.3828900999242464, 26.55211);
-        // kDistanceToRPS.put(8.06057, 60.0);
 
-        kDistanceToRPS.put(999.0, 60.5);
+        kDistanceToRPS.put(0.0, 25.763912905171967);
+        kDistanceToRPS.put(1.1062981283038664, 25.763912905171967);
+        kDistanceToRPS.put(1.31226468083407, 26.80544394808964);
+        kDistanceToRPS.put(1.7317843665102108, 27.858921832551054);
+        kDistanceToRPS.put(1.9877911771679004, 29.14);
+        kDistanceToRPS.put(2.401767735037994, 32.208838675189966);
+        kDistanceToRPS.put(2.9683119546531347, 35.541559773265675);
+        kDistanceToRPS.put(6.81583, 60.0);
+        kDistanceToRPS.put(999.0, 60.0);
 
-        kDistanceToAngle.put(0.0, 60.0);
-
-        // kDistanceToAngle.put(2.629130514720832, 56.0);
-        // kDistanceToAngle.put(2.102248805631872, 56.0);
-        // kDistanceToAngle.put(1.7066029764740926, 56.0);
-        // kDistanceToAngle.put(1.3828900999242464, 60.0);
-
+        kDistanceToAngle.put(0.0, 70.0);
+        kDistanceToAngle.put(1.1062981283038664, 70.0);
+        kDistanceToAngle.put(1.31226468083407, 66.0);
+        kDistanceToAngle.put(1.7317843665102108, 60.0);
+        kDistanceToAngle.put(1.9877911771679004, 60.0);
+        kDistanceToAngle.put(2.401767735037994, 60.0);
+        kDistanceToAngle.put(2.9683119546531347, 60.0);
         kDistanceToAngle.put(999.0, 60.0);
 
         kDistanceToTOF.put(0.0, 0.0);
@@ -73,9 +71,9 @@ public class ShooterConstants {
         configs.Slot0.kP = 10.0;
         configs.Slot0.kI = 0.0;
         configs.Slot0.kD = 0.1;
-        configs.Slot0.kS = 4.4;
-        configs.Slot0.kV = 0.18667;
-        configs.Slot0.kA = 1.1327576959;
+        configs.Slot0.kS = 2.1;
+        configs.Slot0.kV = 0.0920634921;
+        configs.Slot0.kA = 1.0781533433;
 
         // configs.CurrentLimits.SupplyCurrentLimit = 40.0;
 

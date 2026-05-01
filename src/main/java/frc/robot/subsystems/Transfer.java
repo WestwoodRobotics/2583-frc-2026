@@ -79,7 +79,7 @@ public class Transfer extends SubsystemBase {
 
     public Command shootCommand(boolean checkAim) {
         return Commands.sequence(
-            new WaitCommand(0.2),
+            new WaitCommand(0.05),
             Commands.run(() -> this.runMotors(0.0, 0.0), this)
                 .until(() -> (m_headingLockedSub.get() && m_atDesiredRPSSub.get()) || !checkAim)
                 .andThen(

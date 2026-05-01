@@ -1,13 +1,10 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Alert.AlertType;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.SwerveConstants;
@@ -50,7 +47,7 @@ public class AdjustShooter extends Command {
             return;
         }
 
-        Double flywheelRPS = 19.2 + 5.0 * distance + m_shooter.m_delta;
+        Double flywheelRPS = ShooterConstants.kDistanceToRPS.get(distance) + m_shooter.m_delta;
         Double hoodAngle = ShooterConstants.kDistanceToAngle.get(distance);
 
         if (DriverStation.isTeleop()) {

@@ -47,7 +47,6 @@ public class LED extends SubsystemBase {
     private final BooleanPublisher m_isHubActivePub = m_hubStatusTable.getBooleanTopic("IsHubActive").publish();
     private final DoublePublisher m_countdownPub = m_hubStatusTable.getDoubleTopic("countdown").publish();
     private final DoublePublisher m_endgamePub = m_hubStatusTable.getDoubleTopic("endgame").publish();
-    private final BooleanPublisher m_isPracticePub = m_hubStatusTable.getBooleanTopic("IsPractice").publish();
 
     private final NetworkTable m_shooterTable = NetworkTableInstance.getDefault().getTable("Shooter");
     private final BooleanPublisher m_headingLockedPub = m_shooterTable.getBooleanTopic("Aim/HeadingLocked").publish();
@@ -81,7 +80,6 @@ public class LED extends SubsystemBase {
         m_isHubActivePub.set(isHubActive);
         m_countdownPub.set(countdown);
         m_endgamePub.set(GetHubStatus.getEndgameCountdown());
-        m_isPracticePub.set(GetHubStatus.isPractice());
 
         Pose2d robotPose = drivetrain.getState().Pose;
         boolean isAligned = isAligned(robotPose);

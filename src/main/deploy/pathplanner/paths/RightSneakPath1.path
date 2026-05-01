@@ -135,23 +135,12 @@
   "eventMarkers": [
     {
       "name": "RunIntakeEvent",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.01,
       "endWaypointRelativePos": 0.1,
       "command": {
         "type": "named",
         "data": {
           "name": "RunIntake"
-        }
-      }
-    },
-    {
-      "name": "FlywheelOffEvent",
-      "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "FlywheelOff"
         }
       }
     },
@@ -170,7 +159,7 @@
   "globalConstraints": {
     "maxVelocity": 4.3,
     "maxAcceleration": 7.0,
-    "maxAngularVelocity": 720.0,
+    "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
     "unlimited": false

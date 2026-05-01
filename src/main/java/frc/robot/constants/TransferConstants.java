@@ -14,7 +14,7 @@ public class TransferConstants {
 
     public static final double kFloorDefaultVel = 0.0;
     public static final double kTransferDefaultVel = 0.0;
-    public static final double kTransferShootVel = 70.0;
+    public static final double kTransferShootVel = 50.0;
     public static final double kFloorShootVel = 22.0;
     public static final double kTransferShootTime = 0.05;
 
@@ -43,9 +43,9 @@ public class TransferConstants {
     public static TalonFXConfiguration getTransferMotorConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 15.0;
+        configs.Slot0.kP = 25.0;
         configs.Slot0.kI = 0.0;
-        configs.Slot0.kD = 0.0;
+        configs.Slot0.kD = 0.1;
         configs.Slot0.kS = 10.5;
         configs.Slot0.kV = 0.0;
         configs.Slot0.kA = 0.0971466619;

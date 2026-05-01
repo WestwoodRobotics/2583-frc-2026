@@ -106,8 +106,8 @@
     },
     {
       "name": "RunIntakeEvent",
-      "waypointRelativePos": 0.8750844024307876,
-      "endWaypointRelativePos": 1.2316002700877773,
+      "waypointRelativePos": 0.55,
+      "endWaypointRelativePos": 0.65,
       "command": {
         "type": "named",
         "data": {
@@ -130,7 +130,7 @@
   "globalConstraints": {
     "maxVelocity": 4.3,
     "maxAcceleration": 7.0,
-    "maxAngularVelocity": 720.0,
+    "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 180.0,
     "nominalVoltage": 12.0,
     "unlimited": false
