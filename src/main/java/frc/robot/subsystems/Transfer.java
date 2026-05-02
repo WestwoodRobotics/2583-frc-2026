@@ -7,6 +7,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.networktables.BooleanSubscriber;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,6 +33,11 @@ public class Transfer extends SubsystemBase {
         .getTable("Shooter")
         .getBooleanTopic("Aim/HeadingLocked")
         .subscribe(false);
+    
+        private final DoubleSubscriber m_flywheelVelSub = NetworkTableInstance.getDefault()
+        .getTable("Shooter")
+        .getDoubleTopic("Flywheel/ActualRPS")
+        .subscribe(0.0);
 
     private final BooleanSubscriber m_atDesiredRPSSub = NetworkTableInstance.getDefault()
         .getTable("Shooter")
@@ -81,7 +87,7 @@ public class Transfer extends SubsystemBase {
         return Commands.sequence(
             new WaitCommand(0.05),
             Commands.run(() -> this.runMotors(0.0, 0.0), this)
-                .until(() -> (m_headingLockedSub.get() && m_atDesiredRPSSub.get()) || !checkAim)
+                .until(() -> ((m_headingLockedSub.get() && m_atDesiredRPSSub.get())) || m_flywheelVelSub.get() > 50.0 || !checkAim)
                 .andThen(
                     Commands.run(() -> this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel), this)
                 ).finallyDo(() -> this.runMotors(0.0, 0.0))

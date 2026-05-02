@@ -81,7 +81,7 @@ public class RobotContainer {
         faceAngle.HeadingController.setPID(SwerveConstants.aimKp, SwerveConstants.aimKi, SwerveConstants.aimKd);
         faceAngle.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
         // Warmup PathPlanner to avoid Java pauses
-        CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand().ignoringDisable(true));
+        CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
     }
 
     private void configureBindings() {
@@ -223,7 +223,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("PartialRetract", intake.partialRetract());
 
         NamedCommands.registerCommand("Shoot", Commands.race(
-            new WaitCommand(3.5),
+            new WaitCommand(3.0),
             transfer.shootCommand(true),
             new AimSwerve(drivetrain, shooter, faceAngle, brake, driver),
             new IntakeShoot(intake, driver)

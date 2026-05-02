@@ -8,11 +8,14 @@ import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
+import com.ctre.phoenix6.signals.LarsonBounceValue;
 import com.ctre.phoenix6.signals.LossOfSignalBehaviorValue;
 import com.ctre.phoenix6.signals.RGBWColor;
 
 import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -39,9 +42,6 @@ public class LED extends SubsystemBase {
 
     private boolean wasHubActive;
     private boolean wasDisabled;
-    private boolean strobing = false;
-
-    private Color currentColor = new Color(0,0,0);
 
     private final NetworkTable m_hubStatusTable = NetworkTableInstance.getDefault().getTable("HubStatus");
     private final BooleanPublisher m_isHubActivePub = m_hubStatusTable.getBooleanTopic("IsHubActive").publish();
@@ -50,6 +50,10 @@ public class LED extends SubsystemBase {
 
     private final NetworkTable m_shooterTable = NetworkTableInstance.getDefault().getTable("Shooter");
     private final BooleanPublisher m_headingLockedPub = m_shooterTable.getBooleanTopic("Aim/HeadingLocked").publish();
+
+    private final DoubleSubscriber m_distanceSub = m_shooterTable
+        .getDoubleTopic("Aim/DistanceToTarget")
+        .subscribe(0.0);
 
     public LED(CommandSwerveDrivetrain drivetrain, CommandXboxController driver) {
         this.drivetrain = drivetrain;
@@ -74,7 +78,6 @@ public class LED extends SubsystemBase {
             clearAllAnimations();
         }
         wasDisabled = isDisabled;
-
         boolean isHubActive = GetHubStatus.isHubActive();
         double countdown = GetHubStatus.getHubCountdown();
         m_isHubActivePub.set(isHubActive);
@@ -85,16 +88,9 @@ public class LED extends SubsystemBase {
         boolean isAligned = isAligned(robotPose);
         m_headingLockedPub.set(isAligned);
 
-        if (isDisabled) {
-            currentColor = new Color(255,60,0);
-            startLarsonAnimation(currentColor);
+        if (DriverStation.isDisabled()) {
+            startLarsonAnimation(new Color(255,60,0));
             return;
-        }
-
-        if (countdown < 3) {
-            strobing = true;
-        } else {
-            strobing = false;
         }
 
         if (isHubActive != wasHubActive) {
@@ -110,30 +106,23 @@ public class LED extends SubsystemBase {
         }
         wasHubActive = isHubActive;
 
-        if(DriverStation.getMatchTime() <= 30 && DriverStation.isTeleop()){
-            startFireAnimation();
-            return;
-        }
-
         if (!isHubActive) {
-            currentColor = Color.kRed;
             setSolidColor(Color.kRed);
             return;
         }
 
-        if (isAligned) {
-            currentColor = Color.kGreen;
-            setSolidColor(currentColor);
+        if (countdown < 4.0) {
+            setStrobeAnimation(Color.kPurple);
             return;
         }
 
-        if (strobing) {
-            currentColor = Color.kPurple;
-            setStrobeAnimation(currentColor);
+        if (m_distanceSub.get() < LEDConstants.shootingRadius) {
+            setSolidColor(Color.kGreen);
+            return;
+        } else {
+            setSolidColor(Color.kBlue);
             return;
         }
-        currentColor = new Color(255,60,0);
-        setSolidColor(currentColor);
      }
 
     private boolean isAligned(Pose2d robotPose) {
@@ -149,7 +138,6 @@ public class LED extends SubsystemBase {
     }
 
     public void setSolidColor(Color color, double brightness){
-        if (strobing) return;
         candle.setControl(new SolidColor(8, LEDConstants.endIndex).withColor(new RGBWColor(color).scaleBrightness(brightness)));
     }
 
@@ -169,13 +157,12 @@ public class LED extends SubsystemBase {
     }
 
     public void startLarsonAnimation(Color color){
-        if (strobing) return;
         LarsonAnimation larson = new LarsonAnimation(8, LEDConstants.endIndex).withColor(new RGBWColor(color)).withSize(7).withFrameRate(45);
         candle.setControl(larson);   
     }
 
     public void setStrobeAnimation(Color color) {
-        StrobeAnimation strobe = new StrobeAnimation(8, LEDConstants.endIndex).withColor(new RGBWColor(color)).withFrameRate(2);
+        StrobeAnimation strobe = new StrobeAnimation(8, LEDConstants.endIndex).withColor(new RGBWColor(color)).withFrameRate(3);
         candle.setControl(strobe);
     }
 

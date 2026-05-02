@@ -71,7 +71,7 @@ public class AimSwerve extends Command {
 
         boolean driverCommandingMove = Math.hypot(driverInputs[0], driverInputs[1]) > 0.05;
 
-        if (headingLocked && !driverCommandingMove) {
+        if (headingLocked && !driverCommandingMove && GetTargetLocation.inZone()) {
             if (!isAiming) {
                 brakeTimer.restart();
                 isAiming = true;

@@ -15,7 +15,7 @@ public class ShooterConstants {
     public static final int kHoodMotorId = 25;
     public static final CANBus kCANBus = new CANBus("rio");
 
-    public static final double kMaxFlywheelRPS = 60.0;
+    public static final double kMaxFlywheelRPS = 65.0;
     public static final double kPassingDormantVel = 0.0;
     public static final double kZoneDormantVel = 0.0;
 
@@ -41,7 +41,7 @@ public class ShooterConstants {
     public static final InterpolatingDoubleTreeMap kDistanceToTOF = new InterpolatingDoubleTreeMap();
 
     static {
-
+        /** 
         kDistanceToRPS.put(0.0, 25.763912905171967);
         kDistanceToRPS.put(1.1062981283038664, 25.763912905171967);
         kDistanceToRPS.put(1.31226468083407, 26.80544394808964);
@@ -52,6 +52,10 @@ public class ShooterConstants {
         kDistanceToRPS.put(6.81583, 60.0);
         kDistanceToRPS.put(999.0, 60.0);
 
+        kDistanceToRPS.put(1.9349981471527253, 30.35400412384266);
+        kDistanceToRPS.put(1.4955589251035601, 27.79314020037133);
+        kDistanceToRPS.put(1.1062981283038664, 25.763912905171967);
+
         kDistanceToAngle.put(0.0, 70.0);
         kDistanceToAngle.put(1.1062981283038664, 70.0);
         kDistanceToAngle.put(1.31226468083407, 66.0);
@@ -61,8 +65,17 @@ public class ShooterConstants {
         kDistanceToAngle.put(2.9683119546531347, 60.0);
         kDistanceToAngle.put(999.0, 60.0);
 
-        kDistanceToTOF.put(0.0, 0.0);
-        kDistanceToTOF.put(999.0, 0.0);
+        kDistanceToAngle.put(1.9349981471527253, 66.0);
+        kDistanceToAngle.put(1.4955589251035601, 65.22236455377882);
+        kDistanceToAngle.put(2.9683119546531347, 60.0);
+        */
+
+        kDistanceToTOF.put(0.0, 0.97);
+        kDistanceToTOF.put(1.27156941954409, 0.97);
+        kDistanceToTOF.put(1.6964201919252078, 1.23);
+        kDistanceToTOF.put(2.0143223838950965, 1.24);
+        kDistanceToTOF.put(2.444507623684114, 1.42);
+        kDistanceToTOF.put(999.0, 1.42);
     }
 
     public static TalonFXConfiguration getFlywheelMotorConfigs() {

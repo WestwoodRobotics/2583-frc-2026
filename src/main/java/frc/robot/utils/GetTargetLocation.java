@@ -55,7 +55,9 @@ public class GetTargetLocation {
             m_targetLocation = new Translation2d(targetX, targetY);
         }
 
-        // m_targetLocation = adjustMovingTarget(robotPose, currentSpeeds, m_targetLocation);
+        if (DriverStation.isTeleop()) {
+            m_targetLocation = adjustMovingTarget(robotPose, currentSpeeds, m_targetLocation);
+        }
         mLastTimestamp = currentTimestamp;
         return m_targetLocation;
     }

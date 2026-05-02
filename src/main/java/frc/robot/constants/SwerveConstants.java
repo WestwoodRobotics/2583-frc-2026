@@ -5,9 +5,9 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class SwerveConstants {
-    public static final double fieldWidth = 16.513048;
-    public static final double fieldLength = 8.042656;
-    public static final double allianceZoneWidth = 4.611624;
+    public static final double fieldWidth = 16.540988;
+    public static final double fieldLength = 8.069326;
+    public static final double allianceZoneWidth = 4.625594;
 
     public static final Transform2d robotToShooter = new Transform2d(
         new Translation2d(0.1905, 0.0),

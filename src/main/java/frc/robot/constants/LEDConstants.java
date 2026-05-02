@@ -10,4 +10,6 @@ public class LEDConstants {
     public static final double kMaxHeadingError = 4.0;
     public static final double kRumbleIntensity = 0.7;
     public static final double kRumbleTimeout = 0.2;
+
+    public static final double shootingRadius = 2.31;
 }
