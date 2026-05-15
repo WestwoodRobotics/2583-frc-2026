@@ -35,7 +35,9 @@ public class Robot extends TimedRobot {
         // SmartDashboard.putNumber("Loop Time (ms)", (currentTime - m_lastLoopTime) * 1000.0);
         m_lastLoopTime = currentTime;
 
-        m_timeAndJoystickReplay.update();
+        if (Robot.isSimulation()) {
+            m_timeAndJoystickReplay.update();
+        }
         CommandScheduler.getInstance().run();
     }
 

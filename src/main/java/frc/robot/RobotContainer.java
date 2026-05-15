@@ -81,7 +81,7 @@ public class RobotContainer {
         faceAngle.HeadingController.setPID(SwerveConstants.aimKp, SwerveConstants.aimKi, SwerveConstants.aimKd);
         faceAngle.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
         // Warmup PathPlanner to avoid Java pauses
-        CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
+        CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand().ignoringDisable(true));
     }
 
     private void configureBindings() {
