@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -12,29 +13,35 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
+
 
 import frc.robot.constants.SwerveConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Shooter;
 import frc.robot.utils.GetTargetLocation;
 
+
 public class AimSwerve extends Command {
     private final CommandSwerveDrivetrain drivetrain;
     private final Shooter shooter;
     private final CommandXboxController controller;
 
+
     private final SwerveRequest.FieldCentricFacingAngle driveRequest;
     private final SwerveRequest.SwerveDriveBrake brakeRequest;
     private final double[] driverInputs = new double[3];
 
-    private final BooleanSubscriber m_headingLockedSub = NetworkTableInstance.getDefault()
+
+    private final BooleanSubscriber m_turretLockedSub = NetworkTableInstance.getDefault()
         .getTable("Shooter")
-        .getBooleanTopic("Aim/HeadingLocked")
+        .getBooleanTopic("Aim/TurretLocked")
         .subscribe(true);
-    
+   
     private final Timer brakeTimer = new Timer();
     private boolean isAiming = false;
+
 
     public AimSwerve(CommandSwerveDrivetrain drivetrain, Shooter shooter, SwerveRequest.FieldCentricFacingAngle request, SwerveRequest.SwerveDriveBrake brake, CommandXboxController controller) {
         this.drivetrain = drivetrain;
@@ -46,20 +53,24 @@ public class AimSwerve extends Command {
         brakeTimer.start();
     }
 
+
     @Override
     public void initialize() {
         SmartDashboard.putBoolean("aimswerve", true);
         shooter.setHood(true);
     }
 
+
     @Override
     public void end(boolean interrupted) {
         shooter.setHood(false);
     }
 
+
     @Override
     public void execute() {
-        boolean headingLocked = m_headingLockedSub.get();
+        boolean turretLocked = m_turretLockedSub.get();
+
 
         if (DriverStation.isTeleop()) {
             CommandSwerveDrivetrain.joyStickPolar(driverInputs, controller);
@@ -69,9 +80,11 @@ public class AimSwerve extends Command {
             driverInputs[2] = 0;
         }
 
+
         boolean driverCommandingMove = Math.hypot(driverInputs[0], driverInputs[1]) > 0.05;
 
-        if (headingLocked && !driverCommandingMove && GetTargetLocation.inZone()) {
+
+        if (turretLocked && !driverCommandingMove && GetTargetLocation.inZone()) {
             if (!isAiming) {
                 brakeTimer.restart();
                 isAiming = true;
@@ -81,14 +94,18 @@ public class AimSwerve extends Command {
             isAiming = false;
         }
 
-        if (brakeTimer.hasElapsed(SwerveConstants.kBrakeTime) && headingLocked && !driverCommandingMove) {
+
+        if (brakeTimer.hasElapsed(SwerveConstants.kBrakeTime) && turretLocked && !driverCommandingMove) {
             drivetrain.setControl(brakeRequest);
             return;
         }
 
+
         Pose2d robotPose = drivetrain.getState().Pose;
 
-        Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose, drivetrain.getState().Speeds);
+
+        Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose);
+
 
         if (targetLocation == null) {
             drivetrain.setControl(driveRequest
@@ -98,12 +115,15 @@ public class AimSwerve extends Command {
             return;
         }
 
+
         Rotation2d targetHeading = targetLocation.minus(robotPose.getTranslation())
             .getAngle();
+
 
         if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
             targetHeading = targetHeading.minus(new Rotation2d(Math.toRadians(180.0)));
         }
+
 
         drivetrain.setControl(driveRequest
             .withVelocityX(driverInputs[0])
@@ -111,3 +131,4 @@ public class AimSwerve extends Command {
             .withTargetDirection(targetHeading));
     }
 }
+

@@ -8,11 +8,13 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 public class ShooterConstants {
-    public static final int kTopLeftFlywheelId = 28;
-    public static final int kTopRightFlywheelId = 26;
-    public static final int kBottomLeftFlywheelId = 29;
-    public static final int kBottomRightFlywheelId = 27;
-    public static final int kHoodMotorId = 25;
+    public static final int kTopLeftFlywheelId = 999;
+    public static final int kTopRightFlywheelId = 999;
+    public static final int kBottomLeftFlywheelId = 999;
+    public static final int kBottomRightFlywheelId = 999;
+    public static final int kHoodMotorId = 999;
+    public static final int kTurretMotorId = 999;
+
     public static final CANBus kCANBus = new CANBus("rio");
 
     public static final double kMaxFlywheelRPS = 65.0;
@@ -99,6 +101,30 @@ public class ShooterConstants {
     }
 
     public static TalonFXConfiguration getHoodMotorConfigs() {
+        TalonFXConfiguration configs = new TalonFXConfiguration();
+        
+        configs.Slot0.kP = 1000.0;
+        configs.Slot0.kI = 0.0;
+        configs.Slot0.kD = 50.0;
+        configs.Slot0.kS = 5.8;
+        configs.Slot0.kV = 0.0;
+        configs.Slot0.kA = 3.203;
+        configs.Slot0.kG = 2.3;
+
+        configs.Feedback.SensorToMechanismRatio = (54.0 / 11.0) * (28.0 / 15.0) * (106.0 / 7.0);
+
+        configs.CurrentLimits.SupplyCurrentLimit = 11.0;
+
+        configs.MotionMagic.MotionMagicAcceleration = 3.0;
+        configs.MotionMagic.MotionMagicCruiseVelocity = 0.7;
+        
+        configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        
+        return configs;
+    }
+
+    public static TalonFXConfiguration getTurretMotorConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
         configs.Slot0.kP = 1000.0;
