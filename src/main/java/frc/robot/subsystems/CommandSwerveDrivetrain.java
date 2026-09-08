@@ -20,7 +20,6 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
-import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
@@ -395,7 +394,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return super.samplePoseAt(Utils.fpgaToCurrentTime(timestampSeconds));
     }
 
-    public void followTrajectory(SwerveSample sample) {
+    /* public void followTrajectory(SwerveSample sample) {
         // Get the current pose of the robot
         Pose2d pose = this.getState().Pose;
 
@@ -408,7 +407,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         // Apply the generated speeds
         this.setControl(m_pathApplyFieldSpeeds.withSpeeds(speeds));
-    }
+    } */
 
      public static void joyStickPolar(double[] out, CommandXboxController controller, int power) {
 
