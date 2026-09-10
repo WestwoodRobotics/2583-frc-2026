@@ -40,6 +40,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.utils.FuelSim;
+import frc.robot.utils.RobotBumpSim;
 
 public class RobotContainer {
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -63,9 +64,11 @@ public class RobotContainer {
 
     public final Intake intake = new Intake();
 
+
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     private final double[] driverInputs = new double[3];
 
+    RobotBumpSim robotBumpSim = new RobotBumpSim(drivetrain.getModuleLocations());
 
 /*     private final AutoFactory autoFactory;
  */

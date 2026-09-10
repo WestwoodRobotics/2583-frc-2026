@@ -7,9 +7,11 @@ package frc.robot;
 import com.ctre.phoenix6.HootAutoReplay;
 import com.ctre.phoenix6.SignalLogger;
 
+import edu.wpi.first.math.geometry.Pose2d;
 /* import choreo.auto.AutoFactory;
  */import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
@@ -53,25 +55,40 @@ public class Robot extends TimedRobot {
 
     }
 
+    // new field near your other publishers
+private final StructPublisher<Pose3d> bumpPosePublisher =
+        table.getStructTopic("/BumpSim/RobotPose", Pose3d.struct).publish();
+
     @Override
-    public void robotPeriodic() {
-        m_timeAndJoystickReplay.update();
-        CommandScheduler.getInstance().run();
+public void robotPeriodic() {
+    m_timeAndJoystickReplay.update();
+    CommandScheduler.getInstance().run();
 
-        Pose3d intakepose = new Pose3d(0.28,0,0.275, new Rotation3d(0,Math.sin(Timer.getTimestamp())+1.0,0));
+    var driveState = m_robotContainer.drivetrain.getState();
+    Pose2d pose = driveState.Pose;
+    ChassisSpeeds fieldSpeeds =
+            ChassisSpeeds.fromRobotRelativeSpeeds(driveState.Speeds, pose.getRotation());
 
-        Pose3d zero = new Pose3d();
-        intakepublisher.set(intakepose);
-        publisherzero.set(zero);
+    Pose3d bumpPose = m_robotContainer.robotBumpSim.update(pose, fieldSpeeds, 5);
+    bumpPosePublisher.set(bumpPose);
 
-        Pose3d hoodpose = new Pose3d(0,0,0.58, new Rotation3d(0,Math.sin(Timer.getTimestamp())-2.5,0));
-        hoodpublisher.set(hoodpose);
-
-        SmartDashboard.putNumber("Score", FuelSim.Hub.BLUE_HUB.getScore());
-
-
+    // --- This is the physics part: actually pin the simulated position ---
+    if (m_robotContainer.robotBumpSim.isOnRamp()) {
+        Pose2d corrected = m_robotContainer.robotBumpSim.getSimWorldPose(pose);
+        m_robotContainer.drivetrain.resetTranslation(corrected.getTranslation());
     }
+    // -----------------------------------------------------------------
 
+    Pose3d intakepose = new Pose3d(0.28, 0, 0.275, new Rotation3d(0, Math.sin(Timer.getTimestamp()) + 1.0, 0));
+    Pose3d zero = new Pose3d();
+    intakepublisher.set(intakepose);
+    publisherzero.set(zero);
+
+    Pose3d hoodpose = new Pose3d(0, 0, 0.58, new Rotation3d(0, Math.sin(Timer.getTimestamp()) - 2.5, 0));
+    hoodpublisher.set(hoodpose);
+
+    SmartDashboard.putNumber("Score", FuelSim.Hub.BLUE_HUB.getScore());
+}
     @Override
     public void disabledInit() {}
 
