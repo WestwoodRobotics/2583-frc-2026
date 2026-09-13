@@ -8,12 +8,12 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 public class ShooterConstants {
-    public static final int kTopLeftFlywheelId = 28;
-    public static final int kTopRightFlywheelId = 26;
-    public static final int kBottomLeftFlywheelId = 29;
-    public static final int kBottomRightFlywheelId = 27;
-    public static final int kHoodMotorId = 25;
-    public static final int kTurretMotorId = 25;
+    public static final int kTopLeftFlywheelId = 999;
+    public static final int kTopRightFlywheelId = 999;
+    public static final int kBottomLeftFlywheelId = 999;
+    public static final int kBottomRightFlywheelId = 999;
+    public static final int kHoodMotorId = 999;
+    public static final int kTurretMotorId = 999;
 
     public static final CANBus kCANBus = new CANBus("rio");
 

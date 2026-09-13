@@ -129,8 +129,14 @@ public class RobotContainer {
 
         driver.rightTrigger().whileTrue(Commands.parallel(
             transfer.shootCommand(true),
-            new AimSwerve(drivetrain, shooter, faceAngle, brake, driver),
-            new IntakeShoot(intake, driver)
+            new IntakeShoot(intake, driver),
+            drivetrain.applyRequest(() -> {
+                    CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver);
+
+                    return drive.withVelocityX(driverInputs[0]) // Drive forward with negative Y (forward)
+                        .withVelocityY(driverInputs[1]) // Drive left with negative X (left)
+                        .withRotationalRate(driverInputs[2]); // Drive counterclockwise with negative X (left)
+            })
         ));
 
         // Run intake while holding left trigger

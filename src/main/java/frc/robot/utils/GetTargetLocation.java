@@ -21,7 +21,7 @@ public class GetTargetLocation {
     private static Translation2d m_targetLocation = null;
     private static boolean m_inZone = true;
 
-    public static Translation2d getTargetLocation(Pose2d robotPose, ChassisSpeeds currentSpeeds) {
+    public static Translation2d getTargetLocation(Pose2d robotPose) {
         // Cache result to avoid recalculating multiple times per loop cycle (approx 20ms)
         double currentTimestamp = Timer.getFPGATimestamp();
         if (Math.abs(currentTimestamp - mLastTimestamp) < 0.005 && m_targetLocation != null) {
@@ -55,9 +55,9 @@ public class GetTargetLocation {
             m_targetLocation = new Translation2d(targetX, targetY);
         }
 
-        if (DriverStation.isTeleop()) {
+       /*  if (DriverStation.isTeleop()) {
             m_targetLocation = adjustMovingTarget(robotPose, currentSpeeds, m_targetLocation);
-        }
+        } */
         mLastTimestamp = currentTimestamp;
         return m_targetLocation;
     }

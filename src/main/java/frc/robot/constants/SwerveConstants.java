@@ -13,6 +13,10 @@ public class SwerveConstants {
         new Translation2d(0.1905, 0.0),
         new Rotation2d(Math.toRadians(0))
     );
+    public static final Transform2d robotToTurret = new Transform2d(
+        new Translation2d(0.1905, 0.0),
+        new Rotation2d(Math.toRadians(0))
+    );
 
     public static final Translation2d blueHub = new Translation2d(allianceZoneWidth, fieldLength / 2);
     public static final Translation2d redHub = new Translation2d(fieldWidth - allianceZoneWidth, fieldLength / 2);

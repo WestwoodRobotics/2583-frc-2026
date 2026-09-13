@@ -88,7 +88,7 @@ public class AimSwerve extends Command {
 
         Pose2d robotPose = drivetrain.getState().Pose;
 
-        Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose, drivetrain.getState().Speeds);
+        Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose);
 
         if (targetLocation == null) {
             drivetrain.setControl(driveRequest

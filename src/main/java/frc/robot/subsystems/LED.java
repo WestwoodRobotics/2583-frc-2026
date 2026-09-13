@@ -126,7 +126,7 @@ public class LED extends SubsystemBase {
      }
 
     private boolean isAligned(Pose2d robotPose) {
-        Translation2d target = GetTargetLocation.getTargetLocation(robotPose, drivetrain.getState().Speeds);
+        Translation2d target = GetTargetLocation.getTargetLocation(robotPose);
         if (target == null) return false;
 
         Pose2d shooterPose = robotPose.plus(SwerveConstants.robotToShooter);

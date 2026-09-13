@@ -157,6 +157,10 @@ public class Shooter extends SubsystemBase {
         m_turretMotor.setControl(m_turretRequest);
     }
 
+    public double getTurretAngle(){
+        return m_turretMotor.getPosition().getValueAsDouble()*360.0;
+    }
+
     public void resetTurretPosition(){
         m_turretMotor.setPosition(0.0);
     }
