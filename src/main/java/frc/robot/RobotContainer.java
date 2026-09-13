@@ -75,7 +75,7 @@ public class RobotContainer {
     public final Vision vision = new Vision(drivetrain);
     public final Transfer transfer = new Transfer();
     public final Shooter shooter = new Shooter();
-    public final LED led = new LED(drivetrain, driver, shooter);
+    public final LED led = new LED(drivetrain, driver);
 
 
     /* Path follower */
@@ -117,7 +117,7 @@ public class RobotContainer {
 
         intake.setDefaultCommand(intake.intakeDefault());
         transfer.setDefaultCommand(transfer.defaultCommand());
-        shooter.setDefaultCommand(new AdjustShooter(shooter, drivetrain));
+        shooter.setDefaultCommand(new AdjustShooter(shooter, drivetrain, driver));
 
 
         // Idle while the robot is disabled. This ensures the configured
@@ -140,10 +140,10 @@ public class RobotContainer {
         driver.x().whileTrue(new LockHeading(drivetrain, faceAngle, driver, 45.0).alongWith(intake.partialRetract()))
             .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
        
-        driver.y().whileTrue(Commands.run(() -> {
+  /*       driver.y().whileTrue(Commands.run(() -> {
             shooter.setFlywheelVelocity(ShooterConstants.kYFlywheelVel);
             shooter.setHoodAngle(ShooterConstants.kYHoodAngle);
-        }, shooter));
+        }, shooter)); */
        
         driver.b().whileTrue(new LockHeading(drivetrain, faceAngle, driver, 0.0));
 
@@ -154,11 +154,13 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> {
                     CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver);
 
+
                     return drive.withVelocityX(driverInputs[0]) // Drive forward with negative Y (forward)
                         .withVelocityY(driverInputs[1]) // Drive left with negative X (left)
                         .withRotationalRate(driverInputs[2]); // Drive counterclockwise with negative X (left)
             })
         ));
+
 
         // Run intake while holding left trigger
         driver.leftTrigger().and(driver.rightTrigger().negate()).whileTrue(intake.runIntake());

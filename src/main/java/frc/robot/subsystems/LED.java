@@ -44,7 +44,7 @@ public class LED extends SubsystemBase {
     private CANdle candle;
     private final CommandSwerveDrivetrain drivetrain;
     private final CommandXboxController driver;
-    private final Shooter shooter;
+
 
     private boolean wasHubActive;
     private boolean wasDisabled;
@@ -57,7 +57,15 @@ public class LED extends SubsystemBase {
 
 
     private final NetworkTable m_shooterTable = NetworkTableInstance.getDefault().getTable("Shooter");
-    private final BooleanPublisher m_turretLockedPub = m_shooterTable.getBooleanTopic("Aim/TurretLocked").publish();
+    private final BooleanPublisher m_headingLockedPub = m_shooterTable.getBooleanTopic("Aim/HeadingLocked").publish();
+
+
+    private final DoubleSubscriber m_turretDesiredAngle = m_shooterTable.getDoubleTopic("Turret/DesiredPos").subscribe(0.0);
+    private final DoubleSubscriber m_turretActualAngle =  m_shooterTable.getDoubleTopic("Turret/DesiredPos").subscribe(0.0);
+
+
+    private final DoubleSubscriber m_hoodDesiredAngle = m_shooterTable.getDoubleTopic("Hood/DesiredAngle").subscribe(0.0);
+    private final DoubleSubscriber m_hoodActualAngle =  m_shooterTable.getDoubleTopic("Hood/ActualAngle").subscribe(0.0);
 
 
     private final DoubleSubscriber m_distanceSub = m_shooterTable
@@ -65,10 +73,9 @@ public class LED extends SubsystemBase {
         .subscribe(0.0);
 
 
-    public LED(CommandSwerveDrivetrain drivetrain, CommandXboxController driver, Shooter shooter) {
+    public LED(CommandSwerveDrivetrain drivetrain, CommandXboxController driver) {
         this.drivetrain = drivetrain;
         this.driver = driver;
-        this.shooter = shooter;
         candle = new CANdle(LEDConstants.candleId, LEDConstants.canBus);
 
 
@@ -102,8 +109,12 @@ public class LED extends SubsystemBase {
 
 
         Pose2d robotPose = drivetrain.getState().Pose;
-        boolean isAligned = isAligned(robotPose);
-        m_turretLockedPub.set(isAligned);
+       
+        boolean isAligned = Math.abs(m_turretDesiredAngle.get() - m_turretActualAngle.get()) <= 2
+        && Math.abs(m_hoodDesiredAngle.get() - m_hoodActualAngle.get()) <= 2;
+
+
+        m_headingLockedPub.set(isAligned);
 
 
         if (DriverStation.isDisabled()) {
@@ -148,19 +159,18 @@ public class LED extends SubsystemBase {
      }
 
 
-    private boolean isAligned(Pose2d robotPose) {
+    /* private boolean isAligned(Pose2d robotPose) {
         Translation2d target = GetTargetLocation.getTargetLocation(robotPose);
         if (target == null) return false;
 
 
         Pose2d shooterPose = robotPose.plus(SwerveConstants.robotToShooter);
         Rotation2d angleToTarget = target.minus(shooterPose.getTranslation()).getAngle();
+        Rotation2d requiredRobotRotation = angleToTarget.minus(SwerveConstants.robotToShooter.getRotation());
        
-        Rotation2d turretFieldAngle = robotPose.getRotation().plus(Rotation2d.fromDegrees(shooter.getTurretAngle()));
-        double error = angleToTarget.minus(turretFieldAngle).getDegrees();
-
-        return Math.abs(error) <= LEDConstants.kMaxHeadingError;
-    }
+        double error = Math.abs(robotPose.getRotation().minus(requiredRobotRotation).getDegrees());
+        return error <= LEDConstants.kMaxHeadingError;
+    } */
 
 
     public void setSolidColor(Color color, double brightness){

@@ -34,9 +34,9 @@ public class AimSwerve extends Command {
     private final double[] driverInputs = new double[3];
 
 
-    private final BooleanSubscriber m_turretLockedSub = NetworkTableInstance.getDefault()
+    private final BooleanSubscriber m_headingLockedSub = NetworkTableInstance.getDefault()
         .getTable("Shooter")
-        .getBooleanTopic("Aim/TurretLocked")
+        .getBooleanTopic("Aim/HeadingLocked")
         .subscribe(true);
    
     private final Timer brakeTimer = new Timer();
@@ -57,19 +57,17 @@ public class AimSwerve extends Command {
     @Override
     public void initialize() {
         SmartDashboard.putBoolean("aimswerve", true);
-        shooter.setHood(true);
     }
 
 
     @Override
     public void end(boolean interrupted) {
-        shooter.setHood(false);
     }
 
 
     @Override
     public void execute() {
-        boolean turretLocked = m_turretLockedSub.get();
+        boolean headingLocked = m_headingLockedSub.get();
 
 
         if (DriverStation.isTeleop()) {
@@ -84,7 +82,7 @@ public class AimSwerve extends Command {
         boolean driverCommandingMove = Math.hypot(driverInputs[0], driverInputs[1]) > 0.05;
 
 
-        if (turretLocked && !driverCommandingMove && GetTargetLocation.inZone()) {
+        if (headingLocked && !driverCommandingMove && GetTargetLocation.inZone()) {
             if (!isAiming) {
                 brakeTimer.restart();
                 isAiming = true;
@@ -95,7 +93,7 @@ public class AimSwerve extends Command {
         }
 
 
-        if (brakeTimer.hasElapsed(SwerveConstants.kBrakeTime) && turretLocked && !driverCommandingMove) {
+        if (brakeTimer.hasElapsed(SwerveConstants.kBrakeTime) && headingLocked && !driverCommandingMove) {
             drivetrain.setControl(brakeRequest);
             return;
         }
@@ -103,7 +101,9 @@ public class AimSwerve extends Command {
 
         Pose2d robotPose = drivetrain.getState().Pose;
 
+
         Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose);
+
 
         if (targetLocation == null) {
             drivetrain.setControl(driveRequest

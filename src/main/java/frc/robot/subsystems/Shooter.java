@@ -55,6 +55,7 @@ public class Shooter extends SubsystemBase {
 
     private final DoublePublisher m_turretActualPos = m_table.getDoubleTopic("Turret/ActualPos").publish();
     private final DoublePublisher m_turretDesiredAngle = m_table.getDoubleTopic("Turret/DesiredAngle").publish();
+    private final DoublePublisher m_turretActualAngle = m_table.getDoubleTopic("Turret/ActualAngle").publish();
 
 
     private final BooleanPublisher m_autoAimEnabledPub = m_table.getBooleanTopic("AutoAimEnabled").publish();
@@ -95,9 +96,7 @@ public class Shooter extends SubsystemBase {
 
         m_turretActualPos.set(turretPos);
         m_turretDesiredAngle.set(m_desiredTurretAngle);
-
-
-        // m_hoodDesiredPos.set(m_hoodRequest.Position);
+        m_turretActualAngle.set(MathUtil.inputModulus(turretPos * 360.0, -180.0, 180.0));
         double actualAngle = (hoodPos - ShooterConstants.kPosAtMinAngle) / ShooterConstants.kPerDegree + ShooterConstants.kMinAngle;
         m_hoodActualPos.set(hoodPos);
         m_hoodDesiredAngle.set(m_desiredHoodAngle);
@@ -181,7 +180,7 @@ public class Shooter extends SubsystemBase {
 
 
     public void setTurretPosition(double position){
-        m_turretMotor.setControl(m_turretRequest.withPosition(position));
+        m_turretMotor.setControl(m_turretRequest);
     }
 
 
