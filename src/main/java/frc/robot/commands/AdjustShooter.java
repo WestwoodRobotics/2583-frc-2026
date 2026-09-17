@@ -131,9 +131,11 @@ public class AdjustShooter extends Command {
             m_shooter.setHoodAngle(ShooterConstants.kMaxAngle);
             return;
         }
-        m_turretDesiredAngle.set(desiredTurretAngle);
+
+
         m_shooter.setHoodAngle(hoodAngle);
         m_shooter.setFlywheelVelocity(flywheelRPS);
+        m_shooter.setTurretAngle(desiredTurretAngle);
        
     }
    

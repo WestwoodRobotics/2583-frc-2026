@@ -15,6 +15,15 @@ public class ShooterConstants {
     public static final int kHoodMotorId = 999;
     public static final int kTurretMotorId = 999;
 
+    public static final int kTurretCoderId = 999;
+    public static final double kTurretCoderGearRatio = 999;
+
+    public static final double kTurretMinAngle = -180.0;
+    public static final double kTurretMaxAngle = 180.0;
+
+    public static final double kTurretDeadbandDegrees = 1.5;
+
+
     public static final CANBus kCANBus = new CANBus("rio");
 
     public static final double kMaxFlywheelRPS = 65.0;

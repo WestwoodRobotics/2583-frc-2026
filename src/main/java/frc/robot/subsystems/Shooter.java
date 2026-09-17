@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
@@ -30,6 +31,7 @@ public class Shooter extends SubsystemBase {
     private final TalonFX m_topRightFlywheel = new TalonFX(ShooterConstants.kTopRightFlywheelId, canBus);
     private final TalonFX m_turretMotor = new TalonFX(ShooterConstants.kTurretMotorId, canBus);
 
+    private final CANcoder m_turretCoder = new CANcoder(ShooterConstants.kTurretCoderId, canBus);
 
     private final VelocityTorqueCurrentFOC m_flywheelRequest = new VelocityTorqueCurrentFOC(0.0);
     private final MotionMagicTorqueCurrentFOC m_hoodRequest = new MotionMagicTorqueCurrentFOC(0.0);
@@ -60,14 +62,14 @@ public class Shooter extends SubsystemBase {
     private final BooleanPublisher m_dormantModePub = m_table.getBooleanTopic("DormantModeOn").publish();
 
 
-    private double m_desiredTurretAngle = ShooterConstants.kMaxAngle;
+    private double m_desiredTurretAngle = 0.0;
    
     private double m_desiredHoodAngle = ShooterConstants.kMaxAngle;
     private boolean m_autoAimEnabled = false;
     private boolean m_hoodUp = false;
     private boolean m_dormantMode = true;
     public double m_delta = 0.0;
-
+    private double m_lastCommandedTurretAngle = m_desiredTurretAngle;
 
     public Shooter() {
         // Apply configurations directly from constants to keep constructor clean of variables
@@ -82,7 +84,7 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         double hoodPos = m_hoodMotor.getPosition().getValueAsDouble();
-        double turretPos = m_turretMotor.getPosition().getValueAsDouble();
+        double turretPos = m_turretCoder.getPosition().getValueAsDouble()/ShooterConstants.kTurretCoderGearRatio;
         double flywheelVel = m_topRightFlywheel.getVelocity().getValueAsDouble();
         m_flywheelDesiredRPS.set(m_flywheelRequest.Velocity);
         m_flywheelActualRPS.set(flywheelVel);
@@ -175,12 +177,23 @@ public class Shooter extends SubsystemBase {
 
 
     public void setTurretPosition(double position){
-        m_turretMotor.setControl(m_turretRequest);
+        m_turretMotor.setControl(m_turretRequest.withPosition(position));
     }
 
+    public void setTurretAngle(double angle){
+        double clamped = MathUtil.clamp(angle, ShooterConstants.kTurretMinAngle, ShooterConstants.kTurretMaxAngle);
+        double delta = MathUtil.inputModulus(clamped - m_lastCommandedTurretAngle, -180.0, 180.0);
+
+        if(Math.abs(delta)< ShooterConstants.kTurretDeadbandDegrees){
+            return;
+        }
+        m_lastCommandedTurretAngle = clamped;
+        m_desiredTurretAngle = clamped;
+        setTurretPosition(clamped/360.0);
+    }
 
     public double getTurretAngle(){
-        return m_turretMotor.getPosition().getValueAsDouble()*360.0;
+        return (m_turretCoder.getPosition().getValueAsDouble()/ShooterConstants.kTurretCoderGearRatio) * 360.0;
     }
 
 
