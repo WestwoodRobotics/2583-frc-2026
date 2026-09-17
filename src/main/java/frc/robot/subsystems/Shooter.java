@@ -26,8 +26,6 @@ public class Shooter extends SubsystemBase {
 
     private final CANBus canBus = ShooterConstants.kCANBus;
     private final TalonFX m_hoodMotor = new TalonFX(ShooterConstants.kHoodMotorId, canBus);
-    private final TalonFX m_bottomLeftFlywheel = new TalonFX(ShooterConstants.kBottomLeftFlywheelId, canBus);
-    private final TalonFX m_bottomRightFlywheel = new TalonFX(ShooterConstants.kBottomRightFlywheelId, canBus);
     private final TalonFX m_topLeftFlywheel = new TalonFX(ShooterConstants.kTopLeftFlywheelId, canBus);
     private final TalonFX m_topRightFlywheel = new TalonFX(ShooterConstants.kTopRightFlywheelId, canBus);
     private final TalonFX m_turretMotor = new TalonFX(ShooterConstants.kTurretMotorId, canBus);
@@ -38,7 +36,6 @@ public class Shooter extends SubsystemBase {
     private final MotionMagicTorqueCurrentFOC m_turretRequest = new MotionMagicTorqueCurrentFOC(0.0);
 
 
-    private final Follower m_alignedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Aligned);
     private final Follower m_opposedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Opposed);
 
 
@@ -75,8 +72,6 @@ public class Shooter extends SubsystemBase {
     public Shooter() {
         // Apply configurations directly from constants to keep constructor clean of variables
         m_hoodMotor.getConfigurator().apply(ShooterConstants.getHoodMotorConfigs());
-        m_bottomLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
-        m_bottomRightFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
         m_topLeftFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs());
         m_topRightFlywheel.getConfigurator().apply(ShooterConstants.getFlywheelMotorConfigs()
             .withTorqueCurrent(new TorqueCurrentConfigs().withPeakReverseTorqueCurrent(ShooterConstants.kPeakReverseCurrentLimit)));
@@ -212,9 +207,7 @@ public class Shooter extends SubsystemBase {
     public void setFlywheelVelocity(double velocity) {
         double clampedVel = MathUtil.clamp(velocity, 0.0, ShooterConstants.kMaxFlywheelRPS);
         m_topRightFlywheel.setControl(m_flywheelRequest.withVelocity(clampedVel));
-        m_bottomRightFlywheel.setControl(m_alignedFollower);
         m_topLeftFlywheel.setControl(m_opposedFollower);
-        m_bottomLeftFlywheel.setControl(m_opposedFollower);
     }
 }
 

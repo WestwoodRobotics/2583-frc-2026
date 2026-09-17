@@ -23,24 +23,20 @@ import frc.robot.constants.TransferConstants;
 
 
 public class Transfer extends SubsystemBase {
-    private final TalonFX m_floorMotor = new TalonFX(TransferConstants.kFloorId, TransferConstants.kFloorCANBus);
     private final TalonFX m_transferMotor1 = new TalonFX(TransferConstants.kTransferId1, TransferConstants.kTransferCANBus);
-    private final TalonFX m_transferMotor2 = new TalonFX(TransferConstants.kTransferId2, TransferConstants.kTransferCANBus);
 
 
-    private final VelocityTorqueCurrentFOC m_floorRequest = new VelocityTorqueCurrentFOC(0);
     private final VelocityTorqueCurrentFOC m_transferRequest = new VelocityTorqueCurrentFOC(0);
 
 
-    private final Follower m_transferFollower = new Follower(TransferConstants.kTransferId1, MotorAlignmentValue.Aligned);
 
 
-    private final BooleanSubscriber m_turretLockedSub = NetworkTableInstance.getDefault()
+    private final BooleanSubscriber m_HeadingLockedSub = NetworkTableInstance.getDefault()
         .getTable("Shooter")
-        .getBooleanTopic("Aim/TurretLocked")
+        .getBooleanTopic("Aim/HeadingLocked")
         .subscribe(false);
    
-        private final DoubleSubscriber m_flywheelVelSub = NetworkTableInstance.getDefault()
+    private final DoubleSubscriber m_flywheelVelSub = NetworkTableInstance.getDefault()
         .getTable("Shooter")
         .getDoubleTopic("Flywheel/ActualRPS")
         .subscribe(0.0);
@@ -53,23 +49,19 @@ public class Transfer extends SubsystemBase {
 
 
     public Transfer() {
-        m_floorMotor.getConfigurator().apply(TransferConstants.getFloorMotorConfigs());
         m_transferMotor1.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
-        m_transferMotor2.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
         // ParentDevice.optimizeBusUtilizationForAll(m_floorMotor, m_transferMotor1, m_transferMotor2);
     }
 
 
     @Override
     public void periodic() {
-        m_transferMotor2.setControl(m_transferFollower);
+
     }
 
 
-    public void runMotors(double floorVel, double transferVel) {
-        m_floorMotor.setControl(m_floorRequest.withVelocity(floorVel));
+    public void runMotors(double transferVel) {
         m_transferMotor1.setControl(m_transferRequest.withVelocity(transferVel));
-        m_transferMotor2.setControl(m_transferFollower);
     }
 
 
@@ -84,17 +76,17 @@ public class Transfer extends SubsystemBase {
 
     public Command defaultCommand() {
         // Default: Floor spins at default speed
-        return Commands.run(() -> runMotors(TransferConstants.kFloorDefaultVel, TransferConstants.kTransferDefaultVel), this);
+        return Commands.run(() -> runMotors(TransferConstants.kTransferDefaultVel), this);
     }
 
 
     public Command stopTransfer() {
-        return Commands.run(() -> runMotors(0.0, 0.0), this);
+        return Commands.run(() -> runMotors(0.0), this);
     }
 
 
     public Command reverseCommand() {
-        return Commands.run(() -> runMotors(-TransferConstants.kFloorShootVel, -TransferConstants.kTransferShootVel), this);
+        return Commands.run(() -> runMotors(-TransferConstants.kTransferShootVel), this);
     }
 
 
@@ -102,19 +94,19 @@ public class Transfer extends SubsystemBase {
         SmartDashboard.putBoolean("ShootCommandCheckAim", true);
         return Commands.sequence(
             new WaitCommand(0.05),
-            Commands.run(() -> this.runMotors(0.0, 0.0), this)
-                .until(() -> ((m_turretLockedSub.get() && m_atDesiredRPSSub.get())) || m_flywheelVelSub.get() > 50.0 || !checkAim)
+            Commands.run(() -> this.runMotors(0.0), this)
+                .until(() -> ((m_HeadingLockedSub.get() && m_atDesiredRPSSub.get())) || m_flywheelVelSub.get() > 50.0 || !checkAim)
                 .andThen(
-                    Commands.run(() -> this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel), this)
-                ).finallyDo(() -> this.runMotors(0.0, 0.0))
+                    Commands.run(() -> this.runMotors(TransferConstants.kTransferShootVel), this)
+                ).finallyDo(() -> this.runMotors(0.0))
         );
     }
 
 
     public Command shootTimeCommand() {
-        return Commands.run(() -> this.runMotors(TransferConstants.kFloorShootVel, TransferConstants.kTransferShootVel), this)
+        return Commands.run(() -> this.runMotors(TransferConstants.kTransferShootVel), this)
             .withTimeout(TransferConstants.kTransferShootTime)
-            .finallyDo(() -> this.runMotors(0.0, 0.0));
+            .finallyDo(() -> this.runMotors(0.0));
     }
 }
 
