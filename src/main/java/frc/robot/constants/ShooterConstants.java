@@ -18,10 +18,10 @@ public class ShooterConstants {
     public static final int kTurretCoderId = 999;
     public static final double kTurretCoderGearRatio = 999;
 
-    public static final double kTurretMinAngle = -180.0;
-    public static final double kTurretMaxAngle = 180.0;
+    public static final double kTurretMinAngle = -200.0;
+    public static final double kTurretMaxAngle = 200.0;
 
-    public static final double kTurretDeadbandDegrees = 1.5;
+    public static final double kTurretWrapDeadbandDegrees = 5;
 
 
     public static final CANBus kCANBus = new CANBus("rio");
@@ -153,6 +153,11 @@ public class ShooterConstants {
         
         configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        configs.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        configs.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+
+        configs.SoftwareLimitSwitch.ForwardSoftLimitThreshold = (kTurretMaxAngle / 360.0);
+        configs.SoftwareLimitSwitch.ReverseSoftLimitThreshold = (kTurretMinAngle / 360.0);
         
         return configs;
     }

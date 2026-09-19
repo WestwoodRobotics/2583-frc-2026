@@ -5,7 +5,6 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -16,7 +15,6 @@ import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ShooterConstants;
@@ -62,6 +60,8 @@ public class Shooter extends SubsystemBase {
     private final BooleanPublisher m_dormantModePub = m_table.getBooleanTopic("DormantModeOn").publish();
 
 
+
+
     private double m_desiredTurretAngle = 0.0;
    
     private double m_desiredHoodAngle = ShooterConstants.kMaxAngle;
@@ -69,7 +69,6 @@ public class Shooter extends SubsystemBase {
     private boolean m_hoodUp = false;
     private boolean m_dormantMode = true;
     public double m_delta = 0.0;
-    private double m_lastCommandedTurretAngle = m_desiredTurretAngle;
 
     public Shooter() {
         // Apply configurations directly from constants to keep constructor clean of variables
@@ -93,7 +92,7 @@ public class Shooter extends SubsystemBase {
 
         m_turretActualPos.set(turretPos);
         m_turretDesiredAngle.set(m_desiredTurretAngle);
-        m_turretActualAngle.set(MathUtil.inputModulus(turretPos * 360.0, -180.0, 180.0));
+        m_turretActualAngle.set(MathUtil.inputModulus(turretPos * 360.0, -200.0, 200.0));
         double actualAngle = (hoodPos - ShooterConstants.kPosAtMinAngle) / ShooterConstants.kPerDegree + ShooterConstants.kMinAngle;
         m_hoodActualPos.set(hoodPos);
         m_hoodDesiredAngle.set(m_desiredHoodAngle);
@@ -182,12 +181,10 @@ public class Shooter extends SubsystemBase {
 
     public void setTurretAngle(double angle){
         double clamped = MathUtil.clamp(angle, ShooterConstants.kTurretMinAngle, ShooterConstants.kTurretMaxAngle);
-        double delta = MathUtil.inputModulus(clamped - m_lastCommandedTurretAngle, -180.0, 180.0);
 
-        if(Math.abs(delta)< ShooterConstants.kTurretDeadbandDegrees){
+        if(Math.abs(clamped) > 195){
             return;
         }
-        m_lastCommandedTurretAngle = clamped;
         m_desiredTurretAngle = clamped;
         setTurretPosition(clamped/360.0);
     }
@@ -195,6 +192,8 @@ public class Shooter extends SubsystemBase {
     public double getTurretAngle(){
         return (m_turretCoder.getPosition().getValueAsDouble()/ShooterConstants.kTurretCoderGearRatio) * 360.0;
     }
+
+
 
 
     public void resetTurretPosition(){

@@ -39,10 +39,7 @@ public class AdjustShooter extends Command {
         .getTable("Shooter")
         .getDoubleTopic("Aim/DistanceToTarget")
         .publish();
-    private final DoublePublisher m_turretDesiredAngle = NetworkTableInstance.getDefault()
-        .getTable("Shooter")
-        .getDoubleTopic("Turret/DesiredAngle")
-        .publish();
+  
 
 
 
@@ -99,8 +96,9 @@ public class AdjustShooter extends Command {
 
 
         Double shooterToTargetAngle = targetLocation.minus(shooterPose.getTranslation()).getAngle().getDegrees();
-        Double TurretAngle = MathUtil.inputModulus(shooterToTargetAngle - robotAngle , -180,180);
-        Double desiredTurretAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red? TurretAngle : -TurretAngle;
+        Double shooterToTargetAngleEfficient = shooterToTargetAngle;        
+        Double TurretAngle = MathUtil.inputModulus(shooterToTargetAngleEfficient - robotAngle , -200,200);
+        Double desiredTurretAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red? -TurretAngle : TurretAngle;
 
 
         if (DriverStation.isTeleop()) {
