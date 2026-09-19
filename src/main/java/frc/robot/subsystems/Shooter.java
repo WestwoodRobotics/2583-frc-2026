@@ -182,19 +182,21 @@ public class Shooter extends SubsystemBase {
     public void setTurretAngle(double angle){
         double clamped = MathUtil.clamp(angle, ShooterConstants.kTurretMinAngle, ShooterConstants.kTurretMaxAngle);
 
-        if(Math.abs(clamped) > 195){
+        // 195 = kTurretMaxAngle(200) - kTurretWrapDeadbandDegrees(5) -- deriving it
+        // here instead of hardcoding keeps this in sync with the soft-limit config
+        // in getTurretMotorConfigs(), which is what the deadband constant is for.
+        double acceptLimit = ShooterConstants.kTurretMaxAngle - ShooterConstants.kTurretWrapDeadbandDegrees;
+        if (Math.abs(clamped) > acceptLimit) {
             return;
         }
+
         m_desiredTurretAngle = clamped;
-        setTurretPosition(clamped/360.0);
+        setTurretPosition(clamped / 360.0);
     }
 
     public double getTurretAngle(){
         return (m_turretCoder.getPosition().getValueAsDouble()/ShooterConstants.kTurretCoderGearRatio) * 360.0;
     }
-
-
-
 
     public void resetTurretPosition(){
         m_turretMotor.setPosition(0.0);

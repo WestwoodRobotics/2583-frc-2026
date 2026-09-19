@@ -11,7 +11,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.struct.Struct;
@@ -41,9 +43,10 @@ public class AdjustShooter extends Command {
         .publish();
   
 
-
-
-
+    private final DoubleSubscriber m_turretDesiredAngle = NetworkTableInstance.getDefault()
+        .getTable("Shooter")
+        .getDoubleTopic("Turret/DesiredAngle")
+        .subscribe(0.0);
 
 
     public AdjustShooter(Shooter shooter, CommandSwerveDrivetrain drivetrain, CommandXboxController driver) {
@@ -61,7 +64,6 @@ public class AdjustShooter extends Command {
 
 
         Double robotAngle = robotPose.getRotation().getDegrees();
-
 
         boolean holdingShoot = m_driver.rightTrigger().getAsBoolean();
 
@@ -96,10 +98,30 @@ public class AdjustShooter extends Command {
 
 
         Double shooterToTargetAngle = targetLocation.minus(shooterPose.getTranslation()).getAngle().getDegrees();
-        Double shooterToTargetAngleEfficient = shooterToTargetAngle;        
-        Double TurretAngle = MathUtil.inputModulus(shooterToTargetAngleEfficient - robotAngle , -200,200);
-        Double desiredTurretAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red? -TurretAngle : TurretAngle;
+        double rawTurretAngle = shooterToTargetAngle - robotAngle;
+        double turretAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
+            ? -rawTurretAngle
+            : rawTurretAngle;
 
+       
+        double base = MathUtil.inputModulus(turretAngle, -180.0, 180.0);
+        double acceptLimit = ShooterConstants.kTurretMaxAngle - ShooterConstants.kTurretWrapDeadbandDegrees;
+        double current = m_turretDesiredAngle.get();
+        double desiredAngle = base;
+        double bestDist = Math.abs(base - current);
+        double[] turret180 = new double[] {base-360.0, base + 360.0};
+        for (double element : turret180) {
+            if (Math.abs(element) > acceptLimit) {
+                continue;
+            }
+            double dist = Math.abs(element - current);
+            if (dist < bestDist) {
+                bestDist = dist;
+                desiredAngle = element;
+            }
+        }
+
+        Double desiredTurretAngle = desiredAngle;
 
         if (DriverStation.isTeleop()) {
             if (m_shooter.getHoodState()) {
