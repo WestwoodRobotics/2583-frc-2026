@@ -6,9 +6,9 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class TransferConstants {
-    public static final int kFloorId = 22;
-    public static final int kTransferId1 = 23;
-    public static final int kTransferId2 = 24;
+    public static final int kFloorId = 999;
+    public static final int kTransferId1 = 999;
+    public static final int kTransferId2 = 999;
     public static final CANBus kFloorCANBus = new CANBus("SwerveCAN");
     public static final CANBus kTransferCANBus = new CANBus("rio");
 

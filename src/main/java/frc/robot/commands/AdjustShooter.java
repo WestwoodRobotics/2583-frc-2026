@@ -43,11 +43,20 @@ public class AdjustShooter extends Command {
         .publish();
   
 
+    private final DoubleSubscriber m_turretActualAngle = NetworkTableInstance.getDefault()
+        .getTable("Shooter")
+        .getDoubleTopic("Turret/ActualAngle")
+        .subscribe(0.0);
+    
     private final DoubleSubscriber m_turretDesiredAngle = NetworkTableInstance.getDefault()
         .getTable("Shooter")
         .getDoubleTopic("Turret/DesiredAngle")
         .subscribe(0.0);
 
+   private final StructPublisher<Pose2d> turret = NetworkTableInstance.getDefault()
+        .getTable("Shooter")
+        .getStructTopic("Turret/Turretpos", Pose2d.struct)
+        .publish();
 
     public AdjustShooter(Shooter shooter, CommandSwerveDrivetrain drivetrain, CommandXboxController driver) {
         m_shooter = shooter;
@@ -98,30 +107,47 @@ public class AdjustShooter extends Command {
 
 
         Double shooterToTargetAngle = targetLocation.minus(shooterPose.getTranslation()).getAngle().getDegrees();
-        double rawTurretAngle = shooterToTargetAngle - robotAngle;
-        double turretAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
+        double turretAngle = shooterToTargetAngle - robotAngle;
+       /*  double turretAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
             ? -rawTurretAngle
-            : rawTurretAngle;
+            : rawTurretAngle; */
 
        
         double base = MathUtil.inputModulus(turretAngle, -180.0, 180.0);
+        SmartDashboard.putNumber("base", base);
         double acceptLimit = ShooterConstants.kTurretMaxAngle - ShooterConstants.kTurretWrapDeadbandDegrees;
-        double current = m_turretDesiredAngle.get();
+        double current = m_turretDesiredAngle.get(); //USE DESIRED ONLY FOR SIM
+        SmartDashboard.putNumber("current", current);
         double desiredAngle = base;
         double bestDist = Math.abs(base - current);
-        double[] turret180 = new double[] {base-360.0, base + 360.0};
-        for (double element : turret180) {
-            if (Math.abs(element) > acceptLimit) {
-                continue;
-            }
-            double dist = Math.abs(element - current);
-            if (dist < bestDist) {
+        SmartDashboard.putNumber("bestDist", bestDist);
+        double basePositive = base+360.0;
+        double baseNegative = base-360.0;
+        
+        if(Math.abs(basePositive) < acceptLimit){
+            double dist = Math.abs(basePositive - current);
+            if(dist < bestDist){
                 bestDist = dist;
-                desiredAngle = element;
+                desiredAngle = basePositive;
+                SmartDashboard.putBoolean("basepositive", true);
             }
         }
 
+        if(Math.abs(baseNegative) < acceptLimit){
+            double dist2 = Math.abs(baseNegative - current);
+            if(dist2 < bestDist){
+                bestDist = dist2;
+                desiredAngle = baseNegative;
+                SmartDashboard.putBoolean("basenegative", true);
+
+            }
+        }
+       
+        
+
         Double desiredTurretAngle = desiredAngle;
+
+
 
         if (DriverStation.isTeleop()) {
             if (m_shooter.getHoodState()) {
@@ -152,7 +178,7 @@ public class AdjustShooter extends Command {
             return;
         }
 
-
+        turret.set(new Pose2d(robotPose.getX(), robotPose.getY(), Rotation2d.fromDegrees(robotPose.getRotation().getDegrees() + desiredTurretAngle)));
         m_shooter.setHoodAngle(hoodAngle);
         m_shooter.setFlywheelVelocity(flywheelRPS);
         m_shooter.setTurretAngle(desiredTurretAngle);

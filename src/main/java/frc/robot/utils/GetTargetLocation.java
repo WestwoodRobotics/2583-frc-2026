@@ -26,6 +26,51 @@ public class GetTargetLocation {
     private static boolean m_inZone = true;
 
 
+    public static Translation2d getTargetLocation(Pose2d robotPose, ChassisSpeeds currentSpeeds) {
+        // Cache result to avoid recalculating multiple times per loop cycle (approx 20ms)
+        double currentTimestamp = Timer.getFPGATimestamp();
+        if (Math.abs(currentTimestamp - mLastTimestamp) < 0.005 && m_targetLocation != null) {
+            return m_targetLocation;
+        }
+
+
+        var allianceOpt = DriverStation.getAlliance();
+        if (allianceOpt.isEmpty()) {
+            return null;
+        }
+        var alliance = allianceOpt.get();
+        boolean isBlue = (alliance == Alliance.Blue);
+
+
+        // Determine if we are in the alliance's shooting zone based on the robot's X position.
+        if (isBlue) {
+            m_inZone = robotPose.getX() < SwerveConstants.allianceZoneWidth;
+        } else {
+            m_inZone = robotPose.getX() > (SwerveConstants.fieldWidth - SwerveConstants.allianceZoneWidth);
+        }
+
+
+        if (m_inZone) {
+            // Lock to appropriate hub
+            m_targetLocation = isBlue ? SwerveConstants.blueHub : SwerveConstants.redHub;
+        } else {
+            // Lock to alliance corner
+            boolean isTop = robotPose.getY() >= (SwerveConstants.fieldLength / 2.0);
+           
+            double targetX = isBlue ? SwerveConstants.bluePassX : SwerveConstants.redPassX;
+            double targetY = isTop ? SwerveConstants.upperPassY : SwerveConstants.lowerPassY;
+           
+            m_targetLocation = new Translation2d(targetX, targetY);
+        }
+
+
+        if (DriverStation.isTeleop()) {
+            m_targetLocation = adjustMovingTarget(robotPose, currentSpeeds, m_targetLocation);
+        } 
+        mLastTimestamp = currentTimestamp;
+        return m_targetLocation;
+    }
+
     public static Translation2d getTargetLocation(Pose2d robotPose) {
         // Cache result to avoid recalculating multiple times per loop cycle (approx 20ms)
         double currentTimestamp = Timer.getFPGATimestamp();
@@ -64,14 +109,10 @@ public class GetTargetLocation {
         }
 
 
-       /*  if (DriverStation.isTeleop()) {
-            m_targetLocation = adjustMovingTarget(robotPose, currentSpeeds, m_targetLocation);
-        } */
+        
         mLastTimestamp = currentTimestamp;
         return m_targetLocation;
     }
-
-
     public static Translation2d adjustMovingTarget(Pose2d robotPose, ChassisSpeeds currentSpeeds, Translation2d realTargetPos) {
         // Convert field-relative chassis speeds to a Translation2d vector
         Translation2d robotVelocity = new Translation2d(

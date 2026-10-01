@@ -52,21 +52,12 @@ public class ShooterConstants {
     public static final InterpolatingDoubleTreeMap kDistanceToTOF = new InterpolatingDoubleTreeMap();
 
     static {
-        /** 
-        kDistanceToRPS.put(0.0, 25.763912905171967);
-        kDistanceToRPS.put(1.1062981283038664, 25.763912905171967);
-        kDistanceToRPS.put(1.31226468083407, 26.80544394808964);
-        kDistanceToRPS.put(1.7317843665102108, 27.858921832551054);
-        kDistanceToRPS.put(1.9877911771679004, 29.14);
-        kDistanceToRPS.put(2.401767735037994, 32.208838675189966);
-        kDistanceToRPS.put(2.9683119546531347, 35.541559773265675);
-        kDistanceToRPS.put(6.81583, 60.0);
-        kDistanceToRPS.put(999.0, 60.0);
+        
 
-        kDistanceToRPS.put(1.9349981471527253, 30.35400412384266);
-        kDistanceToRPS.put(1.4955589251035601, 27.79314020037133);
-        kDistanceToRPS.put(1.1062981283038664, 25.763912905171967);
+        //kDistanceToRPS.put(999.0, 60.0);
 
+       
+        /* 
         kDistanceToAngle.put(0.0, 70.0);
         kDistanceToAngle.put(1.1062981283038664, 70.0);
         kDistanceToAngle.put(1.31226468083407, 66.0);
@@ -161,4 +152,8 @@ public class ShooterConstants {
         
         return configs;
     }
+
+    public double[] robotDistancesInterpolatingArray = {0, 1, 2, 3, 4};
+    public double[] flywheelVelocitiesInterpolatingArray = {0, 10, 20, 30, 40};
+
 }

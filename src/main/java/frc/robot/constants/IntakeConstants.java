@@ -7,8 +7,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class IntakeConstants {
-    public static final int kPivotMotorId = 20;
-    public static final int kRollerMotorId = 21;
+    public static final int kPivotMotorId = 999;
+    public static final int kRollerMotorId = 999;
     public static final CANBus kCANBus = new CANBus("SwerveCAN");
 
     public static final double kPivotOffset = 0.310546875;
