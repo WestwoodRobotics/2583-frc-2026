@@ -23,6 +23,8 @@ public class ShooterConstants {
 
     public static final double kTurretWrapDeadbandDegrees = 5;
 
+    public static double kTurretOffset = 0.0;
+
 
     public static final CANBus kCANBus = new CANBus("rio");
 
@@ -51,6 +53,7 @@ public class ShooterConstants {
     public static final InterpolatingDoubleTreeMap kDistanceToAngle = new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap kDistanceToTOF = new InterpolatingDoubleTreeMap();
 
+    public static final double SOTMVelMultiplier = 0.410022779043;
     static {
         
 

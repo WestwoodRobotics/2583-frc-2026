@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 
 import edu.wpi.first.networktables.BooleanSubscriber;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -28,8 +29,10 @@ public class Transfer extends SubsystemBase {
 
     private final VelocityTorqueCurrentFOC m_transferRequest = new VelocityTorqueCurrentFOC(0);
 
-
-
+    private final BooleanSubscriber wrapPub = NetworkTableInstance.getDefault()
+        .getTable("Shooter")
+        .getBooleanTopic("Aim/TurretWrap")
+        .subscribe(false);
 
     private final BooleanSubscriber m_HeadingLockedSub = NetworkTableInstance.getDefault()
         .getTable("Shooter")
@@ -47,6 +50,10 @@ public class Transfer extends SubsystemBase {
         .getBooleanTopic("Flywheel/AtDesiredRPS")
         .subscribe(false);
 
+    private final DoublePublisher m_transferDesiredVelPub = NetworkTableInstance.getDefault()
+        .getTable("Transfer")
+        .getDoubleTopic("Transfer/ActualVelocityRPS")
+        .publish();
 
     public Transfer() {
         m_transferMotor1.getConfigurator().apply(TransferConstants.getTransferMotorConfigs());
@@ -61,7 +68,8 @@ public class Transfer extends SubsystemBase {
 
 
     public void runMotors(double transferVel) {
-        m_transferMotor1.setControl(m_transferRequest.withVelocity(transferVel));
+            m_transferMotor1.setControl(m_transferRequest.withVelocity(transferVel));
+            m_transferDesiredVelPub.set(transferVel);
     }
 
 
@@ -95,7 +103,7 @@ public class Transfer extends SubsystemBase {
         return Commands.sequence(
             new WaitCommand(0.05),
             Commands.run(() -> this.runMotors(0.0), this)
-                .until(() -> ((m_HeadingLockedSub.get() && m_atDesiredRPSSub.get())) || m_flywheelVelSub.get() > 50.0 || !checkAim)
+                .until(() -> ((m_HeadingLockedSub.get() && m_atDesiredRPSSub.get())) || m_flywheelVelSub.get() > 50.0 || !checkAim || !wrapPub.get())
                 .andThen(
                     Commands.run(() -> this.runMotors(TransferConstants.kTransferShootVel), this)
                 ).finallyDo(() -> this.runMotors(0.0))

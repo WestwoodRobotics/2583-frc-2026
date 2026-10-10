@@ -17,20 +17,20 @@ public class VisionConstants {
 
     public static final Transform3d[] robotToCamTransforms = {
         new Transform3d(
-            new Translation3d(0.298069, -0.0019304, 0.317627),
-            new Rotation3d(0.0, Math.toRadians(12.87), Math.toRadians(25.0))
+            new Translation3d(-0.05943, 0.34998, 0.48351),
+            new Rotation3d(0.0, Math.toRadians(0), Math.toRadians(78))
         ),
         new Transform3d(
-            new Translation3d(0.298069, -0.0997204, 0.317627),
-            new Rotation3d(0.0, Math.toRadians(12.87), Math.toRadians(-25.0))
+            new Translation3d(-0.05943, -0.34998, 0.48351),
+            new Rotation3d(0.0, Math.toRadians(0), Math.toRadians(-78))
         ),
         new Transform3d(
-            new Translation3d(0.1518158, 0.377825, 0.2233422),
-            new Rotation3d(Math.toRadians(0.0), Math.toRadians(7.067), Math.toRadians(90 + 4.981))
+            new Translation3d(-0.31573, 0.02052, 0.51911),
+            new Rotation3d(Math.toRadians(.0), Math.toRadians(0), Math.toRadians(140))
         ),
         new Transform3d(
-            new Translation3d(0.1518158, -0.377825, 0.2233422),
-            new Rotation3d(Math.toRadians(0.0), Math.toRadians(7.067), Math.toRadians(-90 - 4.981))
+            new Translation3d(-0.31573, -0.02052, 0.47039),
+            new Rotation3d(Math.toRadians(0.0), Math.toRadians(0), Math.toRadians(-140))
         ),
     };
 

@@ -4,8 +4,11 @@ package frc.robot.utils;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.SwerveConstants;
@@ -20,7 +23,7 @@ public class GetTargetLocation {
      */
     private static final int kTargetingIterations = 4;
 
-
+    
     private static double mLastTimestamp = -1.0;
     private static Translation2d m_targetLocation = null;
     private static boolean m_inZone = true;
@@ -64,9 +67,8 @@ public class GetTargetLocation {
         }
 
 
-        if (DriverStation.isTeleop()) {
-            m_targetLocation = adjustMovingTarget(robotPose, currentSpeeds, m_targetLocation);
-        } 
+        m_targetLocation = adjustMovingTarget(robotPose, currentSpeeds, m_targetLocation);
+        
         mLastTimestamp = currentTimestamp;
         return m_targetLocation;
     }

@@ -19,19 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RightShallowPath2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RightPath3"
+            "pathName": "RightPath2"
           }
         }
       ]

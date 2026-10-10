@@ -17,9 +17,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "DepotPath2"
+            "name": "FlywheelOn"
           }
         },
         {

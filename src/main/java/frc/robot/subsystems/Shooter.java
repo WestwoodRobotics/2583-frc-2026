@@ -15,8 +15,11 @@ import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.ShooterConstants;
 
 
@@ -59,16 +62,17 @@ public class Shooter extends SubsystemBase {
     private final BooleanPublisher m_isManualPub = m_table.getBooleanTopic("FlywheelOn").publish();
     private final BooleanPublisher m_dormantModePub = m_table.getBooleanTopic("DormantModeOn").publish();
 
+    private boolean TurretToggle = false;
+    public static boolean SOTMToggle = false;
 
-
-
-    private double m_desiredTurretAngle = 0.0;
+    public static double m_desiredTurretAngle = 0.0;
    
     private double m_desiredHoodAngle = ShooterConstants.kMaxAngle;
     private boolean m_autoAimEnabled = false;
     private boolean m_hoodUp = false;
     private boolean m_dormantMode = true;
     public double m_delta = 0.0;
+    private static final double kManualTurretDegPerSec = 10.0; // full-stick speed, tune this
 
     public Shooter() {
         // Apply configurations directly from constants to keep constructor clean of variables
@@ -88,6 +92,7 @@ public class Shooter extends SubsystemBase {
         m_flywheelDesiredRPS.set(m_flywheelRequest.Velocity);
         m_flywheelActualRPS.set(flywheelVel);
         m_atDesiredRPS.set(Math.abs(flywheelVel - m_flywheelRequest.Velocity) < ShooterConstants.kFlywheelToleranceRPS);
+        SmartDashboard.putBoolean("sotm",Shooter.SOTMToggle);
 
 
         m_turretActualPos.set(turretPos);
@@ -174,22 +179,34 @@ public class Shooter extends SubsystemBase {
         return m_hoodUp;
     }
 
+    public void toggleTurret(){
+        TurretToggle = !TurretToggle;
+    }
+
+    public static void SOTMoff(){
+        SOTMToggle = false;
+    }
+     public static void SOTMon(){
+        SOTMToggle = true;
+    }
 
     public void setTurretPosition(double position){
         m_turretMotor.setControl(m_turretRequest.withPosition(position));
+        
     }
 
     public void setTurretAngle(double angle){
+        SmartDashboard.putBoolean("toggle", TurretToggle);
+        if(TurretToggle){
+            return;
+        }
         double clamped = MathUtil.clamp(angle, ShooterConstants.kTurretMinAngle, ShooterConstants.kTurretMaxAngle);
 
-        // 195 = kTurretMaxAngle(200) - kTurretWrapDeadbandDegrees(5) -- deriving it
-        // here instead of hardcoding keeps this in sync with the soft-limit config
-        // in getTurretMotorConfigs(), which is what the deadband constant is for.
         double acceptLimit = ShooterConstants.kTurretMaxAngle - ShooterConstants.kTurretWrapDeadbandDegrees;
         if (Math.abs(clamped) > acceptLimit) {
             return;
         }
-
+        
         m_desiredTurretAngle = clamped;
         setTurretPosition(clamped / 360.0);
     }
@@ -202,6 +219,20 @@ public class Shooter extends SubsystemBase {
         m_turretMotor.setPosition(0.0);
     }
 
+
+
+    public void manualTurret(CommandXboxController controller) {
+        double joystick = MathUtil.applyDeadband(controller.getLeftX(), 0.1);
+        SmartDashboard.putNumber("leftx", controller.getLeftX());
+        if (joystick == 0.0) {
+            return;
+        }
+        ShooterConstants.kTurretOffset += joystick * kManualTurretDegPerSec * TimedRobot.kDefaultPeriod; // 0.02 s
+        SmartDashboard.putNumber("offset",  ShooterConstants.kTurretOffset);
+
+    
+       
+    }
 
     public void toogleDormantMode() {
         m_dormantMode = !m_dormantMode;

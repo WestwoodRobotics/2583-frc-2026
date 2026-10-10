@@ -7,7 +7,9 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class IntakeConstants {
-    public static final int kPivotMotorId = 999;
+    public static final int kPivotMotorOneId = 999;
+    public static final int kPivotMotorTwoId = 999;
+
     public static final int kRollerMotorId = 999;
     public static final CANBus kCANBus = new CANBus("SwerveCAN");
 
@@ -44,7 +46,7 @@ public class IntakeConstants {
 
         configs.CurrentLimits.SupplyCurrentLimit = 45.0;
 
-        configs.Feedback.SensorToMechanismRatio = (70.0 / 11.0) * (40.0 / 12.0);
+        configs.Feedback.SensorToMechanismRatio = (15/100) * (46/60) * (30/50) * (12/38);
         
         configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;

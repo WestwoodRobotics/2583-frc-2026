@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.BooleanSubscriber;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
@@ -41,8 +42,12 @@ public class AdjustShooter extends Command {
         .getTable("Shooter")
         .getDoubleTopic("Aim/DistanceToTarget")
         .publish();
-  
 
+    private final BooleanPublisher wrapPub = NetworkTableInstance.getDefault()
+        .getTable("Shooter")
+        .getBooleanTopic("Aim/TurretWrap")
+        .publish();
+  
     private final DoubleSubscriber m_turretActualAngle = NetworkTableInstance.getDefault()
         .getTable("Shooter")
         .getDoubleTopic("Turret/ActualAngle")
@@ -53,9 +58,14 @@ public class AdjustShooter extends Command {
         .getDoubleTopic("Turret/DesiredAngle")
         .subscribe(0.0);
 
-   private final StructPublisher<Pose2d> turret = NetworkTableInstance.getDefault()
+    private final StructPublisher<Pose2d> turret = NetworkTableInstance.getDefault()
         .getTable("Shooter")
         .getStructTopic("Turret/Turretpos", Pose2d.struct)
+        .publish();
+
+    private static final StructPublisher<Pose2d> target = NetworkTableInstance.getDefault()
+        .getTable("TargetLoc")
+        .getStructTopic("TargetLoc/target", Pose2d.struct)
         .publish();
 
     public AdjustShooter(Shooter shooter, CommandSwerveDrivetrain drivetrain, CommandXboxController driver) {
@@ -79,9 +89,12 @@ public class AdjustShooter extends Command {
 
         m_shooter.setHood(holdingShoot);
    
-
-
-        Translation2d targetLocation = GetTargetLocation.getTargetLocation(robotPose);
+        Translation2d targetLocation = !Shooter.SOTMToggle? 
+        GetTargetLocation.getTargetLocation(robotPose) :
+        GetTargetLocation.getTargetLocation(robotPose, m_drivetrain.getState().Speeds);
+        
+      
+        target.set(new Pose2d(targetLocation, Rotation2d.fromDegrees(0)));
         if (targetLocation == null) {
             distancePub.set(0);
             return;
@@ -107,7 +120,7 @@ public class AdjustShooter extends Command {
 
 
         Double shooterToTargetAngle = targetLocation.minus(shooterPose.getTranslation()).getAngle().getDegrees();
-        double turretAngle = shooterToTargetAngle - robotAngle;
+        double turretAngle = shooterToTargetAngle - robotAngle + 180 + ShooterConstants.kTurretOffset;
        /*  double turretAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
             ? -rawTurretAngle
             : rawTurretAngle; */
@@ -117,6 +130,12 @@ public class AdjustShooter extends Command {
         SmartDashboard.putNumber("base", base);
         double acceptLimit = ShooterConstants.kTurretMaxAngle - ShooterConstants.kTurretWrapDeadbandDegrees;
         double current = m_turretDesiredAngle.get(); //USE DESIRED ONLY FOR SIM
+        double currentDes = m_turretDesiredAngle.get();
+
+        SmartDashboard.putNumber("error", Math.abs(Math.abs(currentDes)-Math.abs(current)));
+        wrapPub.set(!(Math.abs(Math.abs(currentDes)-Math.abs(current))
+        < ShooterConstants.kTurretWrapDeadbandDegrees));
+        
         SmartDashboard.putNumber("current", current);
         double desiredAngle = base;
         double bestDist = Math.abs(base - current);
@@ -178,7 +197,7 @@ public class AdjustShooter extends Command {
             return;
         }
 
-        turret.set(new Pose2d(robotPose.getX(), robotPose.getY(), Rotation2d.fromDegrees(robotPose.getRotation().getDegrees() + desiredTurretAngle)));
+        turret.set(new Pose2d(robotPose.getX(), robotPose.getY(), Rotation2d.fromDegrees(robotPose.getRotation().getDegrees() + Shooter.m_desiredTurretAngle)));
         m_shooter.setHoodAngle(hoodAngle);
         m_shooter.setFlywheelVelocity(flywheelRPS);
         m_shooter.setTurretAngle(desiredTurretAngle);

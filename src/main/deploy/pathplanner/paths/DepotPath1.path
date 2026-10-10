@@ -3,13 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5991205873842596,
-        "y": 6.048456018518518
+        "x": 3.5732667617689007,
+        "y": 3.9767760342368046
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3070786490220345,
-        "y": 6.354578414784001
+        "x": 3.2812248234066757,
+        "y": 4.2828984305022875
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.852425106990014,
+        "y": 5.904636233951498
+      },
+      "prevControl": {
+        "x": 1.9688730385164046,
+        "y": 4.973052781740371
+      },
+      "nextControl": {
+        "x": 1.7401812834365158,
+        "y": 6.802586822379485
       },
       "isLocked": false,
       "linkedName": null
@@ -17,44 +33,44 @@
     {
       "anchor": {
         "x": 0.76,
-        "y": 7.1
+        "y": 6.7974037089871615
       },
       "prevControl": {
-        "x": 0.7715020221366313,
-        "y": 7.34973526680621
+        "x": 0.7526390870185449,
+        "y": 7.094992867332382
       },
       "nextControl": {
-        "x": 0.7484979778633687,
-        "y": 6.85026473319379
+        "x": 0.7661818970907684,
+        "y": 6.547480152377628
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.8,
-        "y": 5.287
+        "x": 0.76,
+        "y": 4.985991440798859
       },
       "prevControl": {
-        "x": 0.791706966777887,
-        "y": 5.536862413339776
+        "x": 0.757960561811449,
+        "y": 5.278371722056944
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "DepotPoint1"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 59.99999999999999
+      "waypointRelativePos": 2.0,
+      "rotationDegrees": -135.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7,
-      "maxWaypointRelativePos": 2.0,
+      "minWaypointRelativePos": 1.4,
+      "maxWaypointRelativePos": 3.5,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 7.0,
@@ -91,7 +107,7 @@
     },
     {
       "name": "IntakeDepotEvent",
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 2.0,
       "endWaypointRelativePos": 2.0,
       "command": {
         "type": "named",
@@ -111,13 +127,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": -135.0
   },
   "reversed": false,
   "folder": "DepotPaths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

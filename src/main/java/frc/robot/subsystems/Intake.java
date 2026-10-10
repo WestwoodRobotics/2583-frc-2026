@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
@@ -14,10 +16,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.IntakeConstants;
+import frc.robot.constants.ShooterConstants;
 
 public class Intake extends SubsystemBase {
 
-    private final TalonFX m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorId, IntakeConstants.kCANBus);
+    private final TalonFX m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorOneId, IntakeConstants.kCANBus);
+    private final TalonFX m_pivotMotorTwo = new TalonFX(IntakeConstants.kPivotMotorTwoId, IntakeConstants.kCANBus);
+
+    private final Follower m_opposedFollower = new Follower(IntakeConstants.kPivotMotorOneId, MotorAlignmentValue.Opposed);
+
     private final TalonFX m_rollerMotor = new TalonFX(IntakeConstants.kRollerMotorId, IntakeConstants.kCANBus);
 
     private final MotionMagicTorqueCurrentFOC m_pivotRequest = new MotionMagicTorqueCurrentFOC(0.0);
@@ -26,8 +33,8 @@ public class Intake extends SubsystemBase {
     private final NetworkTable m_intakeTable = NetworkTableInstance.getDefault().getTable("Intake");
     private final DoublePublisher m_pivotDesiredPub = m_intakeTable.getDoubleTopic("Pivot/DesiredPos").publish();
     private final DoublePublisher m_pivotActualPub = m_intakeTable.getDoubleTopic("Pivot/ActualPos").publish();
-    // private final DoublePublisher m_rollerDesiredPub = m_intakeTable.getDoubleTopic("Roller/DesiredVelocityRPS").publish();
-    // private final DoublePublisher m_rollerActualPub = m_intakeTable.getDoubleTopic("Roller/ActualVelocityRPS").publish();
+    private final DoublePublisher m_rollerDesiredPub = m_intakeTable.getDoubleTopic("Roller/DesiredVelocityRPS").publish();
+    private final DoublePublisher m_rollerActualPub = m_intakeTable.getDoubleTopic("Roller/ActualVelocityRPS").publish();
 
     public Intake() {
         // Apply configurations directly from constants to keep constructor clean of variables
@@ -45,12 +52,12 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         double pivotActual = m_pivotMotor.getPosition().getValueAsDouble();
-        // double rollerActual = m_rollerMotor.getVelocity().getValueAsDouble();
+        double rollerActual = m_rollerMotor.getVelocity().getValueAsDouble();
 
         m_pivotDesiredPub.set(m_pivotRequest.Position);
         m_pivotActualPub.set(pivotActual);
-        // m_rollerDesiredPub.set(m_rollerRequest.Velocity);
-        // m_rollerActualPub.set(rollerActual);
+        m_rollerDesiredPub.set(m_rollerRequest.Velocity);
+        m_rollerActualPub.set(rollerActual);
     }
 
     /**
@@ -59,6 +66,7 @@ public class Intake extends SubsystemBase {
      */
     public void setPivotPosition(double position) {
         m_pivotMotor.setControl(m_pivotRequest.withPosition(position));
+        m_pivotMotorTwo.setControl(m_opposedFollower);
     }
 
     public void slowPivot() {

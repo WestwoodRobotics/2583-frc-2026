@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.generated.TunerConstants;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.SwerveConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
@@ -365,7 +366,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (r > 0.85) {
             out[0] = Math.cos(theta) * MaxSpeed;
             out[1] = Math.sin(theta) * MaxSpeed;
-            out[2] = Math.copySign(Math.pow(rot2, 2.0) * MaxAngularRate, rot2);
+            out[2] = Math.copySign(rot2 * MaxAngularRate, rot2);
             return;
         }
 
@@ -374,6 +375,30 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         out[0] = rScaled * Math.cos(theta) * MaxSpeed;
         out[1] = rScaled * Math.sin(theta) * MaxSpeed;
-        out[2] = Math.copySign(Math.pow(rot2, 2.0) * MaxAngularRate, rot2);
+        out[2] = Math.copySign(rot2 * MaxAngularRate, rot2);
+    }
+
+    public static void joyStickSOTM(double[] out, CommandXboxController controller) {
+
+        double x2 = MathUtil.applyDeadband(-controller.getLeftY(), 0.1);
+        double y2 = MathUtil.applyDeadband(-controller.getLeftX(), 0.1);
+        double rot2 = MathUtil.applyDeadband(-controller.getRightX(), 0.1);
+
+        // Clamp magnitude to 1.0 to handle square joystick corners
+        double r = Math.min(1.0, Math.hypot(x2, y2));
+        double theta = Math.atan2(y2, x2);
+        if (r > 0.85) {
+            out[0] = Math.cos(theta) * MaxSpeed * ShooterConstants.SOTMVelMultiplier;
+            out[1] = Math.sin(theta) * MaxSpeed * ShooterConstants.SOTMVelMultiplier;
+            out[2] = Math.copySign(Math.pow(rot2, 2.0) * MaxAngularRate, rot2);
+            return;
+        }
+
+        // Use a simple multiplication for power of 2 for efficiency as the comment suggests
+        double rScaled = Math.pow(r, SwerveConstants.kDrivePower);
+
+        out[0] = rScaled * Math.cos(theta) * MaxSpeed * ShooterConstants.SOTMVelMultiplier;
+        out[1] = rScaled * Math.sin(theta) * MaxSpeed * ShooterConstants.SOTMVelMultiplier;
+        out[2] = Math.copySign(rot2 * MaxAngularRate, rot2);
     }
 }
