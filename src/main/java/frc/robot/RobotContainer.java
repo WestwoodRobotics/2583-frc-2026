@@ -140,26 +140,27 @@ public class RobotContainer {
         driver.x().whileTrue(new LockHeading(drivetrain, faceAngle, driver, 45.0).alongWith(intake.partialRetract()))
             .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
        
-  /*       driver.y().whileTrue(Commands.run(() -> {
-            shooter.setFlywheelVelocity(ShooterConstants.kYFlywheelVel);
-            shooter.setHoodAngle(ShooterConstants.kYHoodAngle);
-        }, shooter)); */
+        //  driver.y().whileTrue(Commands.run(() -> {
+        //     shooter.setFlywheelVelocity(ShooterConstants.kYFlywheelVel);
+        //     shooter.setHoodAngle(ShooterConstants.kYHoodAngle);
+        // }, shooter)); 
        
         driver.b().whileTrue(new LockHeading(drivetrain, faceAngle, driver, 0.0));
 
+        driver.y().onTrue(Commands.runOnce(shooter::toggleTurret, shooter));
 
         driver.rightTrigger().whileTrue(Commands.parallel(
             transfer.shootCommand(true),
             new IntakeShoot(intake, driver),
+            Commands.startEnd(Shooter::SOTMon, Shooter::SOTMoff),
             drivetrain.applyRequest(() -> {
-                    CommandSwerveDrivetrain.joyStickPolar(driverInputs, driver);
-
-
+                    CommandSwerveDrivetrain.joyStickSOTM(driverInputs, driver);
                     return drive.withVelocityX(driverInputs[0]) // Drive forward with negative Y (forward)
                         .withVelocityY(driverInputs[1]) // Drive left with negative X (left)
                         .withRotationalRate(driverInputs[2]); // Drive counterclockwise with negative X (left)
             })
         ));
+
 
 
         // Run intake while holding left trigger
@@ -196,7 +197,6 @@ public class RobotContainer {
 
         operator.x().onTrue(Commands.runOnce(shooter::toggleAutoAim, shooter));
         operator.y().onTrue(intake.fullRetract());
-        operator.b().onTrue(transfer.shootTimeCommand());
         operator.a().whileTrue(Commands.runEnd(
             () -> intake.setPivotPosition(IntakeConstants.kPivotUp),
             () -> intake.setPivotPosition(IntakeConstants.kPivotOut),
@@ -220,7 +220,8 @@ public class RobotContainer {
         operator.povRight().onTrue(Commands.runOnce(intake::resetPivot, intake).ignoringDisable(true));
         operator.povDown().onTrue(Commands.runOnce(() -> shooter.changeDelta(-0.5)));
         operator.povUp().onTrue(Commands.runOnce(() -> shooter.changeDelta(0.5)));
-
+            
+        operator.b().whileTrue(Commands.run(() -> shooter.manualTurret(operator), shooter));
 
         operator.rightStick().onTrue(Commands.runOnce(() -> {
             Pose2d pose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
@@ -249,11 +250,22 @@ public class RobotContainer {
     public void configureAutonomousCommands() {
 
 
-        NamedCommands.registerCommand("FlywheelOn", Commands.runOnce(() -> shooter.setAutoAim(true)));
+        NamedCommands.registerCommand("FlywheelOn", Commands.parallel(
+            Commands.startEnd(Shooter::SOTMon, Shooter::SOTMoff),
+            Commands.runOnce(() -> shooter.setAutoAim(true)),
+            new AdjustShooter(shooter, drivetrain, driver)
+        ));
         NamedCommands.registerCommand("FlywheelOff", Commands.runOnce(() -> shooter.setAutoAim(false)));
         NamedCommands.registerCommand("StopTransfer", transfer.stopTransfer());
    
-        NamedCommands.registerCommand("RunIntake", intake.runIntake());
+        NamedCommands.registerCommand("RunIntake", Commands.runEnd(
+            () -> {
+                intake.setPivotPosition(IntakeConstants.kPivotOut);
+                intake.setRollerVelocity(IntakeConstants.kRollerIntakingVel);   
+            },
+            () -> intake.setRollerVelocity(0),
+            intake
+        ));        
         NamedCommands.registerCommand("IntakeDepot", Commands.runEnd(
             () -> {
                 intake.setPivotPosition(IntakeConstants.kPivotDepot);
@@ -268,10 +280,10 @@ public class RobotContainer {
         NamedCommands.registerCommand("Shoot", Commands.race(
             new WaitCommand(3.0),
             transfer.shootCommand(true),
-            new AimSwerve(drivetrain, shooter, faceAngle, brake, driver),
             new IntakeShoot(intake, driver)
         ));
     }
+
 
 
     public Command getAutonomousCommand() {
