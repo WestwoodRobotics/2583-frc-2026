@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.LEDConstants;
+import frc.robot.constants.ShooterConstants;
 import frc.robot.constants.SwerveConstants;
 import frc.robot.utils.GetHubStatus;
 import frc.robot.utils.GetTargetLocation;
@@ -110,8 +111,8 @@ public class LED extends SubsystemBase {
 
         Pose2d robotPose = drivetrain.getState().Pose;
        
-        boolean isAligned = Math.abs(m_turretDesiredAngle.get() - m_turretActualAngle.get()) <= 2
-        && Math.abs(m_hoodDesiredAngle.get() - m_hoodActualAngle.get()) <= 2;
+        boolean isAligned = Math.abs(m_turretDesiredAngle.get() - m_turretActualAngle.get()) <= ShooterConstants.kTurretWrapDeadbandDegrees
+        && Math.abs(m_hoodDesiredAngle.get() - m_hoodActualAngle.get()) <= ShooterConstants.kHoodWrapDeadbandDegrees;
 
 
         m_headingLockedPub.set(isAligned);

@@ -127,7 +127,7 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true)
         );
         RobotModeTriggers.teleop().onTrue(Commands.runOnce(
-            () -> shooter.setAutoAim(true))
+            () -> shooter.setAutoAim(false))
         );
         RobotModeTriggers.autonomous().onTrue(Commands.runOnce(
             () -> shooter.setAutoAim(false))
@@ -138,7 +138,7 @@ public class RobotContainer {
 
 
         driver.x().whileTrue(new LockHeading(drivetrain, faceAngle, driver, 45.0).alongWith(intake.partialRetract()))
-            .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
+             .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
        
         //  driver.y().whileTrue(Commands.run(() -> {
         //     shooter.setFlywheelVelocity(ShooterConstants.kYFlywheelVel);
@@ -148,7 +148,6 @@ public class RobotContainer {
         driver.b().whileTrue(new LockHeading(drivetrain, faceAngle, driver, 0.0));
 
         driver.y().onTrue(Commands.runOnce(shooter::toggleTurret, shooter));
-
         driver.rightTrigger().whileTrue(Commands.parallel(
             transfer.shootCommand(true),
             new IntakeShoot(intake, driver),

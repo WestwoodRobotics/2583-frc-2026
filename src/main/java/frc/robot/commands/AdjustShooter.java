@@ -85,7 +85,8 @@ public class AdjustShooter extends Command {
         Double robotAngle = robotPose.getRotation().getDegrees();
 
         boolean holdingShoot = m_driver.rightTrigger().getAsBoolean();
-
+        SmartDashboard.putBoolean("driverx", m_driver.x().getAsBoolean());
+        SmartDashboard.putBoolean("holdingshoot",holdingShoot);
 
         m_shooter.setHood(holdingShoot);
    
@@ -94,29 +95,20 @@ public class AdjustShooter extends Command {
         GetTargetLocation.getTargetLocation(robotPose, m_drivetrain.getState().Speeds);
         
       
-        target.set(new Pose2d(targetLocation, Rotation2d.fromDegrees(0)));
         if (targetLocation == null) {
             distancePub.set(0);
             return;
         }
+        target.set(new Pose2d(targetLocation, Rotation2d.fromDegrees(0)));
 
 
         double distance = shooterPose.getTranslation().getDistance(targetLocation);
        
         distancePub.set(distance);
 
-
-        if (!m_shooter.isAutoAimEnabled()) {
-            return;
-        }
-
-
-        Double flywheelRPS = MathUtil.clamp(
-            4.9665 * distance + 20.5166 + m_shooter.m_delta,
-            0.0,
-            ShooterConstants.kMaxFlywheelRPS
-        );
-        Double hoodAngle = 68.0;
+        Double flywheelRPS = ShooterConstants.kDistanceToRPS.get(distance);
+        if (flywheelRPS != null) flywheelRPS += m_shooter.m_delta;
+        Double hoodAngle = ShooterConstants.kDistanceToAngle.get(distance);
 
 
         Double shooterToTargetAngle = targetLocation.minus(shooterPose.getTranslation()).getAngle().getDegrees();
@@ -129,11 +121,11 @@ public class AdjustShooter extends Command {
         double base = MathUtil.inputModulus(turretAngle, -180.0, 180.0);
         SmartDashboard.putNumber("base", base);
         double acceptLimit = ShooterConstants.kTurretMaxAngle - ShooterConstants.kTurretWrapDeadbandDegrees;
-        double current = m_turretDesiredAngle.get(); //USE DESIRED ONLY FOR SIM
+        double current = m_turretActualAngle.get(); //USE DESIRED ONLY FOR SIM
         double currentDes = m_turretDesiredAngle.get();
 
         SmartDashboard.putNumber("error", Math.abs(Math.abs(currentDes)-Math.abs(current)));
-        wrapPub.set(!(Math.abs(Math.abs(currentDes)-Math.abs(current))
+        wrapPub.set(!(Math.abs(currentDes-current)
         < ShooterConstants.kTurretWrapDeadbandDegrees));
         
         SmartDashboard.putNumber("current", current);
@@ -165,25 +157,32 @@ public class AdjustShooter extends Command {
         
 
         Double desiredTurretAngle = desiredAngle;
+        m_shooter.setTurretAngle(desiredTurretAngle);
+        turret.set(new Pose2d(robotPose.getX(), robotPose.getY(), Rotation2d.fromDegrees(robotPose.getRotation().getDegrees() + Shooter.m_desiredTurretAngle)));
+
+        if (!m_shooter.isAutoAimEnabled()) {
+            return;
+        }
+
 
 
 
         if (DriverStation.isTeleop()) {
             if (m_shooter.getHoodState()) {
-                if (holdingShoot && !GetTargetLocation.inZone()) {
+                if (!GetTargetLocation.inZone()) {
                     hoodAngle = ShooterConstants.kTrueMinAngle;
                    
                 }
             } else {
                 hoodAngle = ShooterConstants.kMaxAngle;
-                if (GetTargetLocation.inZone()) {
-                    if (m_shooter.getDormantMode()) {
-                        flywheelRPS = ShooterConstants.kZoneDormantVel;
-                    }
-                }
-                else {
-                    flywheelRPS = ShooterConstants.kPassingDormantVel;
-                }
+                // if (GetTargetLocation.inZone()) {
+                //     if (m_shooter.getDormantMode()) {
+                //         flywheelRPS = ShooterConstants.kZoneDormantVel;
+                //     }
+                // }
+                // else {
+                //     flywheelRPS = ShooterConstants.kPassingDormantVel;
+                // }
             }
 
 
@@ -197,10 +196,8 @@ public class AdjustShooter extends Command {
             return;
         }
 
-        turret.set(new Pose2d(robotPose.getX(), robotPose.getY(), Rotation2d.fromDegrees(robotPose.getRotation().getDegrees() + Shooter.m_desiredTurretAngle)));
         m_shooter.setHoodAngle(hoodAngle);
         m_shooter.setFlywheelVelocity(flywheelRPS);
-        m_shooter.setTurretAngle(desiredTurretAngle);
        
     }
    

@@ -2,6 +2,7 @@ package frc.robot.constants;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -15,8 +16,6 @@ public class ShooterConstants {
     public static final int kHoodMotorId = 999;
     public static final int kTurretMotorId = 999;
 
-    public static final int kTurretCoderId = 999;
-    public static final double kTurretCoderGearRatio = 999;
 
     public static final double kTurretMinAngle = -200.0;
     public static final double kTurretMaxAngle = 200.0;
@@ -43,6 +42,7 @@ public class ShooterConstants {
     public static final double kYFlywheelVel = 27.858921832551054;
     public static final double kYHoodAngle = 60.0;
 
+    public static final double kHoodWrapDeadbandDegrees = 5.0;
     public static final double kManualHoodInc = 2.0;
     public static final double kManualFlywheelInc = 1.0;
     public static final double kFlywheelToleranceRPS = 2.0;
@@ -56,11 +56,11 @@ public class ShooterConstants {
     public static final double SOTMVelMultiplier = 0.410022779043;
     static {
         
-
-        //kDistanceToRPS.put(999.0, 60.0);
+        
+        kDistanceToRPS.put(999.0, 60.0);
 
        
-        /* 
+        
         kDistanceToAngle.put(0.0, 70.0);
         kDistanceToAngle.put(1.1062981283038664, 70.0);
         kDistanceToAngle.put(1.31226468083407, 66.0);
@@ -73,7 +73,7 @@ public class ShooterConstants {
         kDistanceToAngle.put(1.9349981471527253, 66.0);
         kDistanceToAngle.put(1.4955589251035601, 65.22236455377882);
         kDistanceToAngle.put(2.9683119546531347, 60.0);
-        */
+        
 
         kDistanceToTOF.put(0.0, 0.97);
         kDistanceToTOF.put(1.27156941954409, 0.97);
@@ -114,7 +114,7 @@ public class ShooterConstants {
         configs.Slot0.kA = 3.203;
         configs.Slot0.kG = 2.3;
 
-        configs.Feedback.SensorToMechanismRatio = (54.0 / 11.0) * (28.0 / 15.0) * (106.0 / 7.0);
+        configs.Feedback.SensorToMechanismRatio = (12 / 32.0) * (18.0 / 50.0);
 
         configs.CurrentLimits.SupplyCurrentLimit = 11.0;
 
@@ -130,15 +130,19 @@ public class ShooterConstants {
     public static TalonFXConfiguration getTurretMotorConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 1000.0;
+        configs.Slot0.kP = 0.0;
         configs.Slot0.kI = 0.0;
-        configs.Slot0.kD = 50.0;
-        configs.Slot0.kS = 5.8;
+        configs.Slot0.kD = 0.0;
+        configs.Slot0.kS = 0.0;
         configs.Slot0.kV = 0.0;
-        configs.Slot0.kA = 3.203;
-        configs.Slot0.kG = 2.3;
+        configs.Slot0.kA = 0.0;
+        configs.Slot0.kG = 0.0;
 
-        configs.Feedback.SensorToMechanismRatio = (54.0 / 11.0) * (28.0 / 15.0) * (106.0 / 7.0);
+        configs.Feedback.RotorToSensorRatio = /* motor-to-CANcoder gear ratio */;
+        configs.Feedback.SensorToMechanismRatio = (3/58.0);
+        configs.Feedback.FeedbackRemoteSensorID = 999; // CANcoder ID
+        configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+
 
         configs.CurrentLimits.SupplyCurrentLimit = 11.0;
 

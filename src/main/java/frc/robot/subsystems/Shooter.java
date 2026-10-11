@@ -32,7 +32,6 @@ public class Shooter extends SubsystemBase {
     private final TalonFX m_topRightFlywheel = new TalonFX(ShooterConstants.kTopRightFlywheelId, canBus);
     private final TalonFX m_turretMotor = new TalonFX(ShooterConstants.kTurretMotorId, canBus);
 
-    private final CANcoder m_turretCoder = new CANcoder(ShooterConstants.kTurretCoderId, canBus);
 
     private final VelocityTorqueCurrentFOC m_flywheelRequest = new VelocityTorqueCurrentFOC(0.0);
     private final MotionMagicTorqueCurrentFOC m_hoodRequest = new MotionMagicTorqueCurrentFOC(0.0);
@@ -87,7 +86,7 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         double hoodPos = m_hoodMotor.getPosition().getValueAsDouble();
-        double turretPos = m_turretCoder.getPosition().getValueAsDouble()/ShooterConstants.kTurretCoderGearRatio;
+        double turretPos = m_turretMotor.getPosition().getValueAsDouble();
         double flywheelVel = m_topRightFlywheel.getVelocity().getValueAsDouble();
         m_flywheelDesiredRPS.set(m_flywheelRequest.Velocity);
         m_flywheelActualRPS.set(flywheelVel);
@@ -212,7 +211,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public double getTurretAngle(){
-        return (m_turretCoder.getPosition().getValueAsDouble()/ShooterConstants.kTurretCoderGearRatio) * 360.0;
+        return (m_turretMotor.getPosition().getValueAsDouble()) * 360.0;
     }
 
     public void resetTurretPosition(){

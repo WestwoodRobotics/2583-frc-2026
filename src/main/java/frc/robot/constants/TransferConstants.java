@@ -18,27 +18,7 @@ public class TransferConstants {
     public static final double kFloorShootVel = 22.0;
     public static final double kTransferShootTime = 0.05;
 
-    public static TalonFXConfiguration getFloorMotorConfigs() {
-        TalonFXConfiguration configs = new TalonFXConfiguration();
-        
-        configs.Slot0.kP = 35.0;
-        configs.Slot0.kI = 0.0;
-        configs.Slot0.kD = 0.0;
-        configs.Slot0.kS = 4.8;
-        configs.Slot0.kV = 0.0;
-        configs.Slot0.kA = 0.245143636466;
-
-        configs.CurrentLimits.SupplyCurrentLimit = 35.0;
-
-        configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
-
-        configs.Feedback.SensorToMechanismRatio = 42.0 / 12.0;
-        
-        configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-        configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        
-        return configs;
-    }
+    
 
     public static TalonFXConfiguration getTransferMotorConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
@@ -54,7 +34,7 @@ public class TransferConstants {
 
         configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
-        configs.Feedback.SensorToMechanismRatio = 26.0 / 22.0;
+        configs.Feedback.SensorToMechanismRatio = 18.0/40.0;
         
         configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;

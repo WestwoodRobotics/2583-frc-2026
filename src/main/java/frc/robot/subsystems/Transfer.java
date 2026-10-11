@@ -103,7 +103,7 @@ public class Transfer extends SubsystemBase {
         return Commands.sequence(
             new WaitCommand(0.05),
             Commands.run(() -> this.runMotors(0.0), this)
-                .until(() -> ((m_HeadingLockedSub.get() && m_atDesiredRPSSub.get())) || m_flywheelVelSub.get() > 50.0 || !checkAim || !wrapPub.get())
+                .until(() -> ((m_HeadingLockedSub.get() && m_atDesiredRPSSub.get())) || m_flywheelVelSub.get() > 50.0 || !checkAim)
                 .andThen(
                     Commands.run(() -> this.runMotors(TransferConstants.kTransferShootVel), this)
                 ).finallyDo(() -> this.runMotors(0.0))

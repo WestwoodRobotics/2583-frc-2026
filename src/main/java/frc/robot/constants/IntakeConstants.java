@@ -11,6 +11,8 @@ public class IntakeConstants {
     public static final int kPivotMotorTwoId = 999;
 
     public static final int kRollerMotorId = 999;
+    public static final int kRollerMotorTwoId = 999;
+
     public static final CANBus kCANBus = new CANBus("SwerveCAN");
 
     public static final double kPivotOffset = 0.310546875;
@@ -46,7 +48,7 @@ public class IntakeConstants {
 
         configs.CurrentLimits.SupplyCurrentLimit = 45.0;
 
-        configs.Feedback.SensorToMechanismRatio = (15/100) * (46/60) * (30/50) * (12/38);
+        configs.Feedback.SensorToMechanismRatio = (15.0/100.0) * (46.0/60.0) * (30.0/50.0) * (12.0/38.0);
         
         configs.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -68,7 +70,7 @@ public class IntakeConstants {
         
         configs.TorqueCurrent.PeakReverseTorqueCurrent = 0.0;
 
-        configs.Feedback.SensorToMechanismRatio = (30.0 / 12.0) * (30.0 / 24.0);
+        configs.Feedback.SensorToMechanismRatio = (18.0/24.0);
         configs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
         return configs;

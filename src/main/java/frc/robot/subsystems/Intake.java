@@ -23,9 +23,12 @@ public class Intake extends SubsystemBase {
     private final TalonFX m_pivotMotor = new TalonFX(IntakeConstants.kPivotMotorOneId, IntakeConstants.kCANBus);
     private final TalonFX m_pivotMotorTwo = new TalonFX(IntakeConstants.kPivotMotorTwoId, IntakeConstants.kCANBus);
 
-    private final Follower m_opposedFollower = new Follower(IntakeConstants.kPivotMotorOneId, MotorAlignmentValue.Opposed);
+    private final Follower m_opposedPivotFollower = new Follower(IntakeConstants.kPivotMotorOneId, MotorAlignmentValue.Opposed);
 
     private final TalonFX m_rollerMotor = new TalonFX(IntakeConstants.kRollerMotorId, IntakeConstants.kCANBus);
+    private final TalonFX m_rollerMotorTwo = new TalonFX(IntakeConstants.kRollerMotorTwoId, IntakeConstants.kCANBus);
+
+    private final Follower m_opposedRollerFollower = new Follower(IntakeConstants.kRollerMotorId, MotorAlignmentValue.Opposed);
 
     private final MotionMagicTorqueCurrentFOC m_pivotRequest = new MotionMagicTorqueCurrentFOC(0.0);
     private final VelocityTorqueCurrentFOC m_rollerRequest = new VelocityTorqueCurrentFOC(0.0);
@@ -39,10 +42,15 @@ public class Intake extends SubsystemBase {
     public Intake() {
         // Apply configurations directly from constants to keep constructor clean of variables
         m_pivotMotor.getConfigurator().apply(IntakeConstants.getPivotConfigs());
+        m_pivotMotorTwo.getConfigurator().apply(IntakeConstants.getPivotConfigs());
+
         m_rollerMotor.getConfigurator().apply(IntakeConstants.getRollerConfigs());
+        m_rollerMotorTwo.getConfigurator().apply(IntakeConstants.getRollerConfigs());
+        m_rollerMotorTwo.setControl(m_opposedRollerFollower);
 
         // Apply pivot offset
         m_pivotMotor.setPosition(IntakeConstants.kPivotOffset);
+        m_pivotMotorTwo.setControl(m_opposedPivotFollower);
 
         // m_pivotMotor.setControl(m_pivotRequest.withPosition(IntakeConstants.kPivotOut));
 
@@ -66,7 +74,7 @@ public class Intake extends SubsystemBase {
      */
     public void setPivotPosition(double position) {
         m_pivotMotor.setControl(m_pivotRequest.withPosition(position));
-        m_pivotMotorTwo.setControl(m_opposedFollower);
+        m_pivotMotorTwo.setControl(m_opposedPivotFollower);
     }
 
     public void slowPivot() {
@@ -90,6 +98,7 @@ public class Intake extends SubsystemBase {
      */
     public void setRollerVelocity(double velocity) {
         m_rollerMotor.setControl(m_rollerRequest.withVelocity(velocity));
+        m_rollerMotorTwo.setControl(m_opposedRollerFollower);
     }
 
     public Command intakeDefault() {
@@ -119,5 +128,6 @@ public class Intake extends SubsystemBase {
 
     public void resetPivot() {
         m_pivotMotor.setPosition(IntakeConstants.kResetPivotPos);
+        m_pivotMotorTwo.setControl(m_opposedPivotFollower);
     }
 }
