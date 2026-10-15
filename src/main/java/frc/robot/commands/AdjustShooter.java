@@ -85,8 +85,8 @@ public class AdjustShooter extends Command {
         Double robotAngle = robotPose.getRotation().getDegrees();
 
         boolean holdingShoot = m_driver.rightTrigger().getAsBoolean();
-        SmartDashboard.putBoolean("driverx", m_driver.x().getAsBoolean());
-        SmartDashboard.putBoolean("holdingshoot",holdingShoot);
+        // SmartDashboard.putBoolean("driverx", m_driver.x().getAsBoolean());
+        // SmartDashboard.putBoolean("holdingshoot",holdingShoot);
 
         m_shooter.setHood(holdingShoot);
    
@@ -112,26 +112,26 @@ public class AdjustShooter extends Command {
 
 
         Double shooterToTargetAngle = targetLocation.minus(shooterPose.getTranslation()).getAngle().getDegrees();
-        double turretAngle = shooterToTargetAngle - robotAngle + 180 + ShooterConstants.kTurretOffset;
+        double turretAngle = shooterToTargetAngle - robotAngle + ShooterConstants.kTurretOffset;
        /*  double turretAngle = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
             ? -rawTurretAngle
             : rawTurretAngle; */
 
        
         double base = MathUtil.inputModulus(turretAngle, -180.0, 180.0);
-        SmartDashboard.putNumber("base", base);
+        // SmartDashboard.putNumber("base", base);
         double acceptLimit = ShooterConstants.kTurretMaxAngle - ShooterConstants.kTurretWrapDeadbandDegrees;
         double current = m_turretActualAngle.get(); //USE DESIRED ONLY FOR SIM
         double currentDes = m_turretDesiredAngle.get();
 
-        SmartDashboard.putNumber("error", Math.abs(Math.abs(currentDes)-Math.abs(current)));
+        // SmartDashboard.putNumber("error", Math.abs(Math.abs(currentDes)-Math.abs(current)));
         wrapPub.set(!(Math.abs(currentDes-current)
         < ShooterConstants.kTurretWrapDeadbandDegrees));
         
-        SmartDashboard.putNumber("current", current);
+        // SmartDashboard.putNumber("current", current);
         double desiredAngle = base;
         double bestDist = Math.abs(base - current);
-        SmartDashboard.putNumber("bestDist", bestDist);
+        // SmartDashboard.putNumber("bestDist", bestDist);
         double basePositive = base+360.0;
         double baseNegative = base-360.0;
         
@@ -140,7 +140,7 @@ public class AdjustShooter extends Command {
             if(dist < bestDist){
                 bestDist = dist;
                 desiredAngle = basePositive;
-                SmartDashboard.putBoolean("basepositive", true);
+                // SmartDashboard.putBoolean("basepositive", true);
             }
         }
 
@@ -149,7 +149,7 @@ public class AdjustShooter extends Command {
             if(dist2 < bestDist){
                 bestDist = dist2;
                 desiredAngle = baseNegative;
-                SmartDashboard.putBoolean("basenegative", true);
+                // SmartDashboard.putBoolean("basenegative", true);
 
             }
         }

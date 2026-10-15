@@ -134,8 +134,7 @@ public class RobotContainer {
         );
 
 
-        driver.a().whileTrue(new AimSwerve(drivetrain, shooter, faceAngle, brake, driver));
-
+        // driver.a().whileTrue(new AimSwerve(drivetrain, shooter, faceAngle, brake, driver));
 
         driver.x().whileTrue(new LockHeading(drivetrain, faceAngle, driver, 45.0).alongWith(intake.partialRetract()))
              .onFalse(Commands.runOnce(() -> intake.setPivotPosition(IntakeConstants.kPivotOut)));
@@ -150,6 +149,18 @@ public class RobotContainer {
         driver.y().onTrue(Commands.runOnce(shooter::toggleTurret, shooter));
         driver.rightTrigger().whileTrue(Commands.parallel(
             transfer.shootCommand(true),
+            new IntakeShoot(intake, driver),
+            Commands.startEnd(Shooter::SOTMon, Shooter::SOTMoff),
+            drivetrain.applyRequest(() -> {
+                    CommandSwerveDrivetrain.joyStickSOTM(driverInputs, driver);
+                    return drive.withVelocityX(driverInputs[0]) // Drive forward with negative Y (forward)
+                        .withVelocityY(driverInputs[1]) // Drive left with negative X (left)
+                        .withRotationalRate(driverInputs[2]); // Drive counterclockwise with negative X (left)
+            })
+        ));
+
+        driver.a().whileTrue(Commands.parallel(
+            transfer.shootCommandTwo(true),
             new IntakeShoot(intake, driver),
             Commands.startEnd(Shooter::SOTMon, Shooter::SOTMoff),
             drivetrain.applyRequest(() -> {

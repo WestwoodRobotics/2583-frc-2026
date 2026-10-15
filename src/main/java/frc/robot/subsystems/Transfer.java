@@ -98,18 +98,29 @@ public class Transfer extends SubsystemBase {
     }
 
 
-    public Command shootCommand(boolean checkAim) {
-        SmartDashboard.putBoolean("ShootCommandCheckAim", true);
+    public Command 
+    shootCommand(boolean checkAim) {
+        // SmartDashboard.putBoolean("ShootCommandCheckAim", true);
         return Commands.sequence(
             new WaitCommand(0.05),
             Commands.run(() -> this.runMotors(0.0), this)
-                .until(() -> ((m_HeadingLockedSub.get() && m_atDesiredRPSSub.get())) || m_flywheelVelSub.get() > 50.0 || !checkAim)
+                .until(() -> ((m_HeadingLockedSub.get() && m_atDesiredRPSSub.get() && !wrapPub.get())) || m_flywheelVelSub.get() > 50.0 || !checkAim)
                 .andThen(
                     Commands.run(() -> this.runMotors(TransferConstants.kTransferShootVel), this)
                 ).finallyDo(() -> this.runMotors(0.0))
         );
     }
-
+    public Command 
+    shootCommandTwo(boolean checkAim) {
+        // SmartDashboard.putBoolean("ShootCommandCheckAim", true);
+        return Commands.sequence(
+            new WaitCommand(0.05),
+            Commands.run(() -> this.runMotors(0.0), this)
+                .andThen(
+                    Commands.run(() -> this.runMotors(-TransferConstants.kTransferShootVel), this)
+                ).finallyDo(() -> this.runMotors(0.0))
+        );
+    }
 
     public Command shootTimeCommand() {
         return Commands.run(() -> this.runMotors(TransferConstants.kTransferShootVel), this)

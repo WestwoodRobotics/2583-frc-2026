@@ -28,7 +28,7 @@ public class Intake extends SubsystemBase {
     private final TalonFX m_rollerMotor = new TalonFX(IntakeConstants.kRollerMotorId, IntakeConstants.kCANBus);
     private final TalonFX m_rollerMotorTwo = new TalonFX(IntakeConstants.kRollerMotorTwoId, IntakeConstants.kCANBus);
 
-    private final Follower m_opposedRollerFollower = new Follower(IntakeConstants.kRollerMotorId, MotorAlignmentValue.Opposed);
+    private final Follower m_opposedRollerFollower = new Follower(IntakeConstants.kRollerMotorTwoId, MotorAlignmentValue.Opposed);
 
     private final MotionMagicTorqueCurrentFOC m_pivotRequest = new MotionMagicTorqueCurrentFOC(0.0);
     private final VelocityTorqueCurrentFOC m_rollerRequest = new VelocityTorqueCurrentFOC(0.0);
@@ -46,7 +46,7 @@ public class Intake extends SubsystemBase {
 
         m_rollerMotor.getConfigurator().apply(IntakeConstants.getRollerConfigs());
         m_rollerMotorTwo.getConfigurator().apply(IntakeConstants.getRollerConfigs());
-        m_rollerMotorTwo.setControl(m_opposedRollerFollower);
+        m_rollerMotor.setControl(m_opposedRollerFollower);
 
         // Apply pivot offset
         m_pivotMotor.setPosition(IntakeConstants.kPivotOffset);
@@ -97,8 +97,8 @@ public class Intake extends SubsystemBase {
      * @param velocity Target velocity in rotations per second.
      */
     public void setRollerVelocity(double velocity) {
-        m_rollerMotor.setControl(m_rollerRequest.withVelocity(velocity));
-        m_rollerMotorTwo.setControl(m_opposedRollerFollower);
+        m_rollerMotorTwo.setControl(m_rollerRequest.withVelocity(velocity));
+        m_rollerMotor.setControl(m_opposedRollerFollower);
     }
 
     public Command intakeDefault() {
@@ -122,7 +122,7 @@ public class Intake extends SubsystemBase {
     }
 
     public Command partialRetract() {
-        SmartDashboard.putBoolean("partialretract", true);
+        // SmartDashboard.putBoolean("partialretract", true);
         return Commands.runOnce(() -> setPivotPosition(IntakeConstants.kPivotPartial), this);
     }
 

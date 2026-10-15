@@ -9,12 +9,11 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 public class ShooterConstants {
-    public static final int kTopLeftFlywheelId = 999;
-    public static final int kTopRightFlywheelId = 999;
-    public static final int kBottomLeftFlywheelId = 999;
-    public static final int kBottomRightFlywheelId = 999;
-    public static final int kHoodMotorId = 999;
-    public static final int kTurretMotorId = 999;
+    public static final int kTopLeftFlywheelId = 19;
+    public static final int kTopRightFlywheelId = 20;
+    public static final int kHoodMotorId = 18;
+    public static final int kTurretMotorId = 17;
+
 
 
     public static final double kTurretMinAngle = -200.0;
@@ -31,13 +30,13 @@ public class ShooterConstants {
     public static final double kPassingDormantVel = 0.0;
     public static final double kZoneDormantVel = 0.0;
 
-    public static final double kPosAtMinAngle = 0.066162109375;
+    public static final double kPosAtMinAngle = 0.035;
     public static final double kPosAtMaxAngle = 0.0;
-    public static final double kMinAngle = 56.0;
+    public static final double kMinAngle = 68.0;
     public static final double kMaxAngle = 90.0;
     public static final double kPerDegree = (kPosAtMaxAngle - kPosAtMinAngle) / (kMaxAngle - kMinAngle);
 
-    public static final double kTrueMinAngle = 45.0;
+    public static final double kTrueMinAngle = 68.0;
 
     public static final double kYFlywheelVel = 27.858921832551054;
     public static final double kYHoodAngle = 60.0;
@@ -57,7 +56,7 @@ public class ShooterConstants {
     static {
         
         
-        kDistanceToRPS.put(999.0, 60.0);
+        kDistanceToRPS.put(999.0, 0.0);
 
        
         
@@ -88,10 +87,10 @@ public class ShooterConstants {
         
         configs.Slot0.kP = 10.0;
         configs.Slot0.kI = 0.0;
-        configs.Slot0.kD = 0.1;
-        configs.Slot0.kS = 2.1;
-        configs.Slot0.kV = 0.0920634921;
-        configs.Slot0.kA = 1.0781533433;
+        configs.Slot0.kD = 0.0;
+        configs.Slot0.kS = 10.0;
+        configs.Slot0.kV = 0.099;
+        configs.Slot0.kA = 0.1;
 
         // configs.CurrentLimits.SupplyCurrentLimit = 40.0;
 
@@ -106,20 +105,20 @@ public class ShooterConstants {
     public static TalonFXConfiguration getHoodMotorConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 1000.0;
+        configs.Slot0.kP = 600.0;
         configs.Slot0.kI = 0.0;
-        configs.Slot0.kD = 50.0;
-        configs.Slot0.kS = 5.8;
+        configs.Slot0.kD = 20.0;
+        configs.Slot0.kS = 5.0;
         configs.Slot0.kV = 0.0;
-        configs.Slot0.kA = 3.203;
-        configs.Slot0.kG = 2.3;
+        configs.Slot0.kA = 2.203;
+        configs.Slot0.kG = 2.0;
 
-        configs.Feedback.SensorToMechanismRatio = (12 / 32.0) * (18.0 / 50.0);
+        configs.Feedback.SensorToMechanismRatio = (38.0 /12.0) * (50.0 / 1.0) * (29.0 / 30.0); //NOT ACCURATE RN
 
         configs.CurrentLimits.SupplyCurrentLimit = 11.0;
 
-        configs.MotionMagic.MotionMagicAcceleration = 3.0;
-        configs.MotionMagic.MotionMagicCruiseVelocity = 0.7;
+        configs.MotionMagic.MotionMagicAcceleration = 2.0;
+        configs.MotionMagic.MotionMagicCruiseVelocity = 0.5;
         
         configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -130,24 +129,24 @@ public class ShooterConstants {
     public static TalonFXConfiguration getTurretMotorConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 0.0;
+        configs.Slot0.kP = 27.0;
         configs.Slot0.kI = 0.0;
-        configs.Slot0.kD = 0.0;
-        configs.Slot0.kS = 0.0;
-        configs.Slot0.kV = 0.0;
+        configs.Slot0.kD = 2.0;
+        configs.Slot0.kS = 1.8;
+        configs.Slot0.kV = 0.0526315789474;
         configs.Slot0.kA = 0.0;
         configs.Slot0.kG = 0.0;
 
-        configs.Feedback.RotorToSensorRatio = /* motor-to-CANcoder gear ratio */;
-        configs.Feedback.SensorToMechanismRatio = (3/58.0);
-        configs.Feedback.FeedbackRemoteSensorID = 999; // CANcoder ID
-        configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        // configs.Feedback.RotorToSensorRatio = 132.0;
+        configs.Feedback.SensorToMechanismRatio = (116.0/3.0);
+        // configs.Feedback.FeedbackRemoteSensorID = 999; // CANcoder ID
+        // configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
 
 
         configs.CurrentLimits.SupplyCurrentLimit = 11.0;
 
-        configs.MotionMagic.MotionMagicAcceleration = 3.0;
-        configs.MotionMagic.MotionMagicCruiseVelocity = 0.7;
+        configs.MotionMagic.MotionMagicAcceleration = 2.5;
+        configs.MotionMagic.MotionMagicCruiseVelocity = 1.6;
         
         configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;

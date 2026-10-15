@@ -38,7 +38,7 @@ public class Shooter extends SubsystemBase {
     private final MotionMagicTorqueCurrentFOC m_turretRequest = new MotionMagicTorqueCurrentFOC(0.0);
 
 
-    private final Follower m_opposedFollower = new Follower(ShooterConstants.kTopRightFlywheelId, MotorAlignmentValue.Opposed);
+    private final Follower m_opposedFollower = new Follower(ShooterConstants.kTopLeftFlywheelId, MotorAlignmentValue.Opposed);
 
 
     private final NetworkTable m_table = NetworkTableInstance.getDefault().getTable("Shooter");
@@ -91,7 +91,7 @@ public class Shooter extends SubsystemBase {
         m_flywheelDesiredRPS.set(m_flywheelRequest.Velocity);
         m_flywheelActualRPS.set(flywheelVel);
         m_atDesiredRPS.set(Math.abs(flywheelVel - m_flywheelRequest.Velocity) < ShooterConstants.kFlywheelToleranceRPS);
-        SmartDashboard.putBoolean("sotm",Shooter.SOTMToggle);
+        // SmartDashboard.putBoolean("sotm",Shooter.SOTMToggle);
 
 
         m_turretActualPos.set(turretPos);
@@ -195,7 +195,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void setTurretAngle(double angle){
-        SmartDashboard.putBoolean("toggle", TurretToggle);
+        // SmartDashboard.putBoolean("toggle", TurretToggle);
         if(TurretToggle){
             return;
         }
@@ -222,12 +222,12 @@ public class Shooter extends SubsystemBase {
 
     public void manualTurret(CommandXboxController controller) {
         double joystick = MathUtil.applyDeadband(controller.getLeftX(), 0.1);
-        SmartDashboard.putNumber("leftx", controller.getLeftX());
+        // SmartDashboard.putNumber("leftx", controller.getLeftX());
         if (joystick == 0.0) {
             return;
         }
         ShooterConstants.kTurretOffset += joystick * kManualTurretDegPerSec * TimedRobot.kDefaultPeriod; // 0.02 s
-        SmartDashboard.putNumber("offset",  ShooterConstants.kTurretOffset);
+        // SmartDashboard.putNumber("offset",  ShooterConstants.kTurretOffset);
 
     
        
@@ -250,8 +250,8 @@ public class Shooter extends SubsystemBase {
 
     public void setFlywheelVelocity(double velocity) {
         double clampedVel = MathUtil.clamp(velocity, 0.0, ShooterConstants.kMaxFlywheelRPS);
-        m_topRightFlywheel.setControl(m_flywheelRequest.withVelocity(clampedVel));
-        m_topLeftFlywheel.setControl(m_opposedFollower);
+        m_topRightFlywheel.setControl(m_opposedFollower);
+        m_topLeftFlywheel.setControl(m_flywheelRequest.withVelocity(clampedVel));
     }
 }
 
