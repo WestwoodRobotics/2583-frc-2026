@@ -12,7 +12,7 @@ public class TransferConstants {
 
     public static final double kFloorDefaultVel = 0.0;
     public static final double kTransferDefaultVel = 0.0;
-    public static final double kTransferShootVel = 1.0;
+    public static final double kTransferShootVel = 2.0;
     public static final double kTransferShootTime = 0.05;
 
     

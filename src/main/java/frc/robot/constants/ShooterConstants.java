@@ -20,6 +20,7 @@ public class ShooterConstants {
     public static final double kTurretMaxAngle = 200.0;
 
     public static final double kTurretWrapDeadbandDegrees = 5;
+    public static final double kTurretAcceptanceDeg = 10;
 
     public static double kTurretOffset = 0.0;
 
@@ -55,23 +56,28 @@ public class ShooterConstants {
     public static final double SOTMVelMultiplier = 0.410022779043;
     static {
         
-        
-        kDistanceToRPS.put(999.0, 0.0);
 
-       
-        
-        kDistanceToAngle.put(0.0, 70.0);
-        kDistanceToAngle.put(1.1062981283038664, 70.0);
-        kDistanceToAngle.put(1.31226468083407, 66.0);
-        kDistanceToAngle.put(1.7317843665102108, 60.0);
-        kDistanceToAngle.put(1.9877911771679004, 60.0);
-        kDistanceToAngle.put(2.401767735037994, 60.0);
-        kDistanceToAngle.put(2.9683119546531347, 60.0);
+        kDistanceToRPS.put(999.0, 60.0);
+        kDistanceToRPS.put( 2.855596979495011 ,  53.9921875);
+        kDistanceToRPS.put( 1.3968957512393252 ,          46.9921875);
+        kDistanceToRPS.put( 2.0522009506120975 ,          51.9921875);
+        kDistanceToRPS.put( 2.8279531120872687,          48.9921875);
+        kDistanceToRPS.put( 3.3487300066087062,      51.99516125819079);
+        kDistanceToRPS.put( 3.7220687003550847,      53.997413746738545);
+        kDistanceToRPS.put(         4.13497477067495,      52.99989047003573);
+
+
+
+
+
+        kDistanceToAngle.put( 4.13497477067495,      71.12444196428572);
+        kDistanceToAngle.put( 3.7220687003550847,      77.109375);
+        kDistanceToAngle.put(3.3487300066087062, 77.87667410714286);
+        kDistanceToAngle.put(2.8279531120872687, 79.71819196428572);
+        kDistanceToAngle.put(2.0522009506120975, 85.08928571428572);
+        kDistanceToAngle.put(1.3968957512393252, 82.78738839285714);
         kDistanceToAngle.put(999.0, 60.0);
 
-        kDistanceToAngle.put(1.9349981471527253, 66.0);
-        kDistanceToAngle.put(1.4955589251035601, 65.22236455377882);
-        kDistanceToAngle.put(2.9683119546531347, 60.0);
         
 
         kDistanceToTOF.put(0.0, 0.97);
@@ -105,7 +111,7 @@ public class ShooterConstants {
     public static TalonFXConfiguration getHoodMotorConfigs() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         
-        configs.Slot0.kP = 600.0;
+        configs.Slot0.kP = 780.0;
         configs.Slot0.kI = 0.0;
         configs.Slot0.kD = 20.0;
         configs.Slot0.kS = 5.0;
@@ -131,22 +137,22 @@ public class ShooterConstants {
         
         configs.Slot0.kP = 27.0;
         configs.Slot0.kI = 0.0;
-        configs.Slot0.kD = 2.0;
+        configs.Slot0.kD = 3.0;
         configs.Slot0.kS = 1.8;
         configs.Slot0.kV = 0.0526315789474;
         configs.Slot0.kA = 0.0;
         configs.Slot0.kG = 0.0;
 
         // configs.Feedback.RotorToSensorRatio = 132.0;
-        configs.Feedback.SensorToMechanismRatio = (116.0/3.0);
+        configs.Feedback.SensorToMechanismRatio = (87.0/2.0);
         // configs.Feedback.FeedbackRemoteSensorID = 999; // CANcoder ID
         // configs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
 
 
         configs.CurrentLimits.SupplyCurrentLimit = 11.0;
 
-        configs.MotionMagic.MotionMagicAcceleration = 2.5;
-        configs.MotionMagic.MotionMagicCruiseVelocity = 1.6;
+        configs.MotionMagic.MotionMagicAcceleration = 3.0;
+        configs.MotionMagic.MotionMagicCruiseVelocity = 2.1;
         
         configs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         configs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;

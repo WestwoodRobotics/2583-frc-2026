@@ -214,19 +214,38 @@ public class RobotContainer {
         ));
 
 
-        operator.rightTrigger().onTrue(Commands.runOnce(
+        operator.rightBumper().onTrue(Commands.runOnce(
             () -> shooter.changeHoodAngle(-ShooterConstants.kManualHoodInc),
             shooter));
-        operator.leftTrigger().onTrue(Commands.runOnce(
+
+        operator.rightTrigger().onTrue(Commands.runOnce(() -> {
+            Pose2d pose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
+                ? new Pose2d(1.6, SwerveConstants.kResetY, new Rotation2d(0.0))
+                : new Pose2d(SwerveConstants.fieldWidth - 1.6, SwerveConstants.kResetY, new Rotation2d(Math.PI));
+            drivetrain.resetPose(pose);
+        }).ignoringDisable(true));
+
+         
+        operator.leftBumper().onTrue(Commands.runOnce(
             () -> shooter.changeHoodAngle(ShooterConstants.kManualHoodInc),
             shooter));
+
+        operator.leftTrigger().onTrue(Commands.sequence(
+        Commands.runOnce(() -> shooter.setTurretPosition(0.25) , shooter),
+        Commands.runOnce(() -> shooter.toggleTurret() , shooter)));
+
         operator.rightBumper().onTrue(Commands.runOnce(
             () -> shooter.changeFlywheelVelocity(ShooterConstants.kManualFlywheelInc), shooter));
         operator.leftBumper().onTrue(Commands.runOnce(
             () -> shooter.changeFlywheelVelocity(-ShooterConstants.kManualFlywheelInc), shooter));
 
 
-        operator.povLeft().onTrue(Commands.runOnce(shooter::resetHoodPosition, shooter).ignoringDisable(true));
+        // operator.povLeft().onTrue(Commands.runOnce(shooter::resetHoodPosition, shooter).ignoringDisable(true));
+         operator.povLeft().onTrue(Commands.sequence(
+        Commands.runOnce(() -> shooter.setTurretPosition(-0.25) , shooter),
+        Commands.runOnce(() -> shooter.toggleTurret() , shooter)));
+
+
         operator.povRight().onTrue(Commands.runOnce(intake::resetPivot, intake).ignoringDisable(true));
         operator.povDown().onTrue(Commands.runOnce(() -> shooter.changeDelta(-0.5)));
         operator.povUp().onTrue(Commands.runOnce(() -> shooter.changeDelta(0.5)));
@@ -235,10 +254,17 @@ public class RobotContainer {
 
         operator.rightStick().onTrue(Commands.runOnce(() -> {
             Pose2d pose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
-                ? new Pose2d(SwerveConstants.kResetX, SwerveConstants.kResetY, new Rotation2d(0.0))
-                : new Pose2d(SwerveConstants.fieldWidth - SwerveConstants.kResetX, SwerveConstants.kResetY, new Rotation2d(Math.PI));
+                ? new Pose2d(SwerveConstants.kResetX, SwerveConstants.kResetY, new Rotation2d(Math.PI))
+                : new Pose2d(SwerveConstants.fieldWidth - SwerveConstants.kResetX, SwerveConstants.kResetY, new Rotation2d(0.0));
             drivetrain.resetPose(pose);
         }).ignoringDisable(true));
+
+        
+
+        operator.leftStick().onTrue(Commands.sequence(
+        Commands.runOnce(() -> shooter.setTurretPosition(0.50) , shooter),
+        Commands.runOnce(() -> shooter.toggleTurret() , shooter)));
+
 
 
         // Run SysId routines when holding back/start and X/Y.

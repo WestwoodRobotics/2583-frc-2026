@@ -15,6 +15,7 @@ import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.MathUtil;
@@ -32,7 +33,6 @@ public class Shooter extends SubsystemBase {
     private final TalonFX m_topRightFlywheel = new TalonFX(ShooterConstants.kTopRightFlywheelId, canBus);
     private final TalonFX m_turretMotor = new TalonFX(ShooterConstants.kTurretMotorId, canBus);
 
-
     private final VelocityTorqueCurrentFOC m_flywheelRequest = new VelocityTorqueCurrentFOC(0.0);
     private final MotionMagicTorqueCurrentFOC m_hoodRequest = new MotionMagicTorqueCurrentFOC(0.0);
     private final MotionMagicTorqueCurrentFOC m_turretRequest = new MotionMagicTorqueCurrentFOC(0.0);
@@ -43,7 +43,7 @@ public class Shooter extends SubsystemBase {
 
     private final NetworkTable m_table = NetworkTableInstance.getDefault().getTable("Shooter");
     private final DoublePublisher m_flywheelDesiredRPS = m_table.getDoubleTopic("Flywheel/DesiredRPS").publish();
-    private final DoublePublisher m_flywheelIncerceptDelta = m_table.getDoubleTopic("Flywheel/InterceptDelta").publish();
+    private final DoublePublisher m_flywheelInterceptDelta = m_table.getDoubleTopic("Flywheel/InterceptDelta").publish();
     private final DoublePublisher m_flywheelActualRPS = m_table.getDoubleTopic("Flywheel/ActualRPS").publish();
     private final BooleanPublisher m_atDesiredRPS = m_table.getBooleanTopic("Flywheel/AtDesiredRPS").publish();
     // private final DoublePublisher m_hoodDesiredPos = m_table.getDoubleTopic("Hood/DesiredPos").publish();
@@ -61,7 +61,7 @@ public class Shooter extends SubsystemBase {
     private final BooleanPublisher m_isManualPub = m_table.getBooleanTopic("FlywheelOn").publish();
     private final BooleanPublisher m_dormantModePub = m_table.getBooleanTopic("DormantModeOn").publish();
 
-    private boolean TurretToggle = false;
+    public static boolean TurretToggle = false;
     public static boolean SOTMToggle = false;
 
     public static double m_desiredTurretAngle = 0.0;
@@ -70,7 +70,7 @@ public class Shooter extends SubsystemBase {
     private boolean m_autoAimEnabled = false;
     private boolean m_hoodUp = false;
     private boolean m_dormantMode = true;
-    public double m_delta = 0.0;
+    public double m_delta = -3.0;
     private static final double kManualTurretDegPerSec = 10.0; // full-stick speed, tune this
 
     public Shooter() {
@@ -95,7 +95,7 @@ public class Shooter extends SubsystemBase {
 
 
         m_turretActualPos.set(turretPos);
-        m_turretDesiredAngle.set(m_desiredTurretAngle);
+        m_turretDesiredAngle.set(m_desiredTurretAngle + ShooterConstants.kTurretOffset);
         m_turretActualAngle.set(MathUtil.inputModulus(turretPos * 360.0, -200.0, 200.0));
         double actualAngle = (hoodPos - ShooterConstants.kPosAtMinAngle) / ShooterConstants.kPerDegree + ShooterConstants.kMinAngle;
         m_hoodActualPos.set(hoodPos);
@@ -106,7 +106,7 @@ public class Shooter extends SubsystemBase {
         m_autoAimEnabledPub.set(m_autoAimEnabled);
         m_isManualPub.set(!m_autoAimEnabled);
         m_dormantModePub.set(m_dormantMode);
-        m_flywheelIncerceptDelta.set(m_delta);
+        m_flywheelInterceptDelta.set(m_delta);
     }
 
 
@@ -179,7 +179,9 @@ public class Shooter extends SubsystemBase {
     }
 
     public void toggleTurret(){
-        TurretToggle = !TurretToggle;
+        if(!TurretToggle){
+            TurretToggle = true;
+        }
     }
 
     public static void SOTMoff(){
@@ -208,7 +210,9 @@ public class Shooter extends SubsystemBase {
         
         m_desiredTurretAngle = clamped;
         setTurretPosition(clamped / 360.0);
+        
     }
+
 
     public double getTurretAngle(){
         return (m_turretMotor.getPosition().getValueAsDouble()) * 360.0;
@@ -226,8 +230,9 @@ public class Shooter extends SubsystemBase {
         if (joystick == 0.0) {
             return;
         }
+
         ShooterConstants.kTurretOffset += joystick * kManualTurretDegPerSec * TimedRobot.kDefaultPeriod; // 0.02 s
-        // SmartDashboard.putNumber("offset",  ShooterConstants.kTurretOffset);
+        SmartDashboard.putNumber("offset",  ShooterConstants.kTurretOffset);
 
     
        
@@ -251,7 +256,7 @@ public class Shooter extends SubsystemBase {
     public void setFlywheelVelocity(double velocity) {
         double clampedVel = MathUtil.clamp(velocity, 0.0, ShooterConstants.kMaxFlywheelRPS);
         m_topRightFlywheel.setControl(m_opposedFollower);
-        m_topLeftFlywheel.setControl(m_flywheelRequest.withVelocity(clampedVel));
+        m_topLeftFlywheel.setControl(m_flywheelRequest.withVelocity(clampedVel + m_delta));
     }
 }
 

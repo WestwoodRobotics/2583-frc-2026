@@ -111,7 +111,7 @@ public class LED extends SubsystemBase {
 
         Pose2d robotPose = drivetrain.getState().Pose;
        
-        boolean isAligned = Math.abs(m_turretDesiredAngle.get() - m_turretActualAngle.get()) <= ShooterConstants.kTurretWrapDeadbandDegrees
+        boolean isAligned = Math.abs(m_turretDesiredAngle.get() - m_turretActualAngle.get()) <= ShooterConstants.kTurretAcceptanceDeg
         && Math.abs(m_hoodDesiredAngle.get() - m_hoodActualAngle.get()) <= ShooterConstants.kHoodWrapDeadbandDegrees;
 
 

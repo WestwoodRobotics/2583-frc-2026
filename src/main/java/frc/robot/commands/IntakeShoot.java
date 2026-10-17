@@ -28,12 +28,12 @@ public class IntakeShoot extends Command {
     @Override
     public void execute() {
         if (m_controller.leftTrigger().getAsBoolean()) {
-            // m_intake.setPivotPosition(IntakeConstants.kPivotOut);
+            m_intake.setPivotPosition(IntakeConstants.kPivotOut);
             m_intake.setRollerVelocity(IntakeConstants.kRollerIntakingVel);
         }
         else {
             if (!GetTargetLocation.inZone()) {
-                // m_intake.setPivotPosition(IntakeConstants.kPivotOut);
+                m_intake.setPivotPosition(IntakeConstants.kPivotOut);
                 m_intake.setRollerVelocity(0.0);
                 return;
             }

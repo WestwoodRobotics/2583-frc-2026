@@ -114,11 +114,8 @@ public class Transfer extends SubsystemBase {
     shootCommandTwo(boolean checkAim) {
         // SmartDashboard.putBoolean("ShootCommandCheckAim", true);
         return Commands.sequence(
-            new WaitCommand(0.05),
-            Commands.run(() -> this.runMotors(0.0), this)
-                .andThen(
                     Commands.run(() -> this.runMotors(-TransferConstants.kTransferShootVel), this)
-                ).finallyDo(() -> this.runMotors(0.0))
+                ).finallyDo(() -> this.runMotors(0.0)
         );
     }
 

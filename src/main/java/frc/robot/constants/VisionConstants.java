@@ -43,7 +43,7 @@ public class VisionConstants {
     public static final double maxPoseAmbiguity = 0.2;
     public static final double multiTagK = 0.2;
     public static final double singleTagK = 0.9;
-    public static final double baseSigma = 0.2;
+    public static final double baseSigma = 0.08;
     public static final double multiTagThetaSigma = 8.0;
     public static final int maxMeasurementsToApply = 2;
 }

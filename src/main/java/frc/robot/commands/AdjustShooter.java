@@ -68,6 +68,9 @@ public class AdjustShooter extends Command {
         .getStructTopic("TargetLoc/target", Pose2d.struct)
         .publish();
 
+    private final DoubleSubscriber m_flywheelInterceptDelta = NetworkTableInstance.getDefault().getDoubleTopic("Flywheel/InterceptDelta").subscribe(0.0);
+
+
     public AdjustShooter(Shooter shooter, CommandSwerveDrivetrain drivetrain, CommandXboxController driver) {
         m_shooter = shooter;
         m_drivetrain = drivetrain;
@@ -105,9 +108,7 @@ public class AdjustShooter extends Command {
         double distance = shooterPose.getTranslation().getDistance(targetLocation);
        
         distancePub.set(distance);
-
         Double flywheelRPS = ShooterConstants.kDistanceToRPS.get(distance);
-        if (flywheelRPS != null) flywheelRPS += m_shooter.m_delta;
         Double hoodAngle = ShooterConstants.kDistanceToAngle.get(distance);
 
 
@@ -157,7 +158,11 @@ public class AdjustShooter extends Command {
         
 
         Double desiredTurretAngle = desiredAngle;
-        m_shooter.setTurretAngle(desiredTurretAngle);
+        if(DriverStation.isTeleop()){
+            m_shooter.setTurretAngle(desiredTurretAngle);
+        } if(DriverStation.isAutonomous()) {
+            m_shooter.setTurretAngle(desiredTurretAngle-20);
+        }
         turret.set(new Pose2d(robotPose.getX(), robotPose.getY(), Rotation2d.fromDegrees(robotPose.getRotation().getDegrees() + Shooter.m_desiredTurretAngle)));
 
         if (!m_shooter.isAutoAimEnabled()) {
